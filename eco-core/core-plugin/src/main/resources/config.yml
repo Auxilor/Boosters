@@ -15,7 +15,7 @@ messages:
     expiry:
       - ""
       - " &fThe &a1.5x Sell Multiplier Booster&f has ended"
-      - " &fGet another one here: "
+      - " &fGet another one here: &ahttps://store.ecomc.net/package/756887"
       - ""
   2sell_multiplier:
     activation:
@@ -26,7 +26,7 @@ messages:
     expiry:
       - ""
       - " &fThe &a2x Sell Multiplier Booster&f has ended"
-      - " &fGet another one here: "
+      - " &fGet another one here: &ahttps://store.ecomc.net/package/756888"
       - ""
   skill_xp:
     activation:
@@ -37,5 +37,5 @@ messages:
     expiry:
       - ""
       - " &fThe &a2x Skill XP Booster&f has ended"
-      - " &fGet another one here: "
+      - " &fGet another one here: &ahttps://store.ecomc.net/package/756893"
       - ""
