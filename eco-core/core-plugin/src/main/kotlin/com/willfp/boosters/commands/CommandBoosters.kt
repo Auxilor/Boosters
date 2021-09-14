@@ -12,7 +12,7 @@ class CommandBoosters(plugin: EcoPlugin) :
         plugin,
         "boosters",
         "boosters.command.boosters",
-        true
+        false
     ) {
 
     init {
