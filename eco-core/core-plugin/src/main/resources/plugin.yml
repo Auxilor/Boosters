@@ -1,0 +1,45 @@
+name: Boosters
+version: ${projectVersion}
+main: com.willfp.boosters.BoostersPlugin
+api-version: 1.17
+authors: [ Auxilor ]
+website: willfp.com
+load: POSTWORLD
+depend:
+  - eco
+  - PlaceholderAPI
+  - EcoSkills
+  - ShopGUIPlus
+libraries:
+  - org.jetbrains.kotlin:kotlin-stdlib:1.5.21
+
+commands:
+  boosters:
+    description: Base Command
+    permission: boosters.command.boosters
+    aliases:
+      - boost
+
+permissions:
+  boosters.*:
+    description: All boosters permissions
+    default: op
+    children:
+      boosters.command.*: true
+  boosters.command.*:
+    description: All commands
+    default: op
+    children:
+      boosters.command.reload: true
+      boosters.command.give: true
+      boosters.command.boosters: true
+
+  boosters.command.reload:
+    description: Allows reloading the config
+    default: op
+  boosters.command.boosters:
+    description: Allows the use of /boosters.
+    default: true
+  boosters.command.give:
+    description: Allows the use of /boosters give.
+    default: op

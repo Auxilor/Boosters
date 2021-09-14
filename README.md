@@ -1,0 +1,1 @@
+Boosters plugin, used by EcoMC
