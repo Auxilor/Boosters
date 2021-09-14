@@ -29,7 +29,7 @@ object BoosterGUI {
                 player.sendMessage(plugin.langYml.getMessage("already-active"))
                 player.playSound(
                     player.location,
-                    Sound.BLOCK_NOTE_BLOCK_PLING,
+                    Sound.BLOCK_NOTE_BLOCK_BASS,
                     1f,
                     0.5f
                 )
@@ -40,7 +40,7 @@ object BoosterGUI {
                 player.sendMessage(plugin.langYml.getMessage("dont-have"))
                 player.playSound(
                     player.location,
-                    Sound.BLOCK_NOTE_BLOCK_PLING,
+                    Sound.BLOCK_NOTE_BLOCK_BASS,
                     1f,
                     0.5f
                 )
@@ -80,12 +80,12 @@ object BoosterGUI {
                     lore.add("&fDuration: &a1 Hour")
                     lore.add("")
                     lore.add("&fYou have: &a${player.getAmountOfBooster(Boosters.SELL_MULTIPLIER_LOW)}")
-                    lore.add("Get more at &astore.ecomc.net")
+                    lore.add("&fGet more at &astore.ecomc.net")
                     lore.add("")
                     lore.add("&e&oClick to activate!")
                     lore.add("")
 
-                    meta.setDisplayName("&a1.5x Sell Multiplier")
+                    meta.setDisplayName(StringUtils.format("&d1.5x Sell Multiplier"))
 
                     meta.lore = lore.apply {
                         replaceAll { StringUtils.format(it) }
@@ -116,12 +116,12 @@ object BoosterGUI {
                     lore.add("&fDuration: &a1 Hour")
                     lore.add("")
                     lore.add("&fYou have: &a${player.getAmountOfBooster(Boosters.SELL_MULTIPLIER_HIGH)}")
-                    lore.add("Get more at &astore.ecomc.net")
+                    lore.add("&fGet more at &astore.ecomc.net")
                     lore.add("")
                     lore.add("&e&oClick to activate!")
                     lore.add("")
 
-                    meta.setDisplayName("&a2x Sell Multiplier")
+                    meta.setDisplayName(StringUtils.format("&d2x Sell Multiplier"))
 
                     meta.lore = lore.apply {
                         replaceAll { StringUtils.format(it) }
@@ -152,12 +152,12 @@ object BoosterGUI {
                     lore.add("&fDuration: &a1 Hour")
                     lore.add("")
                     lore.add("&fYou have: &a${player.getAmountOfBooster(Boosters.SKILL_XP)}")
-                    lore.add("Get more at &astore.ecomc.net")
+                    lore.add("&fGet more at &astore.ecomc.net")
                     lore.add("")
                     lore.add("&e&oClick to activate!")
                     lore.add("")
 
-                    meta.setDisplayName("&a2x Skill XP Multiplier")
+                    meta.setDisplayName(StringUtils.format("&d2x Skill XP Multiplier"))
 
                     meta.lore = lore.apply {
                         replaceAll { StringUtils.format(it) }

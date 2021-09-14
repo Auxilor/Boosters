@@ -9,33 +9,33 @@ messages:
   1.5sell_multiplier:
     activation:
       - ""
-      - "%player%&f has activated a &a1.5x Sell Multiplier Booster&f!"
-      - "&fThis booster will last an hour, be sure to thank them!"
+      - " %player%&f has activated a &a1.5x Sell Multiplier Booster&f!"
+      - " &fThis booster will last an hour, be sure to thank them!"
       - ""
     expiry:
       - ""
-      - "&fThe &a1.5x Sell Multiplier Booster&f has ended"
-      - "&fGet another one here: "
+      - " &fThe &a1.5x Sell Multiplier Booster&f has ended"
+      - " &fGet another one here: "
       - ""
   2sell_multiplier:
     activation:
       - ""
-      - "%player%&f has activated a &a2x Sell Multiplier Booster&f!"
-      - "&fThis booster will last an hour, be sure to thank them!"
+      - " %player%&f has activated a &a2x Sell Multiplier Booster&f!"
+      - " &fThis booster will last an hour, be sure to thank them!"
       - ""
     expiry:
       - ""
-      - "&fThe &a2x Sell Multiplier Booster&f has ended"
-      - "&fGet another one here: "
+      - " &fThe &a2x Sell Multiplier Booster&f has ended"
+      - " &fGet another one here: "
       - ""
   skill_xp:
     activation:
       - ""
-      - "%player%&f has activated a &a2x Skill XP Booster&f!"
-      - "&fThis booster will last an hour, be sure to thank them!"
+      - " %player%&f has activated a &a2x Skill XP Booster&f!"
+      - " &fThis booster will last an hour, be sure to thank them!"
       - ""
     expiry:
       - ""
-      - "&fThe &a2x Skill XP Booster&f has ended"
-      - "&fGet another one here: "
+      - " &fThe &a2x Skill XP Booster&f has ended"
+      - " &fGet another one here: "
       - ""
