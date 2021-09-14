@@ -5,6 +5,7 @@ import com.willfp.boosters.boosters.Boosters
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Server
+import org.bukkit.Sound
 import org.bukkit.entity.Player
 
 private var active: Booster? = null
@@ -65,6 +66,15 @@ fun Player.activateBooster(booster: Booster): Boolean {
     }, booster.duration.toLong())
 
     active = booster
+
+    for (player in Bukkit.getOnlinePlayers()) {
+        player.playSound(
+            player.location,
+            Sound.UI_TOAST_CHALLENGE_COMPLETE,
+            2f,
+            0.9f
+        )
+    }
 
     return true
 }

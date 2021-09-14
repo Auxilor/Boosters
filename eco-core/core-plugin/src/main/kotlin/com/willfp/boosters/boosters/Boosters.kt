@@ -18,4 +18,12 @@ object Boosters {
     fun registerNewBooster(booster: Booster) {
         byId[booster.id] = booster
     }
+
+    fun values(): List<Booster> {
+        return byId.values.toList()
+    }
+
+    fun names(): List<String> {
+        return byId.keys.toList()
+    }
 }

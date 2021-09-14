@@ -1,5 +1,6 @@
 package com.willfp.boosters
 
+import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.config.DataYml
 import com.willfp.boosters.data.SaveHandler
@@ -10,10 +11,16 @@ import org.bukkit.event.Listener
 import java.io.IOException
 
 class BoostersPlugin : EcoPlugin() {
-    val dataYml: DataYml
+    val dataYml: DataYml = DataYml(this)
+
     override fun handleReload() {
         save(this)
-        scheduler.runTimer(SaveHandler.Runnable(this), 20000, 20000)
+        scheduler.runTimer(SaveHandler.Runnable(this), 10000, 20000)
+
+        for (booster in Boosters.values()) {
+            this.eventManager.unregisterListener(booster)
+            this.eventManager.registerListener(booster)
+        }
     }
 
     override fun handleDisable() {
@@ -26,6 +33,7 @@ class BoostersPlugin : EcoPlugin() {
 
     override fun loadListeners(): List<Listener> {
         return listOf(
+
         )
     }
 
@@ -40,7 +48,6 @@ class BoostersPlugin : EcoPlugin() {
     }
 
     init {
-        dataYml = DataYml(this)
         instance = this
     }
 

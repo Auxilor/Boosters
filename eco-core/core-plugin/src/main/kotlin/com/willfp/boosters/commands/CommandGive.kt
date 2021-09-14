@@ -1,22 +1,16 @@
 package com.willfp.boosters.commands
 
-import com.google.common.math.Stats
+import com.willfp.boosters.boosters.Boosters
+import com.willfp.boosters.getAmountOfBooster
+import com.willfp.boosters.setAmountOfBooster
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.CommandHandler
 import com.willfp.eco.core.command.TabCompleteHandler
 import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.boosters.getStatLevel
-import com.willfp.boosters.giveSkillExperience
-import com.willfp.boosters.setStatLevel
-import com.willfp.boosters.skills.Skill
-import com.willfp.boosters.skills.Skills
-import com.willfp.boosters.stats.Stat
-import com.willfp.boosters.stats.Stats
-import com.willfp.boosters.util.TabCompleteHelper
+import com.willfp.eco.util.StringUtils
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
-
 
 class CommandGive(plugin: EcoPlugin) :
     Subcommand(
@@ -37,46 +31,30 @@ class CommandGive(plugin: EcoPlugin) :
                 return@CommandHandler
             }
 
-            val player = Bukkit.getPlayer(args[0])
-            if (player == null) {
-                sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
-                return@CommandHandler
-            }
+            val booster = Boosters.getById(args[1].lowercase())
 
-            val obj = Skills.getByID(args[1].lowercase()) ?: Stats.getByID(args[1].lowercase())
-
-            if (obj == null) {
+            if (booster == null) {
                 sender.sendMessage(plugin.langYml.getMessage("invalid-booster"))
                 return@CommandHandler
             }
 
-            val amount = args[2].toIntOrNull()
+            this.plugin.scheduler.runAsync {
+                @Suppress("DEPRECATION")
+                val player = Bukkit.getOfflinePlayer(args[0])
+                if (!player.hasPlayedBefore()) {
+                    sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
+                    return@runAsync
+                }
 
-            if (amount == null) {
-                sender.sendMessage(plugin.langYml.getMessage("invalid-amount"))
-                return@CommandHandler
-            }
+                this.plugin.scheduler.run {
+                    player.setAmountOfBooster(booster, player.getAmountOfBooster(booster) + 1)
+                }
 
-            if (obj is Skill) {
-                player.giveSkillExperience(obj, amount.toDouble())
-                player.sendMessage(
-                    this.plugin.langYml.getMessage("gave-skill-xp")
-                        .replace("%player%", player.name)
-                        .replace("%amount%", amount.toString())
-                        .replace("%skill%", obj.name)
-                )
-                return@CommandHandler
-            }
-
-            if (obj is Stat) {
-                player.setStatLevel(obj, player.getStatLevel(obj) + amount)
                 sender.sendMessage(
-                    this.plugin.langYml.getMessage("gave-stat")
-                        .replace("%player%", player.name)
-                        .replace("%amount%", amount.toString())
-                        .replace("%stat%", obj.name)
+                    plugin.langYml.getMessage("gave-booster", StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)
+                        .replace("%player%", player.name?: return@runAsync)
+                        .replace("%booster%", booster.id)
                 )
-                return@CommandHandler
             }
         }
     }
@@ -97,16 +75,7 @@ class CommandGive(plugin: EcoPlugin) :
             if (args.size == 2) {
                 StringUtil.copyPartialMatches(
                     args[1],
-                    TabCompleteHelper.SKILL_NAMES union TabCompleteHelper.STAT_NAMES,
-                    completions
-                )
-                return@TabCompleteHandler completions
-            }
-
-            if (args.size == 3) {
-                StringUtil.copyPartialMatches(
-                    args[2],
-                    TabCompleteHelper.AMOUNTS,
+                    Boosters.names(),
                     completions
                 )
                 return@TabCompleteHandler completions

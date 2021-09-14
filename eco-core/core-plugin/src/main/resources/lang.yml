@@ -9,3 +9,5 @@ messages:
   requires-booster: "&cYou must specify a booster!"
   invalid-booster: "&cInvalid booster!"
   gave-booster: "Gave %player% %booster%!"
+  already-active: "&cA booster is already active!"
+  dont-have: "&cYou don't have any of these boosters! Get some at &astore.ecomc.net"
