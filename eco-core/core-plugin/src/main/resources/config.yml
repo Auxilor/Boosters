@@ -6,7 +6,7 @@
 log-autosaves: true # If auto-save messages should be sent to console
 
 messages:
-  1.5sell_multiplier:
+  1_5sell_multiplier:
     activation:
       - ""
       - " %player%&f has activated a &a1.5x Sell Multiplier Booster&f!"

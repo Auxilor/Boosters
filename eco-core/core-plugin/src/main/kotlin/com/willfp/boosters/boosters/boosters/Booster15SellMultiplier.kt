@@ -11,7 +11,7 @@ import org.bukkit.event.EventPriority
 
 class Booster15SellMultiplier: Booster(
     BoostersPlugin.instance,
-    "1.5sell_multiplier"
+    "1_5sell_multiplier"
 ) {
     override val duration = 72000
 
