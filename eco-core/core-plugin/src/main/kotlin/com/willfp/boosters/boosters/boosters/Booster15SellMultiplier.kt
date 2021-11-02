@@ -3,6 +3,7 @@ package com.willfp.boosters.boosters.boosters
 import com.willfp.boosters.BoostersPlugin
 import com.willfp.boosters.activeBooster
 import com.willfp.boosters.boosters.Booster
+import dev.norska.dsw.api.DeluxeSellwandSellEvent
 import net.brcdev.shopgui.event.ShopPreTransactionEvent
 import net.brcdev.shopgui.shop.ShopManager
 import org.bukkit.Bukkit
@@ -30,5 +31,18 @@ class Booster15SellMultiplier: Booster(
         }
 
         event.price *= 1.5
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    fun handle(event: DeluxeSellwandSellEvent) {
+        if (Bukkit.getServer().activeBooster != this) {
+            return
+        }
+
+        if (event.isCancelled) {
+            return
+        }
+
+        event.money *= 1.5
     }
 }
