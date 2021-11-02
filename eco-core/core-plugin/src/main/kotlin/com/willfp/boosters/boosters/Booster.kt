@@ -1,15 +1,23 @@
 package com.willfp.boosters.boosters
 
 import com.willfp.boosters.BoostersPlugin
+import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.util.StringUtils
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 
 abstract class Booster(
-    protected val plugin: BoostersPlugin,
+    private val plugin: BoostersPlugin,
     val id: String
 ): Listener {
     abstract val duration: Int
+
+    val dataKey = PersistentDataKey<Int>(
+        plugin.namespacedKeyFactory.create("boosters_$id"),
+        PersistentDataKeyType.INT,
+        0
+    )
 
     init {
         register()
