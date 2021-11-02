@@ -14,7 +14,7 @@ abstract class Booster(
     abstract val duration: Int
 
     val dataKey = PersistentDataKey<Int>(
-        plugin.namespacedKeyFactory.create("boosters_$id"),
+        plugin.namespacedKeyFactory.create(id),
         PersistentDataKeyType.INT,
         0
     )
