@@ -6,12 +6,13 @@ import com.willfp.boosters.activeBooster
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.getAmountOfBooster
-import com.willfp.eco.core.gui.menu.Menu
+import com.willfp.eco.core.gui.menu
+import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
-import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.core.items.builder.SkullBuilder
 import com.willfp.eco.util.StringUtils
+import com.willfp.eco.util.formatEco
 import com.willfp.ecoskills.tryAsPlayer
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -51,8 +52,8 @@ object BoosterGUI {
         }
     }
 
-    private val gui = Menu.builder(3)
-        .setMask(
+    private val gui = menu(3) {
+        setMask(
             FillerMask(
                 Material.BLACK_STAINED_GLASS_PANE,
                 "111111111",
@@ -60,16 +61,16 @@ object BoosterGUI {
                 "111111111"
             )
         )
-        .setSlot(
+        setSlot(
             2,
             2,
-            Slot.builder(
+            slot(
                 SkullBuilder()
                     .setSkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTM0YjI3YmZjYzhmOWI5NjQ1OTRiNjE4YjExNDZhZjY5ZGUyNzhjZTVlMmUzMDEyY2I0NzFhOWEzY2YzODcxIn19fQ==")
                     .build()
-            )
-                .setModifier { player, _, previous ->
-                    val meta = previous.itemMeta ?: return@setModifier
+            ) {
+                setUpdater { player, _, previous ->
+                    val meta = previous.itemMeta ?: return@setUpdater previous
                     val lore = mutableListOf<String>()
 
                     lore.add("")
@@ -87,25 +88,23 @@ object BoosterGUI {
 
                     meta.setDisplayName(StringUtils.format("&d1.5x Sell Multiplier"))
 
-                    meta.lore = lore.apply {
-                        replaceAll { StringUtils.format(it) }
-                    }
+                    meta.lore = lore.formatEco()
                     previous.itemMeta = meta
-
+                    previous
                 }
-                .onLeftClick(makeHandler(Boosters.SELL_MULTIPLIER_LOW))
-                .build()
-        )
-        .setSlot(
+                onLeftClick(makeHandler(Boosters.SELL_MULTIPLIER_LOW))
+            })
+
+        setSlot(
             2,
             5,
-            Slot.builder(
+            slot(
                 SkullBuilder()
                     .setSkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjBhN2I5NGM0ZTU4MWI2OTkxNTlkNDg4NDZlYzA5MTM5MjUwNjIzN2M4OWE5N2M5MzI0OGEwZDhhYmM5MTZkNSJ9fX0=")
                     .build()
-            )
-                .setModifier { player, _, previous ->
-                    val meta = previous.itemMeta ?: return@setModifier
+            ) {
+                setUpdater { player, _, previous ->
+                    val meta = previous.itemMeta ?: return@setUpdater previous
                     val lore = mutableListOf<String>()
 
                     lore.add("")
@@ -127,21 +126,22 @@ object BoosterGUI {
                         replaceAll { StringUtils.format(it) }
                     }
                     previous.itemMeta = meta
-
+                    previous
                 }
-                .onLeftClick(makeHandler(Boosters.SELL_MULTIPLIER_HIGH))
-                .build()
+                onLeftClick(makeHandler(Boosters.SELL_MULTIPLIER_HIGH))
+                build()
+            }
         )
-        .setSlot(
+        setSlot(
             2,
             8,
-            Slot.builder(
+            slot(
                 SkullBuilder()
                     .setSkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODkyNmMxZjJjM2MxNGQwODZjNDBjZmMyMzVmZTkzODY5NGY0YTUxMDY3YWRhNDcyNmI0ODZlYTFjODdiMDNlMiJ9fX0=")
                     .build()
-            )
-                .setModifier { player, _, previous ->
-                    val meta = previous.itemMeta ?: return@setModifier
+            ) {
+                setUpdater { player, _, previous ->
+                    val meta = previous.itemMeta ?: return@setUpdater previous
                     val lore = mutableListOf<String>()
 
                     lore.add("")
@@ -163,13 +163,13 @@ object BoosterGUI {
                         replaceAll { StringUtils.format(it) }
                     }
                     previous.itemMeta = meta
-
+                    previous
                 }
-                .onLeftClick(makeHandler(Boosters.SKILL_XP))
-                .build()
+                onLeftClick(makeHandler(Boosters.SKILL_XP))
+            }
         )
-        .setTitle("Boosters")
-        .build()
+        setTitle("Boosters")
+    }
 
     fun open(player: Player) {
         gui.open(player)

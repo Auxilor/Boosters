@@ -30,7 +30,7 @@ class BoostersPlugin : EcoPlugin() {
     }
 
     override fun getMinimumEcoVersion(): String {
-        return "6.12.0"
+        return "6.24.0"
     }
 
     init {

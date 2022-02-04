@@ -10,10 +10,10 @@ import org.bukkit.event.Listener
 abstract class Booster(
     private val plugin: BoostersPlugin,
     val id: String
-): Listener {
+) : Listener {
     abstract val duration: Int
 
-    val dataKey = PersistentDataKey<Int>(
+    val dataKey = PersistentDataKey(
         plugin.namespacedKeyFactory.create(id),
         PersistentDataKeyType.INT,
         0
@@ -33,6 +33,10 @@ abstract class Booster(
         }
 
         return other.id == this.id
+    }
+
+    override fun hashCode(): Int {
+        return this.id.hashCode()
     }
 
     fun getActivationMessages(player: Player): List<String> {

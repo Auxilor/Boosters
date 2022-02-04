@@ -56,12 +56,12 @@ fun Player.activateBooster(booster: Booster): Boolean {
         Bukkit.broadcastMessage(activationMessage)
     }
 
-    plugin.scheduler.runLater ({
+    plugin.scheduler.runLater(booster.duration.toLong()) {
         for (expiryMessage in booster.getExpiryMessages()) {
             Bukkit.broadcastMessage(expiryMessage)
         }
         Bukkit.getServer().activeBooster = null
-    }, booster.duration.toLong())
+    }
 
     active = booster
 
