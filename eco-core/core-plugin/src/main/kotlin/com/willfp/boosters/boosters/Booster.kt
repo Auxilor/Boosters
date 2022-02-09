@@ -20,7 +20,7 @@ abstract class Booster(
         0
     )
 
-    val name = plugin.configYml.getFormattedString("message.${this.id}.name")
+    val name = plugin.configYml.getFormattedString("messages.${this.id}.name")
 
     init {
         register()
