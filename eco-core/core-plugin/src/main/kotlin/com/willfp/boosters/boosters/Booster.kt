@@ -45,9 +45,8 @@ abstract class Booster(
     fun getActivationMessages(player: Player): List<String> {
         val messages = mutableListOf<String>()
 
-        for (string in this.plugin.configYml.getStrings(
+        for (string in this.plugin.configYml.getFormattedStrings(
             "messages.${this.id}.activation",
-            true,
             StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
         )) {
             messages.add(string.replace("%player%", player.displayName))
@@ -57,7 +56,7 @@ abstract class Booster(
     }
 
     fun getExpiryMessages(): List<String> {
-        return this.plugin.configYml.getStrings("messages.${this.id}.expiry")
+        return this.plugin.configYml.getFormattedStrings("messages.${this.id}.expiry")
     }
 }
 
