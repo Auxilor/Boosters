@@ -24,7 +24,7 @@ class BoostersPlugin : EcoPlugin() {
                         return@PlaceholderEntry "&cThere is no booster currently active!"
                             .formatEco(formatPlaceholders = false)
                     } else {
-                        return@PlaceholderEntry "${Bukkit.getOfflinePlayer(booster.player).savedDisplayName} &fHas activated a &a${booster.booster.name}&f!"
+                        return@PlaceholderEntry "${Bukkit.getOfflinePlayer(booster.player).savedDisplayName} &fhas activated a &a${booster.booster.name}&f!"
                             .formatEco(formatPlaceholders = false)
                     }
                 },
