@@ -16,7 +16,7 @@ class BoosterSkillXP: Booster(
 
     @EventHandler(priority = EventPriority.HIGH)
     fun onGainSkillXP(event: PlayerSkillExpGainEvent) {
-        if (Bukkit.getServer().activeBooster != this) {
+        if (Bukkit.getServer().activeBooster?.booster != this) {
             return
         }
 

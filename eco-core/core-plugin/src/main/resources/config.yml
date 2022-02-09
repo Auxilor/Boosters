@@ -17,6 +17,7 @@ messages:
       - " &fThe &a1.5x Sell Multiplier Booster&f has ended"
       - " &fGet another one here: &ahttps://store.ecomc.net/package/756887"
       - ""
+    name: "1.5x Sell Multiplier"
   2sell_multiplier:
     activation:
       - ""
@@ -28,6 +29,7 @@ messages:
       - " &fThe &a2x Sell Multiplier Booster&f has ended"
       - " &fGet another one here: &ahttps://store.ecomc.net/package/756888"
       - ""
+    name: "2x Sell Multiplier"
   skill_xp:
     activation:
       - ""
@@ -39,3 +41,4 @@ messages:
       - " &fThe &a2x Skill XP Booster&f has ended"
       - " &fGet another one here: &ahttps://store.ecomc.net/package/756893"
       - ""
+    name: "2x Skill XP Multiplier"

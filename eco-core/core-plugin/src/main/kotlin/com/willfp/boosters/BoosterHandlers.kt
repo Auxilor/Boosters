@@ -1,5 +1,6 @@
 package com.willfp.boosters
 
+import com.willfp.boosters.boosters.ActivatedBooster
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.eco.core.data.PlayerProfile
@@ -9,10 +10,10 @@ import org.bukkit.Server
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 
-private var active: Booster? = null
+private var active: ActivatedBooster? = null
 private val plugin = BoostersPlugin.instance
 
-var Server.activeBooster: Booster?
+var Server.activeBooster: ActivatedBooster?
     get() {
         return active
     }
@@ -63,7 +64,7 @@ fun Player.activateBooster(booster: Booster): Boolean {
         Bukkit.getServer().activeBooster = null
     }
 
-    active = booster
+    active = ActivatedBooster(booster, this.uniqueId)
 
     for (player in Bukkit.getOnlinePlayers()) {
         player.playSound(

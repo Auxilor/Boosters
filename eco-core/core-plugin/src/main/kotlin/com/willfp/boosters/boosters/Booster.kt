@@ -6,6 +6,7 @@ import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.util.StringUtils
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
+import java.util.UUID
 
 abstract class Booster(
     private val plugin: BoostersPlugin,
@@ -18,6 +19,8 @@ abstract class Booster(
         PersistentDataKeyType.INT,
         0
     )
+
+    val name = plugin.configYml.getFormattedString("message.${this.id}.name")
 
     init {
         register()
@@ -57,3 +60,8 @@ abstract class Booster(
         return this.plugin.configYml.getStrings("messages.${this.id}.expiry")
     }
 }
+
+data class ActivatedBooster(
+    val booster: Booster,
+    val player: UUID
+)

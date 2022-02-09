@@ -18,7 +18,7 @@ class Booster15SellMultiplier: Booster(
 
     @EventHandler(priority = EventPriority.HIGH)
     fun handle(event: ShopPreTransactionEvent) {
-        if (Bukkit.getServer().activeBooster != this) {
+        if (Bukkit.getServer().activeBooster?.booster != this) {
             return
         }
 
@@ -35,7 +35,7 @@ class Booster15SellMultiplier: Booster(
 
     @EventHandler(priority = EventPriority.HIGH)
     fun handle(event: DeluxeSellwandSellEvent) {
-        if (Bukkit.getServer().activeBooster != this) {
+        if (Bukkit.getServer().activeBooster?.booster != this) {
             return
         }
 
