@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="https://i.imgur.com/Zy0MpbE.png" alt="Boosters logo" width="256">
+  <img src="https://i.imgur.com/RRKQNLT.png" alt="Boosters logo" width="256">
   <br>
 </h1>
 
@@ -8,24 +8,24 @@
 
 <p align="center">
     <a href="https://polymart.org/resource/ecoitems.1241">
-        <img alt="spigot" src="https://img.shields.io/badge/polymart-boosters-ff0000?style=for-the-badge"/>
+        <img alt="spigot" src="https://img.shields.io/badge/polymart-boosters-yellow?style=for-the-badge"/>
     </a>
     <a href="https://bstats.org/plugin/bukkit/EcoItems" alt="bstats servers">
-        <img src="https://img.shields.io/bstats/servers/14269?color=ff0000&style=for-the-badge"/>
+        <img src="https://img.shields.io/bstats/servers/14269?color=yellow&style=for-the-badge"/>
     </a>
     <a href="https://bstats.org/plugin/bukkit/EcoItems" alt="bstats players">
-        <img src="https://img.shields.io/bstats/players/14269?color=ff0000&style=for-the-badge"/>
+        <img src="https://img.shields.io/bstats/players/14269?color=yellow&style=for-the-badge"/>
     </a>
     <a href="https://plugins.auxilor.io/boosters/" alt="Docs (gitbook)">
-        <img src="https://img.shields.io/badge/docs-gitbook-ff0000?style=for-the-badge&logo=appveyor"/>
+        <img src="https://img.shields.io/badge/docs-gitbook-yellow?style=for-the-badge&logo=appveyor"/>
     </a>
     <a href="https://discord.gg/ZcwpSsE/" alt="Discord">
-        <img src="https://img.shields.io/discord/452518336627081236?label=discord&style=for-the-badge&color=ff0000"/>
+        <img src="https://img.shields.io/discord/452518336627081236?label=discord&style=for-the-badge&color=yellow"/>
     </a>
 </p>
 
 
-[![Picture](https://i.imgur.com/z37jIZt.png)]()
+[![Picture](https://i.imgur.com/7MJFmb9.png)]()
 
 ## License
 *Click here to read [the entire license](https://github.com/Auxilor/Boosters/blob/master/LICENSE.md).*
