@@ -5,6 +5,7 @@ import com.willfp.boosters.config.BoostersYml
 import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.integrations.placeholder.PlaceholderEntry
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
+import com.willfp.eco.util.ListUtils
 import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.libreforge.LibReforgePlugin
@@ -35,6 +36,8 @@ class BoostersPlugin : LibReforgePlugin(0, 14269, "&e") {
                 false
             )
         )
+
+        this.registerHolderProvider { ListUtils.toSingletonList(activeBooster?.booster) }
     }
 
     override fun loadListeners(): List<Listener> {
