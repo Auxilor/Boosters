@@ -2,12 +2,14 @@ group 'com.willfp'
 version rootProject.version
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
-    compileOnly 'com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0'
-    compileOnly 'com.comphenix.protocol:ProtocolLib:4.7.0'
-    compileOnly 'com.willfp:EcoEnchants:8.2.0'
-    compileOnly 'com.willfp:EcoSkills:1.2.4'
-    compileOnly 'com.github.brcdev-minecraft:shopgui-api:2.2.0'
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+}
 
-    compileOnly fileTree(dir: '../../lib', include: ['*.jar'])
+publishing {
+    publications {
+        Library(MavenPublication) {
+            from project.components.java
+            artifact tasks.shadowJar
+        }
+    }
 }

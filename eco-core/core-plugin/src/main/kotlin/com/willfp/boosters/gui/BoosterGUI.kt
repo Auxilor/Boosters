@@ -5,28 +5,25 @@ import com.willfp.boosters.activateBooster
 import com.willfp.boosters.activeBooster
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
-import com.willfp.boosters.getAmountOfBooster
+import com.willfp.eco.core.config.updating.ConfigUpdater
 import com.willfp.eco.core.gui.menu
+import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
+import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
-import com.willfp.eco.core.items.builder.SkullBuilder
-import com.willfp.eco.util.StringUtils
-import com.willfp.eco.util.formatEco
-import com.willfp.ecoskills.tryAsPlayer
-import org.bukkit.Bukkit
-import org.bukkit.Material
+import com.willfp.libreforge.tryAsPlayer
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 
 object BoosterGUI {
-    private val plugin = BoostersPlugin.instance
+    private lateinit var gui: Menu
 
-    private fun makeHandler(booster: Booster): SlotHandler {
+    private fun makeHandler(booster: Booster, plugin: BoostersPlugin): SlotHandler {
         return SlotHandler { event, _, _ ->
             val player = event.whoClicked.tryAsPlayer() ?: return@SlotHandler
 
-            if (Bukkit.getServer().activeBooster != null) {
+            if (activeBooster != null) {
                 player.sendMessage(plugin.langYml.getMessage("already-active"))
                 player.playSound(
                     player.location,
@@ -52,123 +49,34 @@ object BoosterGUI {
         }
     }
 
-    private val gui = menu(3) {
-        setMask(
-            FillerMask(
-                Material.BLACK_STAINED_GLASS_PANE,
-                "111111111",
-                "101101101",
-                "111111111"
+    @JvmStatic
+    @ConfigUpdater
+    fun update(plugin: BoostersPlugin) {
+        gui = menu(plugin.configYml.getInt("gui.rows")) {
+            setMask(
+                FillerMask(
+                    MaskItems.fromItemNames(plugin.configYml.getStrings("gui.mask.items")),
+                    *plugin.configYml.getStrings("gui.mask.pattern").toTypedArray()
+                )
             )
-        )
-        setSlot(
-            2,
-            2,
-            slot(
-                SkullBuilder()
-                    .setSkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTM0YjI3YmZjYzhmOWI5NjQ1OTRiNjE4YjExNDZhZjY5ZGUyNzhjZTVlMmUzMDEyY2I0NzFhOWEzY2YzODcxIn19fQ==")
-                    .build()
-            ) {
-                setUpdater { player, _, previous ->
-                    val meta = previous.itemMeta ?: return@setUpdater previous
-                    val lore = mutableListOf<String>()
 
-                    lore.add("")
-                    lore.add("&fGives everyone online a")
-                    lore.add("&a1.5x Sell Multiplier")
-                    lore.add("&fto make money faster!")
-                    lore.add("")
-                    lore.add("&fDuration: &a1 Hour")
-                    lore.add("")
-                    lore.add("&fYou have: &a${player.getAmountOfBooster(Boosters.SELL_MULTIPLIER_LOW)}")
-                    lore.add("&fGet more at &astore.ecomc.net")
-                    lore.add("")
-                    lore.add("&e&oClick to activate!")
-                    lore.add("")
-
-                    meta.setDisplayName(StringUtils.format("&d1.5x Sell Multiplier"))
-
-                    meta.lore = lore.formatEco()
-                    previous.itemMeta = meta
-                    previous
-                }
-                onLeftClick(makeHandler(Boosters.SELL_MULTIPLIER_LOW))
-            })
-
-        setSlot(
-            2,
-            5,
-            slot(
-                SkullBuilder()
-                    .setSkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjBhN2I5NGM0ZTU4MWI2OTkxNTlkNDg4NDZlYzA5MTM5MjUwNjIzN2M4OWE5N2M5MzI0OGEwZDhhYmM5MTZkNSJ9fX0=")
-                    .build()
-            ) {
-                setUpdater { player, _, previous ->
-                    val meta = previous.itemMeta ?: return@setUpdater previous
-                    val lore = mutableListOf<String>()
-
-                    lore.add("")
-                    lore.add("&fGives everyone online a")
-                    lore.add("&a2x Sell Multiplier")
-                    lore.add("&fto make money faster!")
-                    lore.add("")
-                    lore.add("&fDuration: &a1 Hour")
-                    lore.add("")
-                    lore.add("&fYou have: &a${player.getAmountOfBooster(Boosters.SELL_MULTIPLIER_HIGH)}")
-                    lore.add("&fGet more at &astore.ecomc.net")
-                    lore.add("")
-                    lore.add("&e&oClick to activate!")
-                    lore.add("")
-
-                    meta.setDisplayName(StringUtils.format("&d2x Sell Multiplier"))
-
-                    meta.lore = lore.apply {
-                        replaceAll { StringUtils.format(it) }
+            for (booster in Boosters.values()) {
+                setSlot(
+                    booster.guiRow,
+                    booster.guiColumn,
+                    slot(
+                        { player, _ -> booster.getGuiItem(player) }
+                    ) {
+                        setUpdater { player, _, _ ->
+                            booster.getGuiItem(player)
+                        }
+                        onLeftClick(makeHandler(booster, plugin))
                     }
-                    previous.itemMeta = meta
-                    previous
-                }
-                onLeftClick(makeHandler(Boosters.SELL_MULTIPLIER_HIGH))
-                build()
+                )
             }
-        )
-        setSlot(
-            2,
-            8,
-            slot(
-                SkullBuilder()
-                    .setSkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODkyNmMxZjJjM2MxNGQwODZjNDBjZmMyMzVmZTkzODY5NGY0YTUxMDY3YWRhNDcyNmI0ODZlYTFjODdiMDNlMiJ9fX0=")
-                    .build()
-            ) {
-                setUpdater { player, _, previous ->
-                    val meta = previous.itemMeta ?: return@setUpdater previous
-                    val lore = mutableListOf<String>()
 
-                    lore.add("")
-                    lore.add("&fGives everyone online a")
-                    lore.add("&a2x Skill XP Multiplier")
-                    lore.add("&fto level up faster!")
-                    lore.add("")
-                    lore.add("&fDuration: &a1 Hour")
-                    lore.add("")
-                    lore.add("&fYou have: &a${player.getAmountOfBooster(Boosters.SKILL_XP)}")
-                    lore.add("&fGet more at &astore.ecomc.net")
-                    lore.add("")
-                    lore.add("&e&oClick to activate!")
-                    lore.add("")
-
-                    meta.setDisplayName(StringUtils.format("&d2x Skill XP Multiplier"))
-
-                    meta.lore = lore.apply {
-                        replaceAll { StringUtils.format(it) }
-                    }
-                    previous.itemMeta = meta
-                    previous
-                }
-                onLeftClick(makeHandler(Boosters.SKILL_XP))
-            }
-        )
-        setTitle("Boosters")
+            setTitle(plugin.configYml.getFormattedString("gui.title"))
+        }
     }
 
     fun open(player: Player) {

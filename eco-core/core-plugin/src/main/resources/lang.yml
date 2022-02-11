@@ -11,3 +11,9 @@ messages:
   gave-booster: "Gave %player% %booster%!"
   already-active: "&cA booster is already active!"
   dont-have: "&cYou don't have any of these boosters! Get some at &astore.ecomc.net"
+  on-cooldown: "&cThis effect is on cooldown! &fTime left: &a%seconds% seconds"
+  cannot-afford: "&cYou can't afford to do this! &fCost: &a$$%cost%"
+  cannot-afford-type: "&cYou can't afford to do this! &fCost: &a%cost% %type%"
+
+no-currently-active: "&cThere is no booster currently active!"
+active-placeholder: "%player% &fhas activated a %booster%&f!"

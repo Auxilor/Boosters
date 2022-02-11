@@ -29,7 +29,7 @@ class CommandGive(plugin: EcoPlugin) :
             return
         }
 
-        val booster = Boosters.getById(args[1].lowercase())
+        val booster = Boosters.getByID(args[1].lowercase())
 
         if (booster == null) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-booster"))
@@ -71,12 +71,12 @@ class CommandGive(plugin: EcoPlugin) :
         if (args.size == 2) {
             StringUtil.copyPartialMatches(
                 args[1],
-                Boosters.names(),
+                Boosters.values().map { it.id },
                 completions
             )
             return completions
         }
 
-        return emptyList<String>()
+        return emptyList()
     }
 }

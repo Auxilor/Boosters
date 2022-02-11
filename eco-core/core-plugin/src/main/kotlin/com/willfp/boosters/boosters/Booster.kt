@@ -1,18 +1,26 @@
 package com.willfp.boosters.boosters
 
 import com.willfp.boosters.BoostersPlugin
+import com.willfp.boosters.getAmountOfBooster
+import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
+import com.willfp.eco.core.items.Items
+import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.util.StringUtils
+import com.willfp.eco.util.formatEco
+import com.willfp.libreforge.Holder
+import com.willfp.libreforge.conditions.Conditions
+import com.willfp.libreforge.effects.Effects
 import org.bukkit.entity.Player
-import org.bukkit.event.Listener
+import org.bukkit.inventory.ItemStack
 import java.util.UUID
 
-abstract class Booster(
-    private val plugin: BoostersPlugin,
-    val id: String
-) : Listener {
-    abstract val duration: Int
+class Booster(
+    plugin: BoostersPlugin,
+    val config: Config,
+) : Holder {
+    val id = config.getString("id")
 
     val dataKey = PersistentDataKey(
         plugin.namespacedKeyFactory.create(id),
@@ -20,14 +28,50 @@ abstract class Booster(
         0
     )
 
-    val name = plugin.configYml.getFormattedString("messages.${this.id}.name")
+    val name = config.getFormattedString("name")
 
-    init {
-        register()
+    val duration = config.getInt("duration")
+
+    fun getActivationMessages(player: Player): List<String> {
+        val messages = mutableListOf<String>()
+
+        for (string in config.getFormattedStrings(
+            "messages.activation",
+            StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
+        )) {
+            messages.add(string.replace("%player%", player.displayName))
+        }
+
+        return messages
     }
 
-    private fun register() {
-        Boosters.registerNewBooster(this)
+    val expiryMessages = config.getStrings("messages.expiry")
+
+    fun getGuiItem(player: Player): ItemStack {
+        return ItemStackBuilder(Items.lookup(config.getString("gui.item")))
+            .setDisplayName(config.getFormattedString("gui.name"))
+            .addLoreLines(
+                config.getFormattedStrings("gui.lore", StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)
+                    .map { it.replace("%amount%", player.getAmountOfBooster(this).toString()) }
+                    .formatEco(player)
+            )
+            .build()
+    }
+
+    val guiRow = config.getInt("gui.position.row")
+
+    val guiColumn = config.getInt("gui.position.column")
+
+    override val conditions = config.getSubsections("conditions").mapNotNull {
+        Conditions.compile(it, "Booster $id")
+    }.toSet()
+
+    override val effects = config.getSubsections("effects").mapNotNull {
+        Effects.compile(it, "Booster $id")
+    }.toSet()
+
+    init {
+        Boosters.addNewBooster(this)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -40,23 +84,6 @@ abstract class Booster(
 
     override fun hashCode(): Int {
         return this.id.hashCode()
-    }
-
-    fun getActivationMessages(player: Player): List<String> {
-        val messages = mutableListOf<String>()
-
-        for (string in this.plugin.configYml.getFormattedStrings(
-            "messages.${this.id}.activation",
-            StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
-        )) {
-            messages.add(string.replace("%player%", player.displayName))
-        }
-
-        return messages
-    }
-
-    fun getExpiryMessages(): List<String> {
-        return this.plugin.configYml.getFormattedStrings("messages.${this.id}.expiry")
     }
 }
 

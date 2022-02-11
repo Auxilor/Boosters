@@ -8,9 +8,6 @@ load: POSTWORLD
 depend:
   - eco
   - PlaceholderAPI
-  - EcoSkills
-  - ShopGUIPlus
-  - DeluxeSellwands
 
 commands:
   boosters:
