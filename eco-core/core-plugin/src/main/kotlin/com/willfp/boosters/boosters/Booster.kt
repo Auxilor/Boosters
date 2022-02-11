@@ -63,9 +63,6 @@ class Booster(
     val expiryMessages: List<String> = config.getStrings("messages.expiry")
 
     fun getGuiItem(player: Player): ItemStack {
-        val amount = player.getAmountOfBooster(this)
-        println("$id: $amount")
-
         return ItemStackBuilder(Items.lookup(config.getString("gui.item")))
             .setDisplayName(config.getFormattedString("gui.name"))
             .addLoreLines(
