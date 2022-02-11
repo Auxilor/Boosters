@@ -43,7 +43,7 @@ boosters:
     effects:
       - id: sell_multiplier
         args:
-          multiplier: 1.5
+          multiplier: 2
     conditions: []
     messages:
       activation:
@@ -81,7 +81,7 @@ boosters:
     effects:
       - id: skill_xp_multiplier
         args:
-          multiplier: 1.5
+          multiplier: 2
     conditions: []
     messages:
       activation:
