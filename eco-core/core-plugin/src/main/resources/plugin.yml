@@ -8,6 +8,14 @@ load: POSTWORLD
 depend:
   - eco
   - PlaceholderAPI
+softdepend:
+  - EcoSkills
+  - AureliumSkills
+  - Jobs
+  - mcMMO
+  - Vault
+  - DeluxeSellwands
+  - ShopGUIPlus
 
 commands:
   boosters:
