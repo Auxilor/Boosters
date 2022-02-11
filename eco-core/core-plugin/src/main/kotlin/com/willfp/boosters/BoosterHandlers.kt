@@ -5,7 +5,7 @@ package com.willfp.boosters
 import com.willfp.boosters.boosters.ActivatedBooster
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
-import com.willfp.eco.core.data.PlayerProfile
+import com.willfp.eco.core.data.profile
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Sound
@@ -27,7 +27,7 @@ val OfflinePlayer.boosters: List<Booster>
         val found = mutableListOf<Booster>()
 
         for (booster in Boosters.values()) {
-            val amount = PlayerProfile.load(this).read(booster.dataKey)
+            val amount = this.profile.read(booster.dataKey)
             for (i in 0 until amount) {
                 found.add(booster)
             }
@@ -37,12 +37,11 @@ val OfflinePlayer.boosters: List<Booster>
     }
 
 fun OfflinePlayer.getAmountOfBooster(booster: Booster): Int {
-    return PlayerProfile.load(this).read(booster.dataKey)
+    return this.profile.read(booster.dataKey)
 }
 
-
 fun OfflinePlayer.setAmountOfBooster(booster: Booster, amount: Int) {
-    PlayerProfile.load(this).write(booster.dataKey, amount)
+    this.profile.write(booster.dataKey, amount)
 }
 
 fun Player.activateBooster(booster: Booster): Boolean {
