@@ -11,7 +11,7 @@ import com.willfp.libreforge.LibReforgePlugin
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 
-class BoostersPlugin : LibReforgePlugin(0, 0, "") {
+class BoostersPlugin : LibReforgePlugin(0, 14269, "&e") {
     val boostersYml = BoostersYml(this)
 
     override fun handleEnableAdditional() {
