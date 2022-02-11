@@ -36,6 +36,12 @@ class CommandGive(plugin: EcoPlugin) :
             return
         }
 
+        var amount = 1
+
+        if (args.size >= 3) {
+            amount = args[2].toIntOrNull() ?: amount
+        }
+
         this.plugin.scheduler.runAsync {
             @Suppress("DEPRECATION")
             val player = Bukkit.getOfflinePlayer(args[0])
@@ -45,13 +51,14 @@ class CommandGive(plugin: EcoPlugin) :
             }
 
             this.plugin.scheduler.run {
-                player.setAmountOfBooster(booster, player.getAmountOfBooster(booster) + 1)
+                player.setAmountOfBooster(booster, player.getAmountOfBooster(booster) + amount)
             }
 
             sender.sendMessage(
                 plugin.langYml.getMessage("gave-booster", StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)
                     .replace("%player%", player.name ?: return@runAsync)
                     .replace("%booster%", booster.id)
+                    .replace("%amount%", amount.toString())
             )
         }
     }
@@ -72,6 +79,22 @@ class CommandGive(plugin: EcoPlugin) :
             StringUtil.copyPartialMatches(
                 args[1],
                 Boosters.values().map { it.id },
+                completions
+            )
+            return completions
+        }
+
+        if (args.size == 3) {
+            StringUtil.copyPartialMatches(
+                args[1],
+                listOf(
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "10"
+                ),
                 completions
             )
             return completions

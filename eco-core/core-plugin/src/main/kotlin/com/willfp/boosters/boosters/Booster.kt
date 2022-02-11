@@ -51,7 +51,7 @@ class Booster(
         return ItemStackBuilder(Items.lookup(config.getString("gui.item")))
             .setDisplayName(config.getFormattedString("gui.name"))
             .addLoreLines(
-                config.getFormattedStrings("gui.lore", StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)
+                config.getStrings("gui.lore")
                     .map { it.replace("%amount%", player.getAmountOfBooster(this).toString()) }
                     .formatEco(player)
             )
