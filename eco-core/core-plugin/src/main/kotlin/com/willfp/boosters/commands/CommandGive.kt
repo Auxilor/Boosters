@@ -1,8 +1,7 @@
 package com.willfp.boosters.commands
 
 import com.willfp.boosters.boosters.Boosters
-import com.willfp.boosters.getAmountOfBooster
-import com.willfp.boosters.setAmountOfBooster
+import com.willfp.boosters.incrementBoosters
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.util.StringUtils
@@ -42,25 +41,21 @@ class CommandGive(plugin: EcoPlugin) :
             amount = args[2].toIntOrNull() ?: amount
         }
 
-        this.plugin.scheduler.runAsync {
-            @Suppress("DEPRECATION")
-            val player = Bukkit.getOfflinePlayer(args[0])
-            if (!player.hasPlayedBefore()) {
-                sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
-                return@runAsync
-            }
-
-            this.plugin.scheduler.run {
-                player.setAmountOfBooster(booster, player.getAmountOfBooster(booster) + amount)
-            }
-
-            sender.sendMessage(
-                plugin.langYml.getMessage("gave-booster", StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)
-                    .replace("%player%", player.name ?: return@runAsync)
-                    .replace("%booster%", booster.name)
-                    .replace("%amount%", amount.toString())
-            )
+        @Suppress("DEPRECATION")
+        val player = Bukkit.getOfflinePlayer(args[0])
+        if (!player.hasPlayedBefore()) {
+            sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
+            return
         }
+
+        player.incrementBoosters(booster, amount)
+
+        sender.sendMessage(
+            plugin.langYml.getMessage("gave-booster", StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)
+                .replace("%player%", player.name ?: return)
+                .replace("%booster%", booster.name)
+                .replace("%amount%", amount.toString())
+        )
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {

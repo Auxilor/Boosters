@@ -44,6 +44,10 @@ fun OfflinePlayer.setAmountOfBooster(booster: Booster, amount: Int) {
     this.profile.write(booster.dataKey, amount)
 }
 
+fun OfflinePlayer.incrementBoosters(booster: Booster, amount: Int) {
+    this.setAmountOfBooster(booster, this.getAmountOfBooster(booster) + amount)
+}
+
 fun Player.activateBooster(booster: Booster): Boolean {
     val amount = this.getAmountOfBooster(booster)
 
@@ -51,7 +55,7 @@ fun Player.activateBooster(booster: Booster): Boolean {
         return false
     }
 
-    setAmountOfBooster(booster, amount - 1)
+    this.setAmountOfBooster(booster, amount - 1)
 
     for (activationMessage in booster.getActivationMessages(this)) {
         Bukkit.broadcastMessage(activationMessage)

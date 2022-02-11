@@ -46,7 +46,7 @@ object Boosters {
             EffectChains.compile(it, "Effect Chains")
         }
         for (booster in values()) {
-            removeSet(booster)
+            removeBooster(booster)
         }
         for (config in plugin.boostersYml.getSubsections("boosters")) {
             Booster(plugin, config)
@@ -70,7 +70,7 @@ object Boosters {
      * @param booster The [Booster] to remove.
      */
     @JvmStatic
-    fun removeSet(booster: Booster) {
+    fun removeBooster(booster: Booster) {
         BY_ID.remove(booster.id)
     }
 }
