@@ -8,7 +8,7 @@ messages:
   invalid-player: "&cInvalid player!"
   requires-booster: "&cYou must specify a booster!"
   invalid-booster: "&cInvalid booster!"
-  gave-booster: "Gave %player% %booster%!"
+  gave-booster: "Gave %player% %booster% &fx%amount%!"
   already-active: "&cA booster is already active!"
   dont-have: "&cYou don't have any of these boosters! Get some at &astore.ecomc.net"
   on-cooldown: "&cThis effect is on cooldown! &fTime left: &a%seconds% seconds"

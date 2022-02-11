@@ -57,7 +57,7 @@ class CommandGive(plugin: EcoPlugin) :
             sender.sendMessage(
                 plugin.langYml.getMessage("gave-booster", StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)
                     .replace("%player%", player.name ?: return@runAsync)
-                    .replace("%booster%", booster.id)
+                    .replace("%booster%", booster.name)
                     .replace("%amount%", amount.toString())
             )
         }
@@ -86,7 +86,7 @@ class CommandGive(plugin: EcoPlugin) :
 
         if (args.size == 3) {
             StringUtil.copyPartialMatches(
-                args[1],
+                args[2],
                 listOf(
                     "1",
                     "2",

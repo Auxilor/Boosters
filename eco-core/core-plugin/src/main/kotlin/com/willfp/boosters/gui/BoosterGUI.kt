@@ -67,8 +67,12 @@ object BoosterGUI {
                     slot(
                         { player, _ -> booster.getGuiItem(player) }
                     ) {
-                        setUpdater { player, _, _ ->
-                            booster.getGuiItem(player)
+                        setUpdater { player, _, prev ->
+                            val newItem = booster.getGuiItem(player)
+                            prev.itemMeta = newItem.itemMeta
+                            prev.type = newItem.type
+                            prev.itemMeta?.lore?.forEach { println(it) }
+                            prev
                         }
                         onLeftClick(makeHandler(booster, plugin))
                     }
