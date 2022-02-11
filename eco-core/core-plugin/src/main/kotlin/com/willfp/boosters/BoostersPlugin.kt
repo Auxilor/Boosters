@@ -16,6 +16,8 @@ class BoostersPlugin : LibReforgePlugin(0, 14269, "&e") {
     val boostersYml = BoostersYml(this)
 
     override fun handleEnableAdditional() {
+        useSQL = configYml.getBool("use-sql")
+
         PlaceholderManager.registerPlaceholder(
             PlaceholderEntry(
                 this,
