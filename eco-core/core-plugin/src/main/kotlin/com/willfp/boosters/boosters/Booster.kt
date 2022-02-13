@@ -62,7 +62,7 @@ class Booster(
         return messages
     }
 
-    val expiryMessages: List<String> = config.getStrings("messages.expiry")
+    val expiryMessages: List<String> = config.getFormattedStrings("messages.expiry")
 
     fun getGuiItem(player: Player): ItemStack {
         return ItemStackBuilder(Items.lookup(config.getString("gui.item")))
