@@ -31,10 +31,32 @@ class BoostersPlugin : LibReforgePlugin(0, 14269, "&e") {
                             .formatEco(formatPlaceholders = false)
                     } else {
                         return@PlaceholderEntry this.langYml.getString("active-placeholder")
-                            .replace("%player%", Bukkit.getOfflinePlayer(booster.player).savedDisplayName)
+                            .replace("%player%", booster.player.savedDisplayName)
                             .replace("%booster%", booster.booster.name)
                             .formatEco(formatPlaceholders = false)
                     }
+                },
+                false
+            )
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlaceholderEntry(
+                this,
+                "active",
+                {
+                    BoosterUtils.getActiveBooster()?.booster?.id ?: ""
+                },
+                false
+            )
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlaceholderEntry(
+                this,
+                "active_player",
+                {
+                    BoosterUtils.getActiveBooster()?.player?.savedDisplayName ?: ""
                 },
                 false
             )

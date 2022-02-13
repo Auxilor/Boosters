@@ -1,8 +1,8 @@
 package com.willfp.boosters.gui
 
+import com.willfp.boosters.BoosterUtils
 import com.willfp.boosters.BoostersPlugin
 import com.willfp.boosters.activateBooster
-import com.willfp.boosters.activeBooster
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.eco.core.config.updating.ConfigUpdater
@@ -23,7 +23,7 @@ object BoosterGUI {
         return SlotHandler { event, _, _ ->
             val player = event.whoClicked.tryAsPlayer() ?: return@SlotHandler
 
-            if (activeBooster != null) {
+            if (BoosterUtils.getActiveBooster() != null) {
                 player.sendMessage(plugin.langYml.getMessage("already-active"))
                 player.playSound(
                     player.location,

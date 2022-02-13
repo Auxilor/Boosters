@@ -12,9 +12,11 @@ import com.willfp.eco.util.formatEco
 import com.willfp.libreforge.Holder
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.effects.Effects
+import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
+import java.util.*
 
 /*
 Stored externally to fix the weirdest bug of all time, that I don't understand.
@@ -104,5 +106,8 @@ class Booster(
 
 data class ActivatedBooster(
     val booster: Booster,
-    val player: UUID
-)
+    private val uuid: UUID
+) {
+    val player: OfflinePlayer
+        get() = Bukkit.getOfflinePlayer(uuid)
+}
