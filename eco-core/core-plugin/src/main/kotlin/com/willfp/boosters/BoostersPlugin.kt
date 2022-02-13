@@ -54,6 +54,17 @@ class BoostersPlugin : LibReforgePlugin(0, 14269, "&e") {
         PlaceholderManager.registerPlaceholder(
             PlaceholderEntry(
                 this,
+                "active_name",
+                {
+                    BoosterUtils.getActiveBooster()?.booster?.name ?: ""
+                },
+                false
+            )
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlaceholderEntry(
+                this,
                 "active_player",
                 {
                     BoosterUtils.getActiveBooster()?.player?.savedDisplayName ?: ""
