@@ -18,7 +18,7 @@ import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import java.util.*
 
-class BoostersPlugin : LibReforgePlugin(0, 14269, "&e") {
+class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
     val boostersYml = BoostersYml(this)
     private var shouldUseSQL = false
 
