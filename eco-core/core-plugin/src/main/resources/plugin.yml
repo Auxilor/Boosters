@@ -37,6 +37,7 @@ permissions:
       boosters.command.reload: true
       boosters.command.give: true
       boosters.command.boosters: true
+      boosters.command.cancel: true
 
   boosters.command.reload:
     description: Allows reloading the config
@@ -46,4 +47,7 @@ permissions:
     default: true
   boosters.command.give:
     description: Allows the use of /boosters give.
+    default: op
+  boosters.command.cancel:
+    description: Allows the use of /boosters cancel.
     default: op

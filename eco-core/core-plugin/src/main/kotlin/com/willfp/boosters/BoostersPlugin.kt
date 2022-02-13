@@ -16,14 +16,15 @@ class BoostersPlugin : LibReforgePlugin(0, 14269, "&e") {
     val boostersYml = BoostersYml(this)
 
     override fun handleEnableAdditional() {
-        useSQL = configYml.getBool("use-sql")
+        BoosterUtils.shouldUseSQL = configYml.getBool("use-sql")
+        BoosterUtils.setActiveBooster(null)
 
         PlaceholderManager.registerPlaceholder(
             PlaceholderEntry(
                 this,
                 "booster_info",
                 {
-                    val booster = activeBooster
+                    val booster = BoosterUtils.getActiveBooster()
 
                     if (booster == null) {
                         return@PlaceholderEntry this.langYml.getString("no-currently-active")
@@ -39,7 +40,7 @@ class BoostersPlugin : LibReforgePlugin(0, 14269, "&e") {
             )
         )
 
-        this.registerHolderProvider { ListUtils.toSingletonList(activeBooster?.booster) }
+        this.registerHolderProvider { ListUtils.toSingletonList(BoosterUtils.getActiveBooster()?.booster) }
     }
 
     override fun loadListeners(): List<Listener> {

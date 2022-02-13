@@ -1,4 +1,4 @@
-@file:JvmName("BoosterHandlers")
+@file:JvmName("BoosterUtils")
 
 package com.willfp.boosters
 
@@ -14,13 +14,21 @@ import org.bukkit.Sound
 import org.bukkit.entity.Player
 import java.util.*
 
-private var active: ActivatedBooster? = null
 private val plugin = BoostersPlugin.instance
-private var usingSql: Boolean = false
 
-var activeBooster: ActivatedBooster?
-    get() {
-        if (usingSql) {
+object BoosterUtils {
+    private var active: ActivatedBooster? = null
+
+    private val boosterKey = PersistentDataKey(
+        plugin.namespacedKeyFactory.create("active_booster"),
+        PersistentDataKeyType.STRING,
+        ""
+    )
+
+    var shouldUseSQL = false
+
+    fun getActiveBooster(): ActivatedBooster? {
+        if (shouldUseSQL) {
             val key = Bukkit.getServer().profile.read(boosterKey)
 
             return if (key.isEmpty()) {
@@ -38,29 +46,19 @@ var activeBooster: ActivatedBooster?
             return active
         }
     }
-    set(value) {
-        if (usingSql) {
-            if (value == null) {
+
+    fun setActiveBooster(booster: ActivatedBooster?) {
+        if (shouldUseSQL) {
+            if (booster == null) {
                 Bukkit.getServer().profile.write(boosterKey, "")
             } else {
-                Bukkit.getServer().profile.write(boosterKey, "${value.booster.id}::${value.player}")
+                Bukkit.getServer().profile.write(boosterKey, "${booster.booster.id}::${booster.player}")
             }
         } else {
-            active = value
+            active = booster
         }
     }
-
-private val boosterKey = PersistentDataKey(
-    plugin.namespacedKeyFactory.create("active_booster"),
-    PersistentDataKeyType.STRING,
-    ""
-)
-
-var useSQL: Boolean
-    get() = usingSql
-    set(value) {
-        usingSql = value
-    }
+}
 
 val OfflinePlayer.boosters: List<Booster>
     get() {
@@ -105,10 +103,10 @@ fun Player.activateBooster(booster: Booster): Boolean {
         for (expiryMessage in booster.expiryMessages) {
             Bukkit.broadcastMessage(expiryMessage)
         }
-        activeBooster = null
+        BoosterUtils.setActiveBooster(null)
     }
 
-    active = ActivatedBooster(booster, this.uniqueId)
+    BoosterUtils.setActiveBooster(ActivatedBooster(booster, this.uniqueId))
 
     for (player in Bukkit.getOnlinePlayers()) {
         player.playSound(

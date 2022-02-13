@@ -17,6 +17,7 @@ class CommandBoosters(plugin: EcoPlugin) :
     init {
         this.addSubcommand(CommandGive(plugin))
             .addSubcommand(CommandReload(plugin))
+            .addSubcommand(CommandCancel(plugin))
     }
 
     override fun onExecute(sender: CommandSender, args: List<String>) {
