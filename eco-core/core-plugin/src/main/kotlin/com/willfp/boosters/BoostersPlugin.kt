@@ -1,8 +1,13 @@
 package com.willfp.boosters
 
+import com.willfp.boosters.boosters.ActivatedBooster
+import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.config.BoostersYml
 import com.willfp.eco.core.command.impl.PluginCommand
+import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.core.data.keys.PersistentDataKeyType
+import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.integrations.placeholder.PlaceholderEntry
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.util.ListUtils
@@ -11,20 +16,63 @@ import com.willfp.eco.util.savedDisplayName
 import com.willfp.libreforge.LibReforgePlugin
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
+import java.util.*
 
 class BoostersPlugin : LibReforgePlugin(0, 14269, "&e") {
     val boostersYml = BoostersYml(this)
+    private var shouldUseSQL = false
+
+    private var active: ActivatedBooster? = null
+
+    private val boosterKey = PersistentDataKey(
+        this.namespacedKeyFactory.create("active_booster"),
+        PersistentDataKeyType.STRING,
+        ""
+    )
+
+    var activeBooster: ActivatedBooster?
+        get() {
+            if (shouldUseSQL) {
+                val key = Bukkit.getServer().profile.read(boosterKey)
+
+                return if (key.isEmpty()) {
+                    null
+                } else {
+                    val booster = key.split("::")
+                    val id = booster[0]
+                    val uuid = UUID.fromString(booster[1])
+                    ActivatedBooster(
+                        Boosters.getByID(id) ?: return null,
+                        uuid
+                    )
+                }
+            } else {
+                return active
+            }
+        }
+        set(value) {
+            if (shouldUseSQL) {
+                if (value == null) {
+                    Bukkit.getServer().profile.write(boosterKey, "")
+                } else {
+                    Bukkit.getServer().profile.write(boosterKey, "${value.booster.id}::${value.player}")
+                }
+            } else {
+                active = value
+            }
+        }
+
 
     override fun handleEnableAdditional() {
-        BoosterUtils.shouldUseSQL = configYml.getBool("use-sql")
-        BoosterUtils.setActiveBooster(null)
+        shouldUseSQL = configYml.getBool("use-sql")
+        activeBooster = null
 
         PlaceholderManager.registerPlaceholder(
             PlaceholderEntry(
                 this,
                 "booster_info",
                 {
-                    val booster = BoosterUtils.getActiveBooster()
+                    val booster = activeBooster
 
                     if (booster == null) {
                         return@PlaceholderEntry this.langYml.getString("no-currently-active")
@@ -45,7 +93,7 @@ class BoostersPlugin : LibReforgePlugin(0, 14269, "&e") {
                 this,
                 "active",
                 {
-                    BoosterUtils.getActiveBooster()?.booster?.id ?: ""
+                    activeBooster?.booster?.id ?: ""
                 },
                 false
             )
@@ -56,7 +104,7 @@ class BoostersPlugin : LibReforgePlugin(0, 14269, "&e") {
                 this,
                 "active_name",
                 {
-                    BoosterUtils.getActiveBooster()?.booster?.name ?: ""
+                    activeBooster?.booster?.name ?: ""
                 },
                 false
             )
@@ -67,13 +115,13 @@ class BoostersPlugin : LibReforgePlugin(0, 14269, "&e") {
                 this,
                 "active_player",
                 {
-                    BoosterUtils.getActiveBooster()?.player?.savedDisplayName ?: ""
+                    activeBooster?.player?.savedDisplayName ?: ""
                 },
                 false
             )
         )
 
-        this.registerHolderProvider { ListUtils.toSingletonList(BoosterUtils.getActiveBooster()?.booster) }
+        this.registerHolderProvider { ListUtils.toSingletonList(activeBooster?.booster) }
     }
 
     override fun loadListeners(): List<Listener> {
