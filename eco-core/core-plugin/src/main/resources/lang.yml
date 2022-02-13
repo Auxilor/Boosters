@@ -14,6 +14,7 @@ messages:
   on-cooldown: "&cThis effect is on cooldown! &fTime left: &a%seconds% seconds"
   cannot-afford: "&cYou can't afford to do this! &fCost: &a$$%cost%"
   cannot-afford-type: "&cYou can't afford to do this! &fCost: &a%cost% %type%"
+  cancelled: "Cancelled the active booster"
 
 no-currently-active: "&cThere is no booster currently active!"
 active-placeholder: "%player% &fhas activated a %booster%&f!"
