@@ -54,7 +54,7 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
             if (value == null) {
                 Bukkit.getServer().profile.write(boosterKey, "")
             } else {
-                Bukkit.getServer().profile.write(boosterKey, "${value.booster.id}::${value.player}")
+                Bukkit.getServer().profile.write(boosterKey, "${value.booster.id}::${value.player.uniqueId}")
             }
         }
 
