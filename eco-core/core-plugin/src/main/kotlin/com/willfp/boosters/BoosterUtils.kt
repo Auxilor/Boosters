@@ -5,12 +5,12 @@ package com.willfp.boosters
 import com.willfp.boosters.boosters.ActivatedBooster
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
+import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.profile
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Sound
 import org.bukkit.entity.Player
-import java.util.*
 
 private val plugin = BoostersPlugin.instance
 
@@ -53,12 +53,10 @@ fun Player.activateBooster(booster: Booster): Boolean {
         Bukkit.broadcastMessage(activationMessage)
     }
 
-    plugin.scheduler.runLater(booster.duration.toLong()) {
-        for (expiryMessage in booster.expiryMessages) {
-            Bukkit.broadcastMessage(expiryMessage)
-        }
-        plugin.activeBooster = null
-    }
+    ServerProfile.load().write(
+        plugin.expiryTimeKey,
+        (booster.duration.toDouble() * 50) + System.currentTimeMillis()
+    )
 
     plugin.activeBooster = ActivatedBooster(booster, this.uniqueId)
 

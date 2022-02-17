@@ -18,32 +18,17 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
-/*
-Stored externally to fix the weirdest bug of all time, that I don't understand.
-I think it comes from reload behaviour, where the identities of the keys aren't the same,
-even though the keys are - genuinely not a clue, and this took me twice as long to fix as it
-took me to write the entire rest of the plugin.
- */
-private val dataKeyTracker = mutableMapOf<String, PersistentDataKey<Int>>()
-
 class Booster(
     private val plugin: BoostersPlugin,
     val config: Config,
 ) : Holder {
     val id = config.getString("id")
 
-    val dataKey: PersistentDataKey<Int>
-        get() {
-            if (!dataKeyTracker.containsKey(id)) {
-                dataKeyTracker[id] = PersistentDataKey(
-                    plugin.namespacedKeyFactory.create(id),
-                    PersistentDataKeyType.INT,
-                    0
-                )
-            }
-
-            return dataKeyTracker[id]!!
-        }
+    val dataKey: PersistentDataKey<Int> = PersistentDataKey(
+        plugin.namespacedKeyFactory.create(id),
+        PersistentDataKeyType.INT,
+        0
+    ).player()
 
     val name = config.getFormattedString("name")
 

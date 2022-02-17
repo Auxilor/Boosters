@@ -5,6 +5,7 @@ import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.config.BoostersYml
 import com.willfp.eco.core.command.impl.PluginCommand
+import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
@@ -20,53 +21,45 @@ import java.util.*
 
 class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
     val boostersYml = BoostersYml(this)
-    private var shouldUseSQL = false
-
-    private var active: ActivatedBooster? = null
 
     private val boosterKey = PersistentDataKey(
         this.namespacedKeyFactory.create("active_booster"),
         PersistentDataKeyType.STRING,
         ""
-    )
+    ).server()
+
+    val expiryTimeKey = PersistentDataKey(
+        this.namespacedKeyFactory.create("expiry_time"),
+        PersistentDataKeyType.DOUBLE,
+        0.0
+    ).server()
 
     var activeBooster: ActivatedBooster?
         get() {
-            if (shouldUseSQL) {
-                val key = Bukkit.getServer().profile.read(boosterKey)
+            val key = Bukkit.getServer().profile.read(boosterKey)
 
-                return if (key.isEmpty()) {
-                    null
-                } else {
-                    val booster = key.split("::")
-                    val id = booster[0]
-                    val uuid = UUID.fromString(booster[1])
-                    ActivatedBooster(
-                        Boosters.getByID(id) ?: return null,
-                        uuid
-                    )
-                }
+            return if (key.isEmpty()) {
+                null
             } else {
-                return active
+                val booster = key.split("::")
+                val id = booster[0]
+                val uuid = UUID.fromString(booster[1])
+                ActivatedBooster(
+                    Boosters.getByID(id) ?: return null,
+                    uuid
+                )
             }
         }
         set(value) {
-            if (shouldUseSQL) {
-                if (value == null) {
-                    Bukkit.getServer().profile.write(boosterKey, "")
-                } else {
-                    Bukkit.getServer().profile.write(boosterKey, "${value.booster.id}::${value.player}")
-                }
+            if (value == null) {
+                Bukkit.getServer().profile.write(boosterKey, "")
             } else {
-                active = value
+                Bukkit.getServer().profile.write(boosterKey, "${value.booster.id}::${value.player}")
             }
         }
 
 
     override fun handleEnableAdditional() {
-        shouldUseSQL = configYml.getBool("use-sql")
-        activeBooster = null
-
         PlaceholderManager.registerPlaceholder(
             PlaceholderEntry(
                 this,
@@ -122,6 +115,19 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
         )
 
         this.registerHolderProvider { ListUtils.toSingletonList(activeBooster?.booster) }
+    }
+
+    override fun handleReloadAdditional() {
+        this.scheduler.runTimer(1, 1) {
+            val booster = activeBooster ?: return@runTimer
+            val endTime = ServerProfile.load().read(expiryTimeKey)
+            if (endTime <= System.currentTimeMillis()) {
+                for (expiryMessage in booster.booster.expiryMessages) {
+                    Bukkit.broadcastMessage(expiryMessage)
+                }
+                activeBooster = null
+            }
+        }
     }
 
     override fun loadListeners(): List<Listener> {

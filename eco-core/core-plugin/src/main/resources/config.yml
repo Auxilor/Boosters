@@ -3,11 +3,6 @@
 # by Auxilor
 #
 
-# Will synchronize active booster over all servers in a network.
-# SQL Settings are in /plugins/eco/config.yml
-# If false, boosters will be server-specific.
-use-sql: false
-
 gui:
   title: Boosters
   rows: 3
