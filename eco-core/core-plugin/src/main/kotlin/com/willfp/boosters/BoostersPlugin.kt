@@ -18,6 +18,7 @@ import com.willfp.libreforge.LibReforgePlugin
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import java.util.*
+import kotlin.math.floor
 
 class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
     val boostersYml = BoostersYml(this)
@@ -58,6 +59,16 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
             }
         }
 
+    val secondsLeft: Int
+        get() {
+            val endTime = ServerProfile.load().read(expiryTimeKey)
+            val currentTime = System.currentTimeMillis()
+            return if (endTime < currentTime) {
+                0
+            } else {
+                ((endTime - currentTime) / 1000).toInt()
+            }
+        }
 
     override fun handleEnableAdditional() {
         PlaceholderManager.registerPlaceholder(
@@ -109,6 +120,41 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
                 "active_player",
                 {
                     activeBooster?.player?.savedDisplayName ?: ""
+                },
+                false
+            )
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlaceholderEntry(
+                this,
+                "seconds_remaining",
+                {
+                    secondsLeft.toString()
+                },
+                false
+            )
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlaceholderEntry(
+                this,
+                "time_remaining",
+                {
+                    if (secondsLeft <= 0) {
+                        return@PlaceholderEntry "00:00:00"
+                    }
+
+                    // if you've seen this code on the internet, no you haven't. shush
+                    val seconds = secondsLeft % 3600 % 60
+                    val minutes = floor(secondsLeft % 3600 / 60.0).toInt()
+                    val hours = floor(secondsLeft / 3600.0).toInt()
+
+                    val hh = (if (hours < 10) "0" else "") + hours
+                    val mm = (if (minutes < 10) "0" else "") + minutes
+                    val ss = (if (seconds < 10) "0" else "") + seconds
+
+                    "${hh}:${mm}:${ss}"
                 },
                 false
             )
