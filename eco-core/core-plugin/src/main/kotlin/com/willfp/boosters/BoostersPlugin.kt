@@ -59,11 +59,11 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
             }
         }
 
-    val secondsLeft: Int
+    private val secondsLeft: Int
         get() {
             val endTime = ServerProfile.load().read(expiryTimeKey)
             val currentTime = System.currentTimeMillis()
-            return if (endTime < currentTime) {
+            return if (endTime < currentTime || activeBooster == null) {
                 0
             } else {
                 ((endTime - currentTime) / 1000).toInt()
