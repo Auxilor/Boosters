@@ -42,7 +42,7 @@ allprojects {
 
     dependencies {
         compileOnly 'com.willfp:eco:6.25.0'
-        implementation 'com.willfp:libreforge:3.21.0'
+        implementation 'com.willfp:libreforge:3.22.0'
 
         compileOnly 'org.jetbrains:annotations:22.0.0'
 
