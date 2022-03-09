@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="https://i.imgur.com/RRKQNLT.png" alt="Boosters logo" width="256">
+  <img src="https://i.imgur.com/q618Awa.png" alt="Boosters logo" width="256">
   <br>
 </h1>
 
