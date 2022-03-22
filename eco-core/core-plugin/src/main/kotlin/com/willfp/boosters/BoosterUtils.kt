@@ -10,6 +10,7 @@ import com.willfp.eco.core.data.profile
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Sound
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 private val plugin = BoostersPlugin.instance
@@ -40,14 +41,19 @@ fun OfflinePlayer.incrementBoosters(booster: Booster, amount: Int) {
     this.setAmountOfBooster(booster, this.getAmountOfBooster(booster) + amount)
 }
 
-fun Player.activateBooster(booster: Booster): Boolean {
-    val amount = this.getAmountOfBooster(booster)
+fun CommandSender.activateBooster(booster: Booster): Boolean {
+    val uuid = if (this is OfflinePlayer) {
+        val amount = this.getAmountOfBooster(booster)
 
-    if (amount <= 0) {
-        return false
+        if (amount <= 0) {
+            return false
+        }
+
+        this.setAmountOfBooster(booster, amount - 1)
+        this.uniqueId.toString()
+    } else {
+        "server"
     }
-
-    this.setAmountOfBooster(booster, amount - 1)
 
     for (activationMessage in booster.getActivationMessages(this)) {
         Bukkit.broadcastMessage(activationMessage)
@@ -58,7 +64,7 @@ fun Player.activateBooster(booster: Booster): Boolean {
         (booster.duration.toDouble() * 50) + System.currentTimeMillis()
     )
 
-    plugin.activeBooster = ActivatedBooster(booster, this.uniqueId)
+    plugin.activeBooster = ActivatedBooster(booster, uuid)
 
     for (player in Bukkit.getOnlinePlayers()) {
         player.playSound(

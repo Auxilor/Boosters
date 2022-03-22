@@ -47,7 +47,7 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
                 val uuid = UUID.fromString(booster[1])
                 ActivatedBooster(
                     Boosters.getByID(id) ?: return null,
-                    uuid
+                    uuid.toString()
                 )
             }
         }
@@ -55,7 +55,7 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
             if (value == null) {
                 Bukkit.getServer().profile.write(boosterKey, "")
             } else {
-                Bukkit.getServer().profile.write(boosterKey, "${value.booster.id}::${value.player.uniqueId}")
+                Bukkit.getServer().profile.write(boosterKey, "${value.booster.id}::${value.uuid}")
             }
         }
 
@@ -83,7 +83,7 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
                             .formatEco(formatPlaceholders = false)
                     } else {
                         return@PlaceholderEntry this.langYml.getString("active-placeholder")
-                            .replace("%player%", booster.player.savedDisplayName)
+                            .replace("%player%", booster.name)
                             .replace("%booster%", booster.booster.name)
                             .formatEco(formatPlaceholders = false)
                     }
@@ -119,7 +119,7 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
                 this,
                 "active_player",
                 {
-                    activeBooster?.player?.savedDisplayName ?: ""
+                    activeBooster?.name ?: ""
                 },
                 false
             )

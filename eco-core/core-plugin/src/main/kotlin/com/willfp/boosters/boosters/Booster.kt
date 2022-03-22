@@ -9,11 +9,13 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.formatEco
+import com.willfp.eco.util.savedDisplayName
 import com.willfp.libreforge.Holder
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.effects.Effects
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
@@ -34,14 +36,19 @@ class Booster(
 
     val duration = config.getInt("duration")
 
-    fun getActivationMessages(player: Player): List<String> {
+    fun getActivationMessages(sender: CommandSender): List<String> {
         val messages = mutableListOf<String>()
 
         for (string in config.getFormattedStrings(
             "messages.activation",
             StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
         )) {
-            messages.add(string.replace("%player%", player.displayName))
+            val name = if (sender is Player) {
+                sender.displayName
+            } else {
+                plugin.langYml.getFormattedString("console-name")
+            }
+            messages.add(string.replace("%player%", name))
         }
 
         return messages
@@ -91,8 +98,14 @@ class Booster(
 
 data class ActivatedBooster(
     val booster: Booster,
-    private val uuid: UUID
+    val uuid: String
 ) {
-    val player: OfflinePlayer
-        get() = Bukkit.getOfflinePlayer(uuid)
+    val name: String
+        get() {
+            return if (uuid.equals("server", true)) {
+                BoostersPlugin.instance.langYml.getFormattedString("console-name")
+            } else {
+                Bukkit.getOfflinePlayer(UUID.fromString(uuid)).savedDisplayName
+            }
+        }
 }

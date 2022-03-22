@@ -14,12 +14,10 @@ class CommandActivate(plugin: EcoPlugin) :
         plugin,
         "activate",
         "boosters.command.activate",
-        true
+        false
     ) {
 
     override fun onExecute(sender: CommandSender, args: List<String>) {
-        val player = sender as? Player ?: return
-
         if (args.isEmpty()) {
             sender.sendMessage(plugin.langYml.getMessage("requires-booster"))
             return
@@ -32,8 +30,11 @@ class CommandActivate(plugin: EcoPlugin) :
             return
         }
 
-        player.incrementBoosters(booster, 1)
-        player.activateBooster(booster)
+        if (sender is Player) {
+            sender.incrementBoosters(booster, 1)
+        }
+
+        sender.activateBooster(booster)
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {

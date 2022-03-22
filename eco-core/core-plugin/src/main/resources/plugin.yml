@@ -5,6 +5,8 @@ api-version: 1.17
 authors: [ Auxilor ]
 website: willfp.com
 load: POSTWORLD
+libraries:
+  - 'org.jetbrains.kotlin:kotlin-stdlib:1.6.10'
 depend:
   - eco
   - PlaceholderAPI

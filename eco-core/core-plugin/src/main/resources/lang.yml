@@ -18,3 +18,4 @@ messages:
 
 no-currently-active: "&cThere is no booster currently active!"
 active-placeholder: "%player% &fhas activated a %booster%&f!"
+console-name: "&6Admin"
