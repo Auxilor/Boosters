@@ -15,6 +15,7 @@ messages:
   cannot-afford: "&cYou can't afford to do this! &fCost: &a$$%cost%"
   cannot-afford-type: "&cYou can't afford to do this! &fCost: &a%cost% %type%"
   cancelled: "Cancelled the active booster"
+  cannot-transmit: "&cYou can't transmit here!"
 
 no-currently-active: "&cThere is no booster currently active!"
 active-placeholder: "%player% &fhas activated a %booster%&f!"
