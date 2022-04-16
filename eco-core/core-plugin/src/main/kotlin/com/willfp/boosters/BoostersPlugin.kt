@@ -14,10 +14,11 @@ import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.util.ListUtils
 import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
+import com.willfp.libreforge.Holder
 import com.willfp.libreforge.LibReforgePlugin
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
-import java.util.*
+import java.util.UUID
 import kotlin.math.floor
 
 class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
@@ -160,7 +161,7 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
             )
         )
 
-        this.registerHolderProvider { ListUtils.toSingletonList(activeBooster?.booster) }
+        this.registerHolderProvider { ListUtils.toSingletonList(activeBooster?.booster as Holder) }
     }
 
     override fun handleReloadAdditional() {
