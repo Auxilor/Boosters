@@ -75,21 +75,20 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
         PlaceholderManager.registerPlaceholder(
             PlayerlessPlaceholder(
                 this,
-                "booster_info",
-                {
-                    val booster = activeBooster
+                "booster_info"
+            ) {
+                val booster = activeBooster
 
-                    if (booster == null) {
-                        return@PlayerlessPlaceholder this.langYml.getString("no-currently-active")
-                            .formatEco(formatPlaceholders = false)
-                    } else {
-                        return@PlayerlessPlaceholder this.langYml.getString("active-placeholder")
-                            .replace("%player%", booster.player.savedDisplayName)
-                            .replace("%booster%", booster.booster.name)
-                            .formatEco(formatPlaceholders = false)
-                    }
+                if (booster == null) {
+                    return@PlayerlessPlaceholder this.langYml.getString("no-currently-active")
+                        .formatEco(formatPlaceholders = false)
+                } else {
+                    return@PlayerlessPlaceholder this.langYml.getString("active-placeholder")
+                        .replace("%player%", booster.player.savedDisplayName)
+                        .replace("%booster%", booster.booster.name)
+                        .formatEco(formatPlaceholders = false)
                 }
-            )
+            }
         )
 
         PlaceholderManager.registerPlaceholder(
