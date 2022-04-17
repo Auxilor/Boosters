@@ -9,8 +9,8 @@ import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.integrations.placeholder.PlaceholderEntry
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
+import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
 import com.willfp.eco.util.ListUtils
 import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
@@ -73,92 +73,81 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
 
     override fun handleEnableAdditional() {
         PlaceholderManager.registerPlaceholder(
-            PlaceholderEntry(
+            PlayerlessPlaceholder(
                 this,
                 "booster_info",
                 {
                     val booster = activeBooster
 
                     if (booster == null) {
-                        return@PlaceholderEntry this.langYml.getString("no-currently-active")
+                        return@PlayerlessPlaceholder this.langYml.getString("no-currently-active")
                             .formatEco(formatPlaceholders = false)
                     } else {
-                        return@PlaceholderEntry this.langYml.getString("active-placeholder")
+                        return@PlayerlessPlaceholder this.langYml.getString("active-placeholder")
                             .replace("%player%", booster.player.savedDisplayName)
                             .replace("%booster%", booster.booster.name)
                             .formatEco(formatPlaceholders = false)
                     }
-                },
-                false
+                }
             )
         )
 
         PlaceholderManager.registerPlaceholder(
-            PlaceholderEntry(
+            PlayerlessPlaceholder(
                 this,
                 "active",
-                {
-                    activeBooster?.booster?.id ?: ""
-                },
-                false
-            )
+            ) {
+                activeBooster?.booster?.id ?: ""
+            }
         )
 
         PlaceholderManager.registerPlaceholder(
-            PlaceholderEntry(
+            PlayerlessPlaceholder(
                 this,
-                "active_name",
-                {
-                    activeBooster?.booster?.name ?: ""
-                },
-                false
-            )
+                "active_name"
+            ) {
+                activeBooster?.booster?.name ?: ""
+            }
         )
 
         PlaceholderManager.registerPlaceholder(
-            PlaceholderEntry(
+            PlayerlessPlaceholder(
                 this,
                 "active_player",
-                {
-                    activeBooster?.player?.savedDisplayName ?: ""
-                },
-                false
-            )
+            ) {
+                activeBooster?.player?.savedDisplayName ?: ""
+            }
         )
 
         PlaceholderManager.registerPlaceholder(
-            PlaceholderEntry(
+            PlayerlessPlaceholder(
                 this,
-                "seconds_remaining",
-                {
-                    secondsLeft.toString()
-                },
-                false
-            )
+                "seconds_remaining"
+            ) {
+                secondsLeft.toString()
+            }
         )
 
         PlaceholderManager.registerPlaceholder(
-            PlaceholderEntry(
+            PlayerlessPlaceholder(
                 this,
-                "time_remaining",
-                {
-                    if (secondsLeft <= 0) {
-                        return@PlaceholderEntry "00:00:00"
-                    }
+                "time_remaining"
+            ) {
+                if (secondsLeft <= 0) {
+                    return@PlayerlessPlaceholder "00:00:00"
+                }
 
-                    // if you've seen this code on the internet, no you haven't. shush
-                    val seconds = secondsLeft % 3600 % 60
-                    val minutes = floor(secondsLeft % 3600 / 60.0).toInt()
-                    val hours = floor(secondsLeft / 3600.0).toInt()
+                // if you've seen this code on the internet, no you haven't. shush
+                val seconds = secondsLeft % 3600 % 60
+                val minutes = floor(secondsLeft % 3600 / 60.0).toInt()
+                val hours = floor(secondsLeft / 3600.0).toInt()
 
-                    val hh = (if (hours < 10) "0" else "") + hours
-                    val mm = (if (minutes < 10) "0" else "") + minutes
-                    val ss = (if (seconds < 10) "0" else "") + seconds
+                val hh = (if (hours < 10) "0" else "") + hours
+                val mm = (if (minutes < 10) "0" else "") + minutes
+                val ss = (if (seconds < 10) "0" else "") + seconds
 
-                    "${hh}:${mm}:${ss}"
-                },
-                false
-            )
+                "${hh}:${mm}:${ss}"
+            }
         )
 
         this.registerHolderProvider { ListUtils.toSingletonList(activeBooster?.booster as Holder) }
