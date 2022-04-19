@@ -149,7 +149,7 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
             }
         )
 
-        this.registerHolderProvider { ListUtils.toSingletonList(activeBooster?.booster as Holder) }
+        this.registerHolderProvider { ListUtils.toSingletonList(activeBooster?.booster as? Holder) }
     }
 
     override fun handleReloadAdditional() {
