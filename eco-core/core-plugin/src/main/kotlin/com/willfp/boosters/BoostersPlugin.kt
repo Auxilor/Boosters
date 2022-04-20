@@ -11,10 +11,8 @@ import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
-import com.willfp.eco.util.ListUtils
 import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
-import com.willfp.libreforge.Holder
 import com.willfp.libreforge.LibReforgePlugin
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
@@ -150,8 +148,9 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
         )
 
         this.registerHolderProvider {
-            @Suppress("USELESS_CAST", "UNCHECKED_CAST") // No idea why it's not happy.
-            ListUtils.toSingletonList(activeBooster?.booster as? Holder) as Iterable<Holder>
+            activeBooster.let {
+                if (it == null) emptyList() else listOf(it.booster)
+            }
         }
     }
 
