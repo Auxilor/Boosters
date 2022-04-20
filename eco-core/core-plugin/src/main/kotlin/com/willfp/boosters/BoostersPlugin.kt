@@ -149,7 +149,10 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
             }
         )
 
-        this.registerHolderProvider { ListUtils.toSingletonList(activeBooster?.booster as? Holder) }
+        this.registerHolderProvider {
+            @Suppress("USELESS_CAST", "UNCHECKED_CAST") // No idea why it's not happy.
+            ListUtils.toSingletonList(activeBooster?.booster as? Holder) as Iterable<Holder>
+        }
     }
 
     override fun handleReloadAdditional() {
