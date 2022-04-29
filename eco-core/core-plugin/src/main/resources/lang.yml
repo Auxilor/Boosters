@@ -17,5 +17,5 @@ messages:
   cancelled: "Cancelled the active booster"
   cannot-transmit: "&cYou can't transmit here!"
 
-no-currently-active: "&cThere is no booster currently active!"
-active-placeholder: "%player% &fhas activated a %booster%&f!"
+no-currently-active: "&cNot Active!"
+active-placeholder: "&fThanks %player% &ffor activating %booster%&f!"
