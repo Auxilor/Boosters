@@ -36,6 +36,13 @@ class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
                         Bukkit.broadcastMessage(expiryMessage)
                     }
 
+                    for (expiryCommand in booster.expiryMessages) {
+                        Bukkit.dispatchCommand(
+                            Bukkit.getConsoleSender(),
+                            expiryCommand.replace("%player%", booster.active?.player?.name ?: "")
+                        )
+                    }
+
                     Bukkit.getServer().expireBooster(booster)
                 }
             }

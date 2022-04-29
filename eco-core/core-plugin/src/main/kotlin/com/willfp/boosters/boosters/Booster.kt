@@ -89,6 +89,10 @@ class Booster(
 
     val expiryMessages: List<String> = config.getFormattedStrings("messages.expiry")
 
+    val activationCommands: List<String> = config.getFormattedStrings("commands.activation")
+
+    val expiryCommands: List<String> = config.getFormattedStrings("commands.expiry")
+
     fun getGuiItem(player: Player): ItemStack {
         return ItemStackBuilder(Items.lookup(config.getString("gui.item")))
             .setDisplayName(config.getFormattedString("gui.name"))

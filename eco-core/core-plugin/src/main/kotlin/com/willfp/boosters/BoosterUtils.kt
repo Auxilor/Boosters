@@ -52,6 +52,13 @@ fun Player.activateBooster(booster: Booster): Boolean {
         Bukkit.broadcastMessage(activationMessage)
     }
 
+    for (expiryCommand in booster.activationCommands) {
+        Bukkit.dispatchCommand(
+            Bukkit.getConsoleSender(),
+            expiryCommand.replace("%player%", booster.active?.player?.name ?: "")
+        )
+    }
+
     ServerProfile.load().write(
         booster.expiryTimeKey,
         (booster.duration.toDouble() * 50) + System.currentTimeMillis()
