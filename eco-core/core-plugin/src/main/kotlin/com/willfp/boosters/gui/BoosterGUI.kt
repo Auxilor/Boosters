@@ -11,7 +11,7 @@ import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
-import com.willfp.libreforge.tryAsPlayer
+import com.willfp.eco.util.tryAsPlayer
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 
