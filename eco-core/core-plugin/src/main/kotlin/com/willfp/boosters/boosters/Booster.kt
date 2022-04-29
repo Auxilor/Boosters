@@ -154,7 +154,7 @@ class Booster(
         PlaceholderManager.registerPlaceholder(
             PlayerlessPlaceholder(
                 plugin,
-                "time_remaining"
+                "${id}_time_remaining"
             ) {
                 if (secondsLeft <= 0) {
                     return@PlayerlessPlaceholder "00:00:00"
