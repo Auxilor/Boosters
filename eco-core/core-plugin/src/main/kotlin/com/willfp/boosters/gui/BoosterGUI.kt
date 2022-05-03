@@ -11,7 +11,7 @@ import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
-import com.willfp.libreforge.tryAsPlayer
+import com.willfp.eco.util.tryAsPlayer
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 
@@ -22,7 +22,7 @@ object BoosterGUI {
         return SlotHandler { event, _, _ ->
             val player = event.whoClicked.tryAsPlayer() ?: return@SlotHandler
 
-            if (plugin.activeBooster != null) {
+            if (booster.active != null) {
                 player.sendMessage(plugin.langYml.getMessage("already-active"))
                 player.playSound(
                     player.location,

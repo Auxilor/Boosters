@@ -5,18 +5,22 @@ import com.willfp.boosters.getAmountOfBooster
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
+import com.willfp.eco.core.data.profile
+import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
+import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
 import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.formatEco
+import com.willfp.eco.util.savedDisplayName
 import com.willfp.libreforge.Holder
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.effects.Effects
 import org.bukkit.Bukkit
-import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
+import kotlin.math.floor
 
 class Booster(
     private val plugin: BoostersPlugin,
@@ -24,11 +28,47 @@ class Booster(
 ) : Holder {
     val id = config.getString("id")
 
-    val dataKey: PersistentDataKey<Int> = PersistentDataKey(
+    val ownedDataKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create(id),
         PersistentDataKeyType.INT,
         0
     ).player()
+
+    val activeDataKey: PersistentDataKey<String> = PersistentDataKey(
+        plugin.namespacedKeyFactory.create("${id}_active"),
+        PersistentDataKeyType.STRING,
+        ""
+    ).server()
+
+    val expiryTimeKey = PersistentDataKey(
+        plugin.namespacedKeyFactory.create("${id}_expiry_time"),
+        PersistentDataKeyType.DOUBLE,
+        0.0
+    ).server()
+
+    val active: ActivatedBooster?
+        get() {
+            val activeKey = Bukkit.getServer().profile.read(activeDataKey)
+
+            if (activeKey.isEmpty()) {
+                return null
+            }
+
+            val uuid = UUID.fromString(activeKey)
+
+            return ActivatedBooster(this, uuid)
+        }
+
+    val secondsLeft: Int
+        get() {
+            val endTime = Bukkit.getServer().profile.read(expiryTimeKey)
+            val currentTime = System.currentTimeMillis()
+            return if (endTime < currentTime || active == null) {
+                0
+            } else {
+                ((endTime - currentTime) / 1000).toInt()
+            }
+        }
 
     val name = config.getFormattedString("name")
 
@@ -48,6 +88,10 @@ class Booster(
     }
 
     val expiryMessages: List<String> = config.getFormattedStrings("messages.expiry")
+
+    val activationCommands: List<String> = config.getFormattedStrings("commands.activation")
+
+    val expiryCommands: List<String> = config.getFormattedStrings("commands.expiry")
 
     fun getGuiItem(player: Player): ItemStack {
         return ItemStackBuilder(Items.lookup(config.getString("gui.item")))
@@ -74,6 +118,64 @@ class Booster(
 
     init {
         Boosters.addNewBooster(this)
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "${id}_info"
+            ) {
+                val active = this.active
+
+                if (active != null) {
+                    plugin.langYml.getString("active-placeholder")
+                        .replace("%player%", active.player.savedDisplayName)
+                        .replace("%booster%", active.booster.name)
+                        .formatEco(formatPlaceholders = false)
+                } else {
+                    plugin.langYml.getString("no-currently-active")
+                        .formatEco(formatPlaceholders = false)
+                }
+            }
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "${id}_player",
+            ) {
+                active?.player?.savedDisplayName ?: ""
+            }
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "${id}_seconds_remaining"
+            ) {
+                secondsLeft.toString()
+            }
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "${id}_time_remaining"
+            ) {
+                if (secondsLeft <= 0) {
+                    return@PlayerlessPlaceholder "00:00:00"
+                }
+
+                // if you've seen this code on the internet, no you haven't. shush
+                val seconds = secondsLeft % 3600 % 60
+                val minutes = floor(secondsLeft % 3600 / 60.0).toInt()
+                val hours = floor(secondsLeft / 3600.0).toInt()
+
+                val hh = (if (hours < 10) "0" else "") + hours
+                val mm = (if (minutes < 10) "0" else "") + minutes
+                val ss = (if (seconds < 10) "0" else "") + seconds
+
+                "${hh}:${mm}:${ss}"
+            }
+        )
     }
 
     override fun equals(other: Any?): Boolean {
@@ -87,12 +189,4 @@ class Booster(
     override fun hashCode(): Int {
         return this.id.hashCode()
     }
-}
-
-data class ActivatedBooster(
-    val booster: Booster,
-    private val uuid: UUID
-) {
-    val player: OfflinePlayer
-        get() = Bukkit.getOfflinePlayer(uuid)
 }

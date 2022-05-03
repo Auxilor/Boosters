@@ -7,6 +7,9 @@ boosters:
         args:
           multiplier: 1.5
     conditions: []
+    commands:
+      activation: []
+      expiry: []
     messages:
       activation:
         - ""
@@ -45,6 +48,9 @@ boosters:
         args:
           multiplier: 2
     conditions: []
+    commands:
+      activation: []
+      expiry: []
     messages:
       activation:
         - ""
@@ -83,6 +89,9 @@ boosters:
         args:
           multiplier: 2
     conditions: []
+    commands:
+      activation: []
+      expiry: []
     messages:
       activation:
         - ""

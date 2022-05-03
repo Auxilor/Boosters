@@ -27,7 +27,6 @@ allprojects {
 
     repositories {
         mavenCentral()
-        mavenLocal()
         maven { url 'https://jitpack.io' }
         maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     }
@@ -41,8 +40,8 @@ allprojects {
     }
 
     dependencies {
-        compileOnly 'com.willfp:eco:6.34.0'
-        implementation 'com.willfp:libreforge:3.36.0'
+        compileOnly 'com.willfp:eco:6.35.1'
+        implementation 'com.willfp:libreforge:3.38.0'
 
         compileOnly 'org.jetbrains:annotations:23.0.0'
 
