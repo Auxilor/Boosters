@@ -26,7 +26,7 @@ class Booster(
     private val plugin: BoostersPlugin,
     val config: Config,
 ) : Holder {
-    val id = config.getString("id")
+    override val id = config.getString("id")
 
     val ownedDataKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create(id),
