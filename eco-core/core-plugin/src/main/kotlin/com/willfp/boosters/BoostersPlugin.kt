@@ -17,7 +17,7 @@ import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import kotlin.math.floor
 
-class BoostersPlugin : LibReforgePlugin(2036, 14269, "&e") {
+class BoostersPlugin : LibReforgePlugin() {
     val boostersYml = BoostersYml(this)
 
     override fun handleEnableAdditional() {
