@@ -151,7 +151,9 @@ class Booster(
                 plugin,
                 "${id}_name",
             ) {
-                active?.booster.name ?: ""
+                val active = this.active
+
+                active?.booster?.name ?: ""
             }
         )
 
