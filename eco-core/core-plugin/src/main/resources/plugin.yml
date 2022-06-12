@@ -9,13 +9,17 @@ depend:
   - eco
   - PlaceholderAPI
 softdepend:
-  - EcoSkills
   - AureliumSkills
   - Jobs
   - mcMMO
   - Vault
-  - EcoArmor
   - TMMobcoins
+  - EcoEnchants
+  - EcoBosses
+  - Talismans
+  - EcoArmor
+  - EcoItems
+  - EcoSkills
 
 commands:
   boosters:
