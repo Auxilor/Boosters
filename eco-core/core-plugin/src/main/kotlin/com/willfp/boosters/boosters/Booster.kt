@@ -19,7 +19,7 @@ import com.willfp.libreforge.effects.Effects
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.*
+import java.util.UUID
 import kotlin.math.floor
 
 class Booster(
@@ -145,15 +145,24 @@ class Booster(
                 active?.player?.savedDisplayName ?: ""
             }
         )
-        
+
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "${id}_active_name",
+            ) {
+                val active = this.active
+
+                active?.booster?.name ?: ""
+            }
+        )
+
         PlaceholderManager.registerPlaceholder(
             PlayerlessPlaceholder(
                 plugin,
                 "${id}_name",
             ) {
-                val active = this.active
-
-                active?.booster?.name ?: ""
+                this.name
             }
         )
 
