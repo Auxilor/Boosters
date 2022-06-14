@@ -145,6 +145,17 @@ class Booster(
                 active?.player?.savedDisplayName ?: ""
             }
         )
+        
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "${id}_name",
+            ) {
+                val active = this.active
+
+                active?.booster?.name ?: ""
+            }
+        )
 
         PlaceholderManager.registerPlaceholder(
             PlayerlessPlaceholder(
