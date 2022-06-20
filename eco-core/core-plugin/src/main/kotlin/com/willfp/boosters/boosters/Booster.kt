@@ -196,6 +196,26 @@ class Booster(
                 "${hh}:${mm}:${ss}"
             }
         )
+
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "active_list",
+            ) {
+                var activeList = mutableListOf<String>()
+
+                for(active in Bukkit.getServer().activeBoosters){
+                    activeList.add(active.booster.name)
+                }
+
+                var outputString = plugin.langYml.getString("no-currently-active-list").formatEco(formatPlaceholders = false)
+                if (activeList.size > 0) {
+                    outputString = activeList.joinToString(", ")
+                }
+
+                outputString
+            }
+        )
     }
 
     override fun equals(other: Any?): Boolean {

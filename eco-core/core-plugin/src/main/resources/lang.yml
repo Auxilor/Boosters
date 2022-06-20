@@ -18,4 +18,5 @@ messages:
   cannot-transmit: "&cYou can't transmit here!"
 
 no-currently-active: "&cNot Active!"
+no-currently-active-list: "&cThere isn't any booster active!"
 active-placeholder: "&fThanks %player% &ffor activating %booster%&f!"
