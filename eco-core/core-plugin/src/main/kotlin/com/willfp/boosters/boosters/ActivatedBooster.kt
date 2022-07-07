@@ -7,10 +7,23 @@ import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Server
 import java.util.*
+import kotlin.contracts.contract
 
 private val boosters = mutableSetOf<ActivatedBooster>()
 
-fun Server.addActiveBooster(activatedBooster: ActivatedBooster) {
+fun Server.activateBooster(activatedBooster: ActivatedBooster) {
+    val (booster, uuid) = activatedBooster
+
+    ServerProfile.load().write(
+        booster.expiryTimeKey,
+        (booster.duration.toDouble() * 50) + System.currentTimeMillis()
+    )
+
+    ServerProfile.load().write(
+        booster.activeDataKey,
+        uuid.toString()
+    )
+
     boosters += activatedBooster
 }
 
@@ -26,9 +39,18 @@ fun Server.expireBooster(booster: Booster) {
     )
 }
 
+fun Server.scanForBoosters() {
+    for (booster in Boosters.values()) {
+        val active = booster.active ?: continue
+        if (!boosters.contains(active)) {
+            boosters += active
+        }
+    }
+}
+
 data class ActivatedBooster(
     val booster: Booster,
-    private val uuid: UUID
+    val uuid: UUID
 ) {
     val player: OfflinePlayer
         get() = Bukkit.getOfflinePlayer(uuid)

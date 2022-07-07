@@ -3,6 +3,7 @@ package com.willfp.boosters
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activeBoosters
 import com.willfp.boosters.boosters.expireBooster
+import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.config.BoostersYml
 import com.willfp.eco.core.command.impl.PluginCommand
@@ -14,6 +15,7 @@ import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.libreforge.LibReforgePlugin
 import org.bukkit.Bukkit
+import org.bukkit.command.PluginCommand
 import org.bukkit.event.Listener
 import kotlin.math.floor
 
@@ -46,6 +48,11 @@ class BoostersPlugin : LibReforgePlugin() {
                     Bukkit.getServer().expireBooster(booster)
                 }
             }
+        }
+
+        // Just run it later enough
+        this.scheduler.runLater(3) {
+            Bukkit.getServer().scanForBoosters()
         }
     }
 

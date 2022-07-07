@@ -5,7 +5,7 @@ package com.willfp.boosters
 import com.willfp.boosters.boosters.ActivatedBooster
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
-import com.willfp.boosters.boosters.addActiveBooster
+import com.willfp.boosters.boosters.activateBooster
 import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.profile
 import org.bukkit.Bukkit
@@ -59,17 +59,7 @@ fun Player.activateBooster(booster: Booster): Boolean {
         )
     }
 
-    ServerProfile.load().write(
-        booster.expiryTimeKey,
-        (booster.duration.toDouble() * 50) + System.currentTimeMillis()
-    )
-
-    ServerProfile.load().write(
-        booster.activeDataKey,
-        this.uniqueId.toString()
-    )
-
-    Bukkit.getServer().addActiveBooster(
+    Bukkit.getServer().activateBooster(
         ActivatedBooster(booster, this.uniqueId)
     )
 
