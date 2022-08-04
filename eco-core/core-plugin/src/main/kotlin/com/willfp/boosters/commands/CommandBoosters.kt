@@ -3,10 +3,13 @@ package com.willfp.boosters.commands
 import com.willfp.boosters.gui.BoosterGUI
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.PluginCommand
+import com.willfp.libreforge.CommandFixLingeringEffects
+import com.willfp.libreforge.LibReforgePlugin
 import org.bukkit.command.CommandSender
+import org.bukkit.command.PluginCommand
 import org.bukkit.entity.Player
 
-class CommandBoosters(plugin: EcoPlugin) :
+class CommandBoosters(plugin: com.willfp.eco.core.EcoPlugin) :
     PluginCommand(
         plugin,
         "boosters",
