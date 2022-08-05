@@ -62,7 +62,7 @@ class BoostersPlugin : LibReforgePlugin() {
         )
     }
 
-    override fun loadPluginCommands(): List<PluginCommand> {
+    override fun loadPluginCommands(): List<com.willfp.eco.core.command.impl.PluginCommand> {
         return listOf(
             CommandBoosters(this)
         )
