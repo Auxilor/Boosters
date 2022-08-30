@@ -43,7 +43,7 @@ allprojects {
 
     dependencies {
         compileOnly 'com.willfp:eco:6.37.3'
-        implementation 'com.willfp:libreforge:3.89.0'
+        implementation 'com.willfp:libreforge:3.90.0'
         implementation 'org.joml:joml:1.10.4'
 
         compileOnly 'org.jetbrains:annotations:23.0.0'
@@ -54,6 +54,13 @@ allprojects {
     tasks.withType(JavaCompile) {
         options.deprecation = true
         options.encoding = 'UTF-8'
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+        kotlinOptions {
+            jvmTarget = "17"
+            freeCompilerArgs = ['-Xjvm-default=all']
+        }
     }
 
     processResources {
