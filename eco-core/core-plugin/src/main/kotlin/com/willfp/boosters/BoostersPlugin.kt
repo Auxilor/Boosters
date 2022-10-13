@@ -19,7 +19,7 @@ import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import kotlin.math.floor
 
-class BoostersPlugin : LibReforgePlugin() {
+class BoostersPlugin : LibReforgePlugin(supportsLrcdb = false) {
     val boostersYml = BoostersYml(this)
 
     override fun handleEnableAdditional() {
