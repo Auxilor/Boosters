@@ -1,6 +1,5 @@
 package com.willfp.boosters.boosters
 
-import com.sun.tools.javac.jvm.Items
 import com.willfp.boosters.BoostersPlugin
 import com.willfp.boosters.getAmountOfBooster
 import com.willfp.eco.core.config.interfaces.Config
@@ -33,19 +32,19 @@ class Booster(
         plugin.namespacedKeyFactory.create(id),
         PersistentDataKeyType.INT,
         0
-    ).player()
+    )
 
     val activeDataKey: PersistentDataKey<String> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_active"),
         PersistentDataKeyType.STRING,
         ""
-    ).server()
+    )
 
     val expiryTimeKey = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_expiry_time"),
         PersistentDataKeyType.DOUBLE,
         0.0
-    ).server()
+    )
 
     val active: ActivatedBooster?
         get() {

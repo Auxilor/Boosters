@@ -7,7 +7,6 @@ import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Server
 import java.util.*
-import kotlin.contracts.contract
 
 private val boosters = mutableSetOf<ActivatedBooster>()
 
