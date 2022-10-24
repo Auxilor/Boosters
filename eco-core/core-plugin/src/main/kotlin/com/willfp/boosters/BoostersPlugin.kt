@@ -68,10 +68,6 @@ class BoostersPlugin : LibReforgePlugin(supportsLrcdb = false) {
         )
     }
 
-    override fun getMinimumEcoVersion(): String {
-        return "6.35.1"
-    }
-
     init {
         instance = this
     }

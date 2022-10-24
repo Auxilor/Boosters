@@ -1,5 +1,6 @@
 package com.willfp.boosters.boosters
 
+import com.sun.tools.javac.jvm.Items
 import com.willfp.boosters.BoostersPlugin
 import com.willfp.boosters.getAmountOfBooster
 import com.willfp.eco.core.config.interfaces.Config
@@ -108,13 +109,15 @@ class Booster(
 
     val guiColumn = config.getInt("gui.position.column")
 
-    override val conditions = config.getSubsections("conditions").mapNotNull {
-        Conditions.compile(it, "Booster $id")
-    }.toSet()
+    override val conditions = Conditions.compile(
+        config.getSubsections("conditions"),
+        "Booster $id"
+    )
 
-    override val effects = config.getSubsections("effects").mapNotNull {
-        Effects.compile(it, "Booster $id")
-    }.toSet()
+    override val effects = Effects.compile(
+        config.getSubsections("effects"),
+        "Booster $id"
+    )
 
     init {
         Boosters.addNewBooster(this)
