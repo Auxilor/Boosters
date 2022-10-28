@@ -10,7 +10,7 @@ import com.willfp.libreforge.LibReforgePlugin
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 
-class BoostersPlugin : LibReforgePlugin(supportsLrcdb = false) {
+class BoostersPlugin : LibReforgePlugin() {
     override fun handleEnableAdditional() {
         this.copyConfigs("boosters")
 
