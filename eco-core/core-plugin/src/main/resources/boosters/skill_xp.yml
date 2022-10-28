@@ -1,0 +1,40 @@
+name: "2x Skill XP Multiplier"
+duration: 72000
+effects:
+  - id: skill_xp_multiplier
+    args:
+      multiplier: 2
+conditions: [ ]
+commands:
+  activation: [ ]
+  expiry: [ ]
+messages:
+  activation:
+    - ""
+    - " %player%&f has activated a &a2x Skill XP Booster&f!"
+    - " &fThis booster will last an hour, be sure to thank them!"
+    - ""
+  expiry:
+    - ""
+    - " &fThe &a2x Skill XP Booster&f has ended"
+    - " &fGet another one here: &ahttps://store.ecomc.net/package/756893"
+    - ""
+gui:
+  item: player_head texture:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODkyNmMxZjJjM2MxNGQwODZjNDBjZmMyMzVmZTkzODY5NGY0YTUxMDY3YWRhNDcyNmI0ODZlYTFjODdiMDNlMiJ9fX0=
+  name: "&d2x Skill XP Multiplier"
+  lore:
+    - ""
+    - "&fGives everyone online a"
+    - "&a2x Skill XP Multiplier"
+    - "&fto level up faster!"
+    - ""
+    - "&fDuration: &a1 Hour"
+    - ""
+    - "&fYou have: &a%amount%"
+    - "&fGet more at &astore.ecomc.net"
+    - ""
+    - "&e&oClick to activate!"
+    - ""
+  position:
+    row: 2
+    column: 8

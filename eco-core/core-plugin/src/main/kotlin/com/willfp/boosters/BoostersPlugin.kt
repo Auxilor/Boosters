@@ -5,24 +5,15 @@ import com.willfp.boosters.boosters.activeBoosters
 import com.willfp.boosters.boosters.expireBooster
 import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
-import com.willfp.boosters.config.BoostersYml
 import com.willfp.eco.core.command.impl.PluginCommand
-import com.willfp.eco.core.data.ServerProfile
-import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
-import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
-import com.willfp.eco.util.formatEco
-import com.willfp.eco.util.savedDisplayName
 import com.willfp.libreforge.LibReforgePlugin
 import org.bukkit.Bukkit
-
 import org.bukkit.event.Listener
-import kotlin.math.floor
 
 class BoostersPlugin : LibReforgePlugin(supportsLrcdb = false) {
-    val boostersYml = BoostersYml(this)
-
     override fun handleEnableAdditional() {
+        this.copyConfigs("boosters")
+
         this.registerHolderProvider { Bukkit.getServer().activeBoosters.map { it.booster } }
     }
 
@@ -62,7 +53,7 @@ class BoostersPlugin : LibReforgePlugin(supportsLrcdb = false) {
         )
     }
 
-    override fun loadPluginCommands(): List<com.willfp.eco.core.command.impl.PluginCommand> {
+    override fun loadPluginCommands(): List<PluginCommand> {
         return listOf(
             CommandBoosters(this)
         )

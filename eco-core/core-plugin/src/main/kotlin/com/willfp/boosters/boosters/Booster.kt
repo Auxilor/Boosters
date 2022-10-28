@@ -24,10 +24,9 @@ import kotlin.math.floor
 
 class Booster(
     private val plugin: BoostersPlugin,
-    val config: Config,
+    override val id: String,
+    val config: Config
 ) : Holder {
-    override val id = config.getString("id")
-
     val ownedDataKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create(id),
         PersistentDataKeyType.INT,
@@ -206,11 +205,12 @@ class Booster(
             ) {
                 var activeList = mutableListOf<String>()
 
-                for(active in Bukkit.getServer().activeBoosters){
+                for (active in Bukkit.getServer().activeBoosters) {
                     activeList.add(active.booster.name)
                 }
 
-                var outputString = plugin.langYml.getString("no-currently-active-list").formatEco(formatPlaceholders = false)
+                var outputString =
+                    plugin.langYml.getString("no-currently-active-list").formatEco(formatPlaceholders = false)
                 if (activeList.size > 0) {
                     outputString = activeList.joinToString(", ")
                 }

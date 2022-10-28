@@ -4,13 +4,14 @@ import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import com.google.common.collect.ImmutableList
 import com.willfp.boosters.BoostersPlugin
+import com.willfp.eco.core.config.ConfigType
+import com.willfp.eco.core.config.readConfig
 import com.willfp.eco.core.config.updating.ConfigUpdater
 import com.willfp.libreforge.chains.EffectChains
+import java.io.File
 
 object Boosters {
-    /**
-     * Registered boosters.
-     */
+    /** Registered boosters. */
     private val BY_ID: BiMap<String, Booster> = HashBiMap.create()
 
     /**
@@ -42,14 +43,22 @@ object Boosters {
     @ConfigUpdater
     @JvmStatic
     fun update(plugin: BoostersPlugin) {
-        plugin.boostersYml.getSubsections("chains").mapNotNull {
-            EffectChains.compile(it, "Effect Chains")
-        }
         for (booster in values()) {
             removeBooster(booster)
         }
-        for (config in plugin.boostersYml.getSubsections("boosters")) {
-            Booster(plugin, config)
+
+        for ((id, config) in plugin.fetchConfigs("boosters")) {
+            Booster(plugin, id, config)
+        }
+
+        // Legacy
+        val boostersYml = File(plugin.dataFolder, "boosters.yml").readConfig(ConfigType.YAML)
+
+        for (config in boostersYml.getSubsections("boosters")) {
+            Booster(plugin, config.getString("id"), config)
+        }
+        boostersYml.getSubsections("chains").mapNotNull {
+            EffectChains.compile(it, "Effect Chains")
         }
     }
 

@@ -1,0 +1,55 @@
+# The ID of the booster is the name of the .yml file,
+# for example skill_xp_multiplier.yml has the ID of skill_xp_multiplier
+# You can place boosters anywhere in this folder,
+# including in subfolders if you want to organize your booster configs
+# _example.yml is not loaded.
+
+name: "1.5x Sell Multiplier" # The name of the booster, shown to players
+duration: 72000 # The duration, in ticks
+
+# The effects of the booster (i.e. the functionality)
+# See here: https://plugins.auxilor.io/effects/configuring-an-effect
+effects:
+  - id: sell_multiplier
+    args:
+      multiplier: 1.5
+
+# The conditions required for the effects to activate
+conditions: []
+
+# Commands ran by console on booster activation and expiry
+commands:
+  activation: []
+  expiry: []
+
+messages:
+  activation:
+    - ""
+    - " %player%&f has activated a &a1.5x Sell Multiplier Booster&f!"
+    - " &fThis booster will last an hour, be sure to thank them!"
+    - ""
+  expiry:
+    - ""
+    - " &fThe &a1.5x Sell Multiplier Booster&f has ended"
+    - " &fGet another one here: &ahttps://store.ecomc.net/package/756887"
+    - ""
+
+gui:
+  item: player_head texture:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTM0YjI3YmZjYzhmOWI5NjQ1OTRiNjE4YjExNDZhZjY5ZGUyNzhjZTVlMmUzMDEyY2I0NzFhOWEzY2YzODcxIn19fQ==
+  name: "&d1.5x Sell Multiplier"
+  lore:
+    - ""
+    - "&fGives everyone online a"
+    - "&a1.5x Sell Multiplier"
+    - "&fto make money faster!"
+    - ""
+    - "&fDuration: &a1 Hour"
+    - ""
+    - "&fYou have: &a%amount%"
+    - "&fGet more at &astore.ecomc.net"
+    - ""
+    - "&e&oClick to activate!"
+    - ""
+  position:
+    row: 2
+    column: 2
