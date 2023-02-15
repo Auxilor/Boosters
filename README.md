@@ -7,7 +7,7 @@
 <h4 align="center">Source code for Boosters, a premium spigot plugin.</h4>
 
 <p align="center">
-    <a href="https://polymart.org/resource/ecoitems.1241">
+    <a href="https://polymart.org/resource/boosters.2036">
         <img alt="spigot" src="https://img.shields.io/badge/polymart-boosters-yellow?style=for-the-badge"/>
     </a>
     <a href="https://bstats.org/plugin/bukkit/EcoItems" alt="bstats servers">
