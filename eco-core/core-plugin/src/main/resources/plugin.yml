@@ -7,7 +7,6 @@ website: willfp.com
 load: POSTWORLD
 depend:
   - eco
-  - PlaceholderAPI
 softdepend:
   - AureliumSkills
   - Jobs
