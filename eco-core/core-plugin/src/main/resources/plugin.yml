@@ -4,7 +4,6 @@ main: com.willfp.boosters.BoostersPlugin
 api-version: 1.17
 authors: [ Auxilor ]
 website: willfp.com
-load: POSTWORLD
 depend:
   - eco
 softdepend:
