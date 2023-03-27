@@ -82,6 +82,7 @@ class Booster(
             "messages.activation",
             StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
         )) {
+            @Suppress("DEPRECATION")
             messages.add(string.replace("%player%", player.displayName))
         }
 
