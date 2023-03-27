@@ -1,3 +1,8 @@
-resource-id: 2036
-bstats-id: 14269
-color: "&e"
+environment:
+  - name: libreforge version
+    value: ${libreforgeVersion}
+
+options:
+  resource-id: 2036
+  bstats-id: 14269
+  color: "&e"

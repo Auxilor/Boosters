@@ -73,7 +73,7 @@ class CommandGive(plugin: EcoPlugin) :
         if (args.size == 2) {
             StringUtil.copyPartialMatches(
                 args[1],
-                Boosters.values().map { it.id },
+                Boosters.values().map { it.id.key },
                 completions
             )
             return completions

@@ -10,10 +10,12 @@ import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
+import com.willfp.eco.core.registry.Registrable
 import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.libreforge.Holder
+import com.willfp.libreforge.ViolationContext
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.effects.Effects
 import org.bukkit.Bukkit
@@ -24,9 +26,9 @@ import kotlin.math.floor
 
 class Booster(
     private val plugin: BoostersPlugin,
-    override val id: String,
+    id: String,
     val config: Config
-) : Holder {
+) : Holder, Registrable {
     val ownedDataKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create(id),
         PersistentDataKeyType.INT,
@@ -109,16 +111,17 @@ class Booster(
 
     override val conditions = Conditions.compile(
         config.getSubsections("conditions"),
-        "Booster $id"
+        ViolationContext(plugin, "Booster $id")
     )
 
     override val effects = Effects.compile(
         config.getSubsections("effects"),
-        "Booster $id"
+        ViolationContext(plugin, "Booster $id")
     )
 
+    override val id = plugin.createNamespacedKey(id)
+
     init {
-        Boosters.addNewBooster(this)
         PlaceholderManager.registerPlaceholder(
             PlayerlessPlaceholder(
                 plugin,
@@ -218,6 +221,10 @@ class Booster(
                 outputString
             }
         )
+    }
+
+    override fun getID(): String {
+        return this.id.key
     }
 
     override fun equals(other: Any?): Boolean {

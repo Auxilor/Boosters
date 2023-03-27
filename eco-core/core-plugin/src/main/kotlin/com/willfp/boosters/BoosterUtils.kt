@@ -49,6 +49,7 @@ fun Player.activateBooster(booster: Booster): Boolean {
     this.setAmountOfBooster(booster, amount - 1)
 
     for (activationMessage in booster.getActivationMessages(this)) {
+        @Suppress("DEPRECATION")
         Bukkit.broadcastMessage(activationMessage)
     }
 

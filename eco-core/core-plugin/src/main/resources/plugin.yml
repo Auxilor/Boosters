@@ -1,5 +1,5 @@
-name: Boosters
-version: ${projectVersion}
+name: ${pluginName}
+version: ${version}
 main: com.willfp.boosters.BoostersPlugin
 api-version: 1.17
 authors: [ Auxilor ]
@@ -7,17 +7,7 @@ website: willfp.com
 depend:
   - eco
 softdepend:
-  - AureliumSkills
-  - Jobs
-  - mcMMO
-  - Vault
-  - TMMobcoins
-  - EcoEnchants
-  - EcoBosses
-  - Talismans
-  - EcoArmor
-  - EcoItems
-  - EcoSkills
+  - libreforge
 
 commands:
   boosters:
@@ -41,8 +31,6 @@ permissions:
       boosters.command.boosters: true
       boosters.command.cancel: true
       boosters.command.activate: true
-      boosters.command.import: true
-      boosters.command.export: true
 
   boosters.command.reload:
     description: Allows reloading the config
@@ -58,10 +46,4 @@ permissions:
     default: op
   boosters.command.cancel:
     description: Allows the use of /boosters cancel.
-    default: op
-  boosters.command.import:
-    description: Allows the use of /boosters import
-    default: op
-  boosters.command.export:
-    description: Allows the use of /boosters export
     default: op

@@ -6,18 +6,24 @@ import com.willfp.boosters.boosters.expireBooster
 import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.eco.core.command.impl.PluginCommand
-import com.willfp.libreforge.LibReforgePlugin
+import com.willfp.libreforge.SimpleProvidedHolder
+import com.willfp.libreforge.loader.LibreforgePlugin
+import com.willfp.libreforge.loader.configs.ConfigCategory
+import com.willfp.libreforge.registerHolderProvider
 import org.bukkit.Bukkit
-import org.bukkit.event.Listener
 
-class BoostersPlugin : LibReforgePlugin() {
-    override fun handleEnableAdditional() {
-        this.copyConfigs("boosters")
-
-        this.registerHolderProvider { Bukkit.getServer().activeBoosters.map { it.booster } }
+class BoostersPlugin : LibreforgePlugin() {
+    override fun loadConfigCategories(): List<ConfigCategory> {
+        return listOf(
+            Boosters
+        )
     }
 
-    override fun handleReloadAdditional() {
+    override fun handleEnable() {
+        registerHolderProvider { Bukkit.getServer().activeBoosters.map { it.booster }.map { SimpleProvidedHolder(it) } }
+    }
+
+    override fun handleReload() {
         this.scheduler.runTimer(1, 1) {
             for (booster in Boosters.values()) {
                 if (booster.active == null) {
@@ -26,6 +32,7 @@ class BoostersPlugin : LibReforgePlugin() {
 
                 if (booster.secondsLeft <= 0) {
                     for (expiryMessage in booster.expiryMessages) {
+                        @Suppress("DEPRECATION")
                         Bukkit.broadcastMessage(expiryMessage)
                     }
 
@@ -45,12 +52,6 @@ class BoostersPlugin : LibReforgePlugin() {
         this.scheduler.runLater(3) {
             Bukkit.getServer().scanForBoosters()
         }
-    }
-
-    override fun loadListeners(): List<Listener> {
-        return listOf(
-
-        )
     }
 
     override fun loadPluginCommands(): List<PluginCommand> {
