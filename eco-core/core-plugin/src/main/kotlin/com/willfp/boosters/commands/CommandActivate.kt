@@ -42,7 +42,7 @@ class CommandActivate(plugin: EcoPlugin) :
         if (args.size == 1) {
             StringUtil.copyPartialMatches(
                 args[0],
-                Boosters.values().map { it.id },
+                Boosters.values().map { it.id.key },
                 completions
             )
             return completions
