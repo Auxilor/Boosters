@@ -15,3 +15,36 @@ dependencies:
 load-after:
   - name: eco
     bootstrap: false
+
+
+permissions:
+  boosters.*:
+    description: All boosters permissions
+    default: op
+    children:
+      boosters.command.*: true
+  boosters.command.*:
+    description: All commands
+    default: op
+    children:
+      boosters.command.reload: true
+      boosters.command.give: true
+      boosters.command.boosters: true
+      boosters.command.cancel: true
+      boosters.command.activate: true
+
+  boosters.command.reload:
+    description: Allows reloading the config
+    default: op
+  boosters.command.boosters:
+    description: Allows the use of /boosters.
+    default: true
+  boosters.command.give:
+    description: Allows the use of /boosters give.
+    default: op
+  boosters.command.activate:
+    description: Allows the use of /boosters activate.
+    default: op
+  boosters.command.cancel:
+    description: Allows the use of /boosters cancel.
+    default: op
