@@ -5,8 +5,10 @@ import com.willfp.boosters.boosters.activeBoosters
 import com.willfp.boosters.boosters.expireBooster
 import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
+import com.willfp.boosters.libreforge.ConditionIsBoosterActive
 import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.libreforge.SimpleProvidedHolder
+import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.loader.LibreforgePlugin
 import com.willfp.libreforge.loader.configs.ConfigCategory
 import com.willfp.libreforge.registerHolderProvider
@@ -20,6 +22,8 @@ class BoostersPlugin : LibreforgePlugin() {
     }
 
     override fun handleEnable() {
+        Conditions.register(ConditionIsBoosterActive)
+
         registerHolderProvider { Bukkit.getServer().activeBoosters.map { it.booster }.map { SimpleProvidedHolder(it) } }
     }
 
