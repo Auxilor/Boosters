@@ -6,3 +6,4 @@ options:
   resource-id: 2036
   bstats-id: 14269
   color: "&e"
+  uses-reflective-reload: false

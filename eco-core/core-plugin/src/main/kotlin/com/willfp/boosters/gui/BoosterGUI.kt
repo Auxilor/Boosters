@@ -48,9 +48,7 @@ object BoosterGUI {
         }
     }
 
-    @JvmStatic
-    @ConfigUpdater
-    fun update(plugin: BoostersPlugin) {
+    internal fun update(plugin: BoostersPlugin) {
         gui = menu(plugin.configYml.getInt("gui.rows")) {
             setMask(
                 FillerMask(

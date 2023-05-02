@@ -2,6 +2,7 @@ package com.willfp.boosters.boosters
 
 import com.google.common.collect.ImmutableList
 import com.willfp.boosters.BoostersPlugin
+import com.willfp.boosters.gui.BoosterGUI
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.registry.Registry
 import com.willfp.libreforge.loader.LibreforgePlugin
@@ -44,5 +45,9 @@ object Boosters : ConfigCategory("booster", "boosters") {
 
     override fun acceptConfig(plugin: LibreforgePlugin, id: String, config: Config) {
         registry.register(Booster(plugin as BoostersPlugin, id, config))
+    }
+
+    override fun afterReload(plugin: LibreforgePlugin) {
+        BoosterGUI.update(plugin as BoostersPlugin)
     }
 }
