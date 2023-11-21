@@ -11,7 +11,9 @@ import com.willfp.libreforge.SimpleProvidedHolder
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.loader.LibreforgePlugin
 import com.willfp.libreforge.loader.configs.ConfigCategory
+import com.willfp.libreforge.registerGenericHolderProvider
 import com.willfp.libreforge.registerHolderProvider
+import com.willfp.libreforge.registerSpecificHolderProvider
 import org.bukkit.Bukkit
 
 class BoostersPlugin : LibreforgePlugin() {
@@ -24,7 +26,9 @@ class BoostersPlugin : LibreforgePlugin() {
     override fun handleEnable() {
         Conditions.register(ConditionIsBoosterActive)
 
-        registerHolderProvider { Bukkit.getServer().activeBoosters.map { it.booster }.map { SimpleProvidedHolder(it) } }
+        registerGenericHolderProvider {
+            Bukkit.getServer().activeBoosters.map { it.booster }.map { SimpleProvidedHolder(it) }
+        }
     }
 
     override fun handleReload() {
