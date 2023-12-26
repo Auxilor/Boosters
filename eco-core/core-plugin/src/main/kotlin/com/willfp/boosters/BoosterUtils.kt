@@ -6,7 +6,6 @@ import com.willfp.boosters.boosters.ActivatedBooster
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activateBooster
-import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.profile
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
@@ -53,10 +52,10 @@ fun Player.activateBooster(booster: Booster): Boolean {
         Bukkit.broadcastMessage(activationMessage)
     }
 
-    for (expiryCommand in booster.activationCommands) {
+    for (activationCommand in booster.activationCommands) {
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
-            expiryCommand.replace("%player%", booster.active?.player?.name ?: "")
+            activationCommand.replace("%player%", this.name ?: "")
         )
     }
 

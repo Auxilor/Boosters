@@ -16,4 +16,5 @@ messages:
 
 no-currently-active: "&cNot Active!"
 no-currently-active-list: "&cThere isn't any booster active!"
+no-currently-active-ids-list: "None"
 active-placeholder: "&fThanks %player% &ffor activating %booster%&f!"
