@@ -55,7 +55,7 @@ fun Player.activateBooster(booster: Booster): Boolean {
     for (activationCommand in booster.activationCommands) {
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
-            activationCommand.replace("%player%", this.name ?: "")
+            activationCommand.replace("%player%", this.name)
         )
     }
 
