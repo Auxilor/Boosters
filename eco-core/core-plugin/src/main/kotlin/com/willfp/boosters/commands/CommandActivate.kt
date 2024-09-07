@@ -1,6 +1,7 @@
 package com.willfp.boosters.commands
 
 import com.willfp.boosters.activateBooster
+import com.willfp.boosters.activateBoosterConsole
 import com.willfp.boosters.boosters.ActivatedBooster
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
@@ -40,40 +41,12 @@ class CommandActivate(plugin: EcoPlugin) :
         val player = sender as? Player
 
         if (player == null) {
-            activateBoosterConsole(booster)
+            Bukkit.getServer().activateBoosterConsole(booster)
             return
         }
 
         player.incrementBoosters(booster, 1)
         player.activateBooster(booster)
-    }
-
-    private fun activateBoosterConsole(booster: Booster) {
-
-        for (activationCommand in booster.activationCommands) {
-            Bukkit.dispatchCommand(
-                Bukkit.getConsoleSender(),
-                activationCommand.replace("%player%", plugin.langYml.getMessage("console-displayname").formatEco(formatPlaceholders = false))
-            )
-        }
-
-        for (activationMessage in booster.getActivationMessages(null)) {
-            @Suppress("DEPRECATION")
-            Bukkit.broadcastMessage(activationMessage)
-        }
-
-        Bukkit.getServer().activateBooster(
-            ActivatedBooster(booster, null)
-        )
-
-        for (player in Bukkit.getOnlinePlayers()) {
-            player.playSound(
-                player.location,
-                Sound.UI_TOAST_CHALLENGE_COMPLETE,
-                2f,
-                0.9f
-            )
-        }
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
