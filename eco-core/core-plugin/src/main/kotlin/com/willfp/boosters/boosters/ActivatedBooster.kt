@@ -49,10 +49,10 @@ fun Server.scanForBoosters() {
 
 data class ActivatedBooster(
     val booster: Booster,
-    val uuid: UUID
+    val uuid: UUID?
 ) {
-    val player: OfflinePlayer
-        get() = Bukkit.getOfflinePlayer(uuid)
+    val player: OfflinePlayer?
+        get() = uuid?.let { Bukkit.getOfflinePlayer(it) }
 
     override fun equals(other: Any?): Boolean {
         if (other !is ActivatedBooster) {
