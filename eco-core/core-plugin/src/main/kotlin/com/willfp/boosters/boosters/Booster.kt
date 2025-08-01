@@ -55,7 +55,11 @@ class Booster(
                 return null
             }
 
-            val uuid = UUID.fromString(activeKey)
+            val uuid = try {
+                UUID.fromString(activeKey)
+            } catch (e: IllegalArgumentException) {
+                null
+            }
 
             return ActivatedBooster(this, uuid)
         }
@@ -75,7 +79,7 @@ class Booster(
 
     val duration = config.getInt("duration")
 
-    fun getActivationMessages(player: Player): List<String> {
+    fun getActivationMessages(player: Player?): List<String> {
         val messages = mutableListOf<String>()
 
         for (string in config.getFormattedStrings(
@@ -83,7 +87,7 @@ class Booster(
             StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
         )) {
             @Suppress("DEPRECATION")
-            messages.add(string.replace("%player%", player.displayName))
+            messages.add(string.replace("%player%", player?.displayName ?: plugin.langYml.getString("console-displayname")))
         }
 
         return messages
@@ -132,7 +136,7 @@ class Booster(
 
                 if (active != null) {
                     plugin.langYml.getString("active-placeholder")
-                        .replace("%player%", active.player.savedDisplayName)
+                        .replace("%player%", active.player?.savedDisplayName ?: plugin.langYml.getString("console-displayname"))
                         .replace("%booster%", active.booster.name)
                         .formatEco(formatPlaceholders = false)
                 } else {
@@ -147,7 +151,13 @@ class Booster(
                 plugin,
                 "${id}_player",
             ) {
-                active?.player?.savedDisplayName ?: ""
+                val active = this.active
+
+                if (active == null) {
+                    ""
+                } else {
+                    active.player?.savedDisplayName ?: plugin.langYml.getString("console-displayname").formatEco(formatPlaceholders = false)
+                }
             }
         )
 
@@ -158,7 +168,11 @@ class Booster(
             ) {
                 val active = this.active
 
-                active?.booster?.name ?: ""
+                if (active == null) {
+                    ""
+                } else {
+                    active.player?.name ?: plugin.langYml.getString("console-displayname").formatEco(formatPlaceholders = false)
+                }
             }
         )
 
