@@ -6,6 +6,7 @@ import com.willfp.boosters.boosters.ActivatedBooster
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activateBooster
+import com.willfp.boosters.boosters.increaseBooster
 import com.willfp.eco.core.data.profile
 import com.willfp.eco.util.formatEco
 import org.bukkit.Bukkit
@@ -66,6 +67,43 @@ fun Server.activateBoosterConsole(booster: Booster) {
         )
     }
 }
+
+
+fun Player.increaseBooster(booster: Booster): Boolean {
+    val amount = this.getAmountOfBooster(booster)
+
+    if (amount <= 0) {
+        return false
+    }
+
+    this.setAmountOfBooster(booster, amount - 1)
+
+    Bukkit.getServer().increaseBooster(booster.active, booster)
+
+    for (incrementMessage in booster.getIncrementMessage(this)) {
+        @Suppress("DEPRECATION")
+        Bukkit.broadcastMessage(incrementMessage)
+    }
+
+    for (incrementCommand in booster.incrementCommands) {
+        Bukkit.dispatchCommand(
+            Bukkit.getConsoleSender(),
+            incrementCommand.replace("%player%", this.name)
+        )
+    }
+
+    for (player in Bukkit.getOnlinePlayers()) {
+        player.playSound(
+            player.location,
+            Sound.UI_TOAST_CHALLENGE_COMPLETE,
+            2f,
+            0.9f
+        )
+    }
+
+    return true
+}
+
 
 fun Player.activateBooster(booster: Booster): Boolean {
     val amount = this.getAmountOfBooster(booster)
