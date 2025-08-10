@@ -79,6 +79,21 @@ class Booster(
 
     val duration = config.getInt("duration")
 
+    fun getIncrementMessage(player: Player?): List<String> {
+        val messages = mutableListOf<String>()
+
+        for (string in config.getFormattedStrings(
+            "messages.increment",
+            StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
+        )) {
+            @Suppress("DEPRECATION")
+            messages.add(string.replace("%player%", player?.displayName ?: plugin.langYml.getString("console-displayname")))
+        }
+
+        return messages
+    }
+
+
     fun getActivationMessages(player: Player?): List<String> {
         val messages = mutableListOf<String>()
 
@@ -96,6 +111,8 @@ class Booster(
     val expiryMessages: List<String> = config.getFormattedStrings("messages.expiry")
 
     val activationCommands: List<String> = config.getFormattedStrings("commands.activation")
+
+    val incrementCommands: List<String> = config.getFormattedStrings("commands.increment")
 
     val expiryCommands: List<String> = config.getFormattedStrings("commands.expiry")
 

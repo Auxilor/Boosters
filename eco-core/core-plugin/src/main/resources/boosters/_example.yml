@@ -21,8 +21,14 @@ conditions: []
 commands:
   activation: []
   expiry: []
+  increment: [ ]
 
 messages:
+  increment:
+    - ""
+    - " %player%&f has increased the &a1.5x Sell Multiplier Booster's duration&f!"
+    - " &fThis booster will last another hour, be sure to thank them!"
+    - ""
   activation:
     - ""
     - " %player%&f has activated a &a1.5x Sell Multiplier Booster&f!"
