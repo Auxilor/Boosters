@@ -9,6 +9,7 @@ import com.willfp.boosters.boosters.activateBooster
 import com.willfp.boosters.boosters.increaseBooster
 import com.willfp.eco.core.data.profile
 import com.willfp.eco.util.formatEco
+import com.willfp.libreforge.toDispatcher
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Server
@@ -54,6 +55,8 @@ fun Server.activateBoosterConsole(booster: Booster) {
         Bukkit.broadcastMessage(activationMessage)
     }
 
+    Bukkit.getOnlinePlayers().forEach { booster.activationEffects?.trigger(it.toDispatcher()) }
+
     Bukkit.getServer().activateBooster(
         ActivatedBooster(booster, null)
     )
@@ -77,6 +80,8 @@ fun Player.increaseBooster(booster: Booster): Boolean {
     }
 
     this.setAmountOfBooster(booster, amount - 1)
+
+    Bukkit.getOnlinePlayers().forEach { booster.incrementEffects?.trigger(it.toDispatcher()) }
 
     Bukkit.getServer().increaseBooster(booster.active, booster)
 
@@ -125,6 +130,8 @@ fun Player.activateBooster(booster: Booster): Boolean {
             activationCommand.replace("%player%", this.name)
         )
     }
+
+    Bukkit.getOnlinePlayers().forEach { booster.activationEffects?.trigger(it.toDispatcher()) }
 
     Bukkit.getServer().activateBooster(
         ActivatedBooster(booster, this.uniqueId)

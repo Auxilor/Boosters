@@ -7,6 +7,7 @@ import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.libreforge.ConditionIsBoosterActive
 import com.willfp.eco.core.command.impl.PluginCommand
+import com.willfp.libreforge.GlobalDispatcher
 import com.willfp.libreforge.SimpleProvidedHolder
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.loader.LibreforgePlugin
@@ -14,6 +15,7 @@ import com.willfp.libreforge.loader.configs.ConfigCategory
 import com.willfp.libreforge.registerGenericHolderProvider
 import com.willfp.libreforge.registerHolderProvider
 import com.willfp.libreforge.registerSpecificHolderProvider
+import com.willfp.libreforge.toDispatcher
 import org.bukkit.Bukkit
 
 class BoostersPlugin : LibreforgePlugin() {
@@ -50,6 +52,8 @@ class BoostersPlugin : LibreforgePlugin() {
                             expiryCommand.replace("%player%", booster.active?.player?.name ?: "")
                         )
                     }
+
+                    Bukkit.getOnlinePlayers().forEach { booster.expiryEffects?.trigger(it.toDispatcher()) }
 
                     Bukkit.getServer().expireBooster(booster)
                 }

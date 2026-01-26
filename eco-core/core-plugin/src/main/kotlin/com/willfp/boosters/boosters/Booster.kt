@@ -18,6 +18,7 @@ import com.willfp.libreforge.Holder
 import com.willfp.libreforge.ViolationContext
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.effects.Effects
+import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -79,6 +80,26 @@ class Booster(
 
     val duration = config.getInt("duration")
 
+    val activationEffects = Effects.compileChain(
+        config.getSubsections("activation-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Activation Effects")
+    )
+
+    val expiryEffects = Effects.compileChain(
+        config.getSubsections("expiry-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Expiry Effects")
+    )
+
+    val incrementEffects = Effects.compileChain(
+        config.getSubsections("increment-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Increment Effects")
+    )
+
+    // * Deprecated options, to be removed in the future * //
+    @Deprecated("Use incrementEffects instead")
     fun getIncrementMessage(player: Player?): List<String> {
         val messages = mutableListOf<String>()
 
@@ -93,7 +114,7 @@ class Booster(
         return messages
     }
 
-
+    @Deprecated("Use activationEffects instead")
     fun getActivationMessages(player: Player?): List<String> {
         val messages = mutableListOf<String>()
 
@@ -108,13 +129,56 @@ class Booster(
         return messages
     }
 
+    @Suppress("DEPRECATION")
     val expiryMessages: List<String> = config.getFormattedStrings("messages.expiry")
 
+    @Suppress("DEPRECATION")
     val activationCommands: List<String> = config.getFormattedStrings("commands.activation")
 
+    @Suppress("DEPRECATION")
     val incrementCommands: List<String> = config.getFormattedStrings("commands.increment")
 
+    @Suppress("DEPRECATION")
     val expiryCommands: List<String> = config.getFormattedStrings("commands.expiry")
+
+    // * Deprecated options, to be removed in the future * //
+    init {
+        if (config.has("commands.activation")) {
+            plugin.logger.warning(
+                "Booster '$id' uses deprecated 'commands.activation'. Please switch to 'activation-effects'."
+            )
+        }
+
+        if (config.has("messages.activation")) {
+            plugin.logger.warning(
+                "Booster '$id' uses deprecated 'messages.activation'. Please switch to 'activation-effects'."
+            )
+        }
+
+        if (config.has("commands.increment")) {
+            plugin.logger.warning(
+                "Booster '$id' uses deprecated 'commands.increment'. Please switch to 'increment-effects'."
+            )
+        }
+
+        if (config.has("messages.increment")) {
+            plugin.logger.warning(
+                "Booster '$id' uses deprecated 'messages.increment'. Please switch to 'increment-effects'."
+            )
+        }
+
+        if (config.has("commands.expiry")) {
+            plugin.logger.warning(
+                "Booster '$id' uses deprecated 'commands.expiry'. Please switch to 'expiry-effects'."
+            )
+        }
+
+        if (config.has("messages.expiry")) {
+            plugin.logger.warning(
+                "Booster '$id' uses deprecated 'messages.expiry'. Please switch to 'expiry-effects'."
+            )
+        }
+    }
 
     fun getGuiItem(player: Player): ItemStack {
         return ItemStackBuilder(Items.lookup(config.getString("gui.item")))
