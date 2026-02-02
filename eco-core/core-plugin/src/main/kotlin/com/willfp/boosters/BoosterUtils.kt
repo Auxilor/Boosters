@@ -9,7 +9,10 @@ import com.willfp.boosters.boosters.activateBooster
 import com.willfp.boosters.boosters.increaseBooster
 import com.willfp.eco.core.data.profile
 import com.willfp.eco.util.formatEco
+import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.toDispatcher
+import com.willfp.libreforge.triggers.DispatchedTrigger
+import com.willfp.libreforge.triggers.TriggerData
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Server
@@ -43,10 +46,14 @@ fun OfflinePlayer.incrementBoosters(booster: Booster, amount: Int) {
 }
 
 fun Server.activateBoosterConsole(booster: Booster) {
+    val consoleName = BoostersPlugin.instance.langYml
+        .getMessage("console-displayname")
+        .formatEco(formatPlaceholders = false)
+
     for (activationCommand in booster.activationCommands) {
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
-            activationCommand.replace("%player%", BoostersPlugin.instance.langYml.getMessage("console-displayname").formatEco(formatPlaceholders = false))
+            activationCommand.replace("%player%", consoleName)
         )
     }
 
@@ -55,7 +62,13 @@ fun Server.activateBoosterConsole(booster: Booster) {
         Bukkit.broadcastMessage(activationMessage)
     }
 
-    Bukkit.getOnlinePlayers().forEach { booster.activationEffects?.trigger(it.toDispatcher()) }
+    Bukkit.getOnlinePlayers().forEach { target ->
+        booster.activationEffects?.trigger(
+            TriggerData(player = target)
+                .dispatch(target.toDispatcher())
+                .apply { addPlaceholder(NamedValue("activator", consoleName)) }
+        )
+    }
 
     Bukkit.getServer().activateBooster(
         ActivatedBooster(booster, null)
@@ -81,7 +94,21 @@ fun Player.increaseBooster(booster: Booster): Boolean {
 
     this.setAmountOfBooster(booster, amount - 1)
 
-    Bukkit.getOnlinePlayers().forEach { booster.incrementEffects?.trigger(it.toDispatcher()) }
+    val activator = this
+    val effects = booster.incrementEffects
+
+    if (effects != null) {
+        Bukkit.getOnlinePlayers().forEach { target ->
+            val dispatched = TriggerData(player = target)
+                .dispatch(target.toDispatcher())
+
+            dispatched.addPlaceholder(
+                NamedValue("activator", activator.name)
+            )
+
+            effects.trigger(dispatched)
+        }
+    }
 
     Bukkit.getServer().increaseBooster(booster.active, booster)
 
@@ -131,7 +158,18 @@ fun Player.activateBooster(booster: Booster): Boolean {
         )
     }
 
-    Bukkit.getOnlinePlayers().forEach { booster.activationEffects?.trigger(it.toDispatcher()) }
+    val activator = this
+
+    Bukkit.getOnlinePlayers().forEach { target ->
+        val dispatched = TriggerData(player = target)
+            .dispatch(target.toDispatcher())
+
+        dispatched.addPlaceholder(
+            NamedValue("activator", activator.name)
+        )
+
+        booster.activationEffects?.trigger(dispatched)
+    }
 
     Bukkit.getServer().activateBooster(
         ActivatedBooster(booster, this.uniqueId)

@@ -4,27 +4,37 @@ effects:
   - id: sell_multiplier
     args:
       multiplier: 2
-conditions: [ ]
-commands:
-  activation: [ ]
-  expiry: [ ]
-  increment: [ ]
-messages:
-  increment:
-    - ""
-    - " %player%&f has increased the &a2x Sell Multiplier Booster's duration&f!"
-    - " &fThis booster will last another hour, be sure to thank them!"
-    - ""
-  activation:
-    - ""
-    - " %player%&f has activated a &a2x Sell Multiplier Booster&f!"
-    - " &fThis booster will last an hour, be sure to thank them!"
-    - ""
-  expiry:
-    - ""
-    - " &fThe &a2x Sell Multiplier Booster&f has ended"
-    - " &fGet another one here: &ahttps://store.ecomc.net/package/756888"
-    - ""
+
+activation-effects:
+  - id: send_message
+    args:
+      action_bar: false
+      messages:
+        - ""
+        - " %activator%&f has activated a &a2x Sell Multiplier Booster&f!"
+        - " &fThis booster will last an hour, be sure to thank them!"
+        - ""
+
+increment-effects:
+  - id: send_message
+    args:
+      action_bar: false
+      messages:
+        - ""
+        - " %activator%&f has increased the &a2x Sell Multiplier Booster's duration&f!"
+        - " &fThis booster will last another hour, be sure to thank them!"
+        - ""
+
+expiry-effects:
+  - id: send_message
+    args:
+      action_bar: false
+      messages:
+        - ""
+        - " &fThe &a2x Sell Multiplier Booster&f has ended"
+        - " &fGet another one here: &ahttps://store.ecomc.net/package/756888"
+        - ""
+
 gui:
   item: player_head texture:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjBhN2I5NGM0ZTU4MWI2OTkxNTlkNDg4NDZlYzA5MTM5MjUwNjIzN2M4OWE5N2M5MzI0OGEwZDhhYmM5MTZkNSJ9fX0=
   name: "&d2x Sell Multiplier"
