@@ -11,7 +11,6 @@ import com.willfp.eco.core.data.profile
 import com.willfp.eco.util.formatEco
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.toDispatcher
-import com.willfp.libreforge.triggers.DispatchedTrigger
 import com.willfp.libreforge.triggers.TriggerData
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
@@ -45,8 +44,9 @@ fun OfflinePlayer.incrementBoosters(booster: Booster, amount: Int) {
     this.setAmountOfBooster(booster, this.getAmountOfBooster(booster) + amount)
 }
 
+@Suppress("DEPRECATION")
 fun Server.activateBoosterConsole(booster: Booster) {
-    val consoleName = BoostersPlugin.instance.langYml
+    val consoleName = plugin.langYml
         .getMessage("console-displayname")
         .formatEco(formatPlaceholders = false)
 
@@ -58,7 +58,6 @@ fun Server.activateBoosterConsole(booster: Booster) {
     }
 
     for (activationMessage in booster.getActivationMessages(null)) {
-        @Suppress("DEPRECATION")
         Bukkit.broadcastMessage(activationMessage)
     }
 
@@ -85,6 +84,7 @@ fun Server.activateBoosterConsole(booster: Booster) {
 }
 
 
+@Suppress("DEPRECATION")
 fun Player.increaseBooster(booster: Booster): Boolean {
     val amount = this.getAmountOfBooster(booster)
 
@@ -113,7 +113,6 @@ fun Player.increaseBooster(booster: Booster): Boolean {
     Bukkit.getServer().increaseBooster(booster.active, booster)
 
     for (incrementMessage in booster.getIncrementMessage(this)) {
-        @Suppress("DEPRECATION")
         Bukkit.broadcastMessage(incrementMessage)
     }
 
@@ -137,6 +136,7 @@ fun Player.increaseBooster(booster: Booster): Boolean {
 }
 
 
+@Suppress("DEPRECATION")
 fun Player.activateBooster(booster: Booster): Boolean {
     val amount = this.getAmountOfBooster(booster)
 
@@ -147,7 +147,6 @@ fun Player.activateBooster(booster: Booster): Boolean {
     this.setAmountOfBooster(booster, amount - 1)
 
     for (activationMessage in booster.getActivationMessages(this)) {
-        @Suppress("DEPRECATION")
         Bukkit.broadcastMessage(activationMessage)
     }
 
