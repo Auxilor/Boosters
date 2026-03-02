@@ -5,8 +5,6 @@ import com.willfp.boosters.activateBooster
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.increaseBooster
-import com.willfp.eco.core.config.updating.ConfigUpdater
-import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.slot
@@ -14,7 +12,6 @@ import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.util.tryAsPlayer
-import org.bukkit.Bukkit
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 

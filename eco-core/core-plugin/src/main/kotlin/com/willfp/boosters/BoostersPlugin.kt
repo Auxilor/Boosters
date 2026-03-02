@@ -7,16 +7,14 @@ import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.libreforge.ConditionIsBoosterActive
 import com.willfp.eco.core.command.impl.PluginCommand
-import com.willfp.libreforge.GlobalDispatcher
 import com.willfp.libreforge.SimpleProvidedHolder
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.loader.LibreforgePlugin
 import com.willfp.libreforge.loader.configs.ConfigCategory
 import com.willfp.libreforge.registerGenericHolderProvider
-import com.willfp.libreforge.registerHolderProvider
-import com.willfp.libreforge.registerSpecificHolderProvider
 import com.willfp.libreforge.toDispatcher
 import org.bukkit.Bukkit
+import org.bukkit.Sound
 
 class BoostersPlugin : LibreforgePlugin() {
     override fun loadConfigCategories(): List<ConfigCategory> {
@@ -34,7 +32,7 @@ class BoostersPlugin : LibreforgePlugin() {
     }
 
     override fun handleReload() {
-        this.scheduler.runTimer(1, 1) {
+        this.scheduler.runTimer(20L, 20L) {     // was 1,1 → now 20,20
             for (booster in Boosters.values()) {
                 if (booster.active == null) {
                     continue
@@ -53,7 +51,16 @@ class BoostersPlugin : LibreforgePlugin() {
                         )
                     }
 
-                    Bukkit.getOnlinePlayers().forEach { booster.expiryEffects?.trigger(it.toDispatcher()) }
+                    Bukkit.getOnlinePlayers().forEach { player ->
+                        booster.expiryEffects?.trigger(player.toDispatcher())
+
+                        player.playSound(
+                            player.location,
+                            Sound.ENTITY_ENDER_DRAGON_DEATH,
+                            2f,
+                            0.9f
+                        )
+                    }
 
                     Bukkit.getServer().expireBooster(booster)
                 }

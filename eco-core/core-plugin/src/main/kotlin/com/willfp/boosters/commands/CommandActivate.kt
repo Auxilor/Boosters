@@ -2,16 +2,12 @@ package com.willfp.boosters.commands
 
 import com.willfp.boosters.activateBooster
 import com.willfp.boosters.activateBoosterConsole
-import com.willfp.boosters.boosters.ActivatedBooster
-import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
-import com.willfp.boosters.boosters.activateBooster
-import com.willfp.boosters.incrementBoosters
+import com.willfp.boosters.increaseBooster
+import com.willfp.boosters.incrementBoosterConsole
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.util.formatEco
 import org.bukkit.Bukkit
-import org.bukkit.Sound
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
@@ -41,12 +37,19 @@ class CommandActivate(plugin: EcoPlugin) :
         val player = sender as? Player
 
         if (player == null) {
-            Bukkit.getServer().activateBoosterConsole(booster)
+            if (booster.active != null) {
+                Bukkit.getServer().incrementBoosterConsole(booster)
+            } else {
+                Bukkit.getServer().activateBoosterConsole(booster)
+            }
             return
         }
 
-        player.incrementBoosters(booster, 1)
-        player.activateBooster(booster)
+        if (booster.active != null) {
+            player.increaseBooster(booster)
+        } else {
+            player.activateBooster(booster)
+        }
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {

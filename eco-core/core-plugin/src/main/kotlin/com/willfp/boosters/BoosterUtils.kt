@@ -11,7 +11,6 @@ import com.willfp.eco.core.data.profile
 import com.willfp.eco.util.formatEco
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.toDispatcher
-import com.willfp.libreforge.triggers.DispatchedTrigger
 import com.willfp.libreforge.triggers.TriggerData
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
@@ -50,6 +49,14 @@ fun Server.activateBoosterConsole(booster: Booster) {
         .getMessage("console-displayname")
         .formatEco(formatPlaceholders = false)
 
+    Bukkit.getOnlinePlayers().forEach { target ->
+        booster.activationEffects?.trigger(
+            TriggerData(player = target)
+                .dispatch(target.toDispatcher())
+                .apply { addPlaceholder(NamedValue("activator", consoleName)) }
+        )
+    }
+
     for (activationCommand in booster.activationCommands) {
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
@@ -62,17 +69,7 @@ fun Server.activateBoosterConsole(booster: Booster) {
         Bukkit.broadcastMessage(activationMessage)
     }
 
-    Bukkit.getOnlinePlayers().forEach { target ->
-        booster.activationEffects?.trigger(
-            TriggerData(player = target)
-                .dispatch(target.toDispatcher())
-                .apply { addPlaceholder(NamedValue("activator", consoleName)) }
-        )
-    }
-
-    Bukkit.getServer().activateBooster(
-        ActivatedBooster(booster, null)
-    )
+    this.activateBooster(ActivatedBooster(booster, null))
 
     for (player in Bukkit.getOnlinePlayers()) {
         player.playSound(
@@ -84,43 +81,23 @@ fun Server.activateBoosterConsole(booster: Booster) {
     }
 }
 
+fun Server.incrementBoosterConsole(booster: Booster) {
+    val consoleName = BoostersPlugin.instance.langYml
+        .getMessage("console-displayname")
+        .formatEco(formatPlaceholders = false)
 
-fun Player.increaseBooster(booster: Booster): Boolean {
-    val amount = this.getAmountOfBooster(booster)
-
-    if (amount <= 0) {
-        return false
-    }
-
-    this.setAmountOfBooster(booster, amount - 1)
-
-    val activator = this
-    val effects = booster.incrementEffects
-
-    if (effects != null) {
-        Bukkit.getOnlinePlayers().forEach { target ->
-            val dispatched = TriggerData(player = target)
+    Bukkit.getOnlinePlayers().forEach { target ->
+        booster.incrementEffects?.trigger(
+            TriggerData(player = target)
                 .dispatch(target.toDispatcher())
-
-            dispatched.addPlaceholder(
-                NamedValue("activator", activator.name)
-            )
-
-            effects.trigger(dispatched)
-        }
-    }
-
-    Bukkit.getServer().increaseBooster(booster.active, booster)
-
-    for (incrementMessage in booster.getIncrementMessage(this)) {
-        @Suppress("DEPRECATION")
-        Bukkit.broadcastMessage(incrementMessage)
+                .apply { addPlaceholder(NamedValue("activator", consoleName)) }
+        )
     }
 
     for (incrementCommand in booster.incrementCommands) {
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
-            incrementCommand.replace("%player%", this.name)
+            incrementCommand.replace("%player%", consoleName)
         )
     }
 
@@ -131,9 +108,13 @@ fun Player.increaseBooster(booster: Booster): Boolean {
             2f,
             0.9f
         )
-    }
+        for (incrementMessage in booster.getIncrementMessage(null)) {
+            @Suppress("DEPRECATION")
+            Bukkit.broadcastMessage(incrementMessage)
+        }
 
-    return true
+        this.increaseBooster(booster.active, booster)
+    }
 }
 
 
@@ -181,6 +162,47 @@ fun Player.activateBooster(booster: Booster): Boolean {
             Sound.UI_TOAST_CHALLENGE_COMPLETE,
             2f,
             0.9f
+        )
+    }
+
+    return true
+}
+
+fun Player.increaseBooster(booster: Booster): Boolean {
+    val amount = this.getAmountOfBooster(booster)
+
+    if (amount <= 0) {
+        return false
+    }
+
+    this.setAmountOfBooster(booster, amount - 1)
+
+    val effects = booster.incrementEffects
+
+    if (effects != null) {
+        Bukkit.getOnlinePlayers().forEach { target ->
+            val dispatched = TriggerData(player = target)
+                .dispatch(target.toDispatcher())
+
+            dispatched.addPlaceholder(
+                NamedValue("activator", activator.name)
+            )
+
+            effects.trigger(dispatched)
+        }
+    }
+
+    Bukkit.getServer().increaseBooster(booster.active, booster)
+
+    for (incrementMessage in booster.getIncrementMessage(this)) {
+        @Suppress("DEPRECATION")
+        Bukkit.broadcastMessage(incrementMessage)
+    }
+
+    for (incrementCommand in booster.incrementCommands) {
+        Bukkit.dispatchCommand(
+            Bukkit.getConsoleSender(),
+            incrementCommand.replace("%player%", this.name)
         )
     }
 

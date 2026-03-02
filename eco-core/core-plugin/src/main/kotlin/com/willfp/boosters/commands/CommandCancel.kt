@@ -1,6 +1,5 @@
 package com.willfp.boosters.commands
 
-import com.willfp.boosters.BoostersPlugin
 import com.willfp.boosters.boosters.activeBoosters
 import com.willfp.boosters.boosters.expireBooster
 import com.willfp.eco.core.EcoPlugin
