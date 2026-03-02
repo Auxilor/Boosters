@@ -177,6 +177,7 @@ fun Player.increaseBooster(booster: Booster): Boolean {
 
     this.setAmountOfBooster(booster, amount - 1)
 
+    val activator = this
     val effects = booster.incrementEffects
 
     if (effects != null) {
