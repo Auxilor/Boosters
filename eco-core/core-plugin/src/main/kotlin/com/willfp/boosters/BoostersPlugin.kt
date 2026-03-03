@@ -17,6 +17,8 @@ import org.bukkit.Bukkit
 import org.bukkit.Sound
 
 class BoostersPlugin : LibreforgePlugin() {
+    private val bossBarManager = BoosterBossBarManager()
+
     override fun loadConfigCategories(): List<ConfigCategory> {
         return listOf(
             Boosters
@@ -32,7 +34,9 @@ class BoostersPlugin : LibreforgePlugin() {
     }
 
     override fun handleReload() {
-        this.scheduler.runTimer(20L, 20L) {     // was 1,1 → now 20,20
+        bossBarManager.clearAll()
+
+        this.scheduler.runTimer(20L, 20L) {
             for (booster in Boosters.values()) {
                 if (booster.active == null) {
                     continue
@@ -62,15 +66,23 @@ class BoostersPlugin : LibreforgePlugin() {
                         )
                     }
 
+                    bossBarManager.clearFor(booster)
                     Bukkit.getServer().expireBooster(booster)
                 }
             }
+
+            bossBarManager.render()
         }
 
         // Just run it later enough
         this.scheduler.runLater(3) {
             Bukkit.getServer().scanForBoosters()
+            bossBarManager.render()
         }
+    }
+
+    override fun handleDisable() {
+        bossBarManager.clearAll()
     }
 
     override fun loadPluginCommands(): List<PluginCommand> {

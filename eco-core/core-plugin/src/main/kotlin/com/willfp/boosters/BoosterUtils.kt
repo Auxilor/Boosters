@@ -101,6 +101,13 @@ fun Server.incrementBoosterConsole(booster: Booster) {
         )
     }
 
+    for (incrementMessage in booster.getIncrementMessage(null)) {
+        @Suppress("DEPRECATION")
+        Bukkit.broadcastMessage(incrementMessage)
+    }
+
+    this.increaseBooster(booster)
+
     for (player in Bukkit.getOnlinePlayers()) {
         player.playSound(
             player.location,
@@ -108,12 +115,6 @@ fun Server.incrementBoosterConsole(booster: Booster) {
             2f,
             0.9f
         )
-        for (incrementMessage in booster.getIncrementMessage(null)) {
-            @Suppress("DEPRECATION")
-            Bukkit.broadcastMessage(incrementMessage)
-        }
-
-        this.increaseBooster(booster.active, booster)
     }
 }
 
@@ -193,7 +194,7 @@ fun Player.increaseBooster(booster: Booster): Boolean {
         }
     }
 
-    Bukkit.getServer().increaseBooster(booster.active, booster)
+    Bukkit.getServer().increaseBooster(booster)
 
     for (incrementMessage in booster.getIncrementMessage(this)) {
         @Suppress("DEPRECATION")
