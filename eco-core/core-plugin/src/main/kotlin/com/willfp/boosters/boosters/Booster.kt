@@ -18,6 +18,7 @@ import com.willfp.libreforge.Holder
 import com.willfp.libreforge.ViolationContext
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.effects.Effects
+import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -55,7 +56,11 @@ class Booster(
                 return null
             }
 
-            val uuid = UUID.fromString(activeKey)
+            val uuid = try {
+                UUID.fromString(activeKey)
+            } catch (e: IllegalArgumentException) {
+                null
+            }
 
             return ActivatedBooster(this, uuid)
         }
@@ -75,7 +80,42 @@ class Booster(
 
     val duration = config.getInt("duration")
 
-    fun getActivationMessages(player: Player): List<String> {
+    val activationEffects = Effects.compileChain(
+        config.getSubsections("activation-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Activation Effects")
+    )
+
+    val expiryEffects = Effects.compileChain(
+        config.getSubsections("expiry-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Expiry Effects")
+    )
+
+    val incrementEffects = Effects.compileChain(
+        config.getSubsections("increment-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Increment Effects")
+    )
+
+    // * Deprecated options, to be removed in the future * //
+    @Deprecated("Use incrementEffects instead")
+    fun getIncrementMessage(player: Player?): List<String> {
+        val messages = mutableListOf<String>()
+
+        for (string in config.getFormattedStrings(
+            "messages.increment",
+            StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
+        )) {
+            @Suppress("DEPRECATION")
+            messages.add(string.replace("%player%", player?.displayName ?: plugin.langYml.getString("console-displayname")))
+        }
+
+        return messages
+    }
+
+    @Deprecated("Use activationEffects instead")
+    fun getActivationMessages(player: Player?): List<String> {
         val messages = mutableListOf<String>()
 
         for (string in config.getFormattedStrings(
@@ -83,17 +123,62 @@ class Booster(
             StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
         )) {
             @Suppress("DEPRECATION")
-            messages.add(string.replace("%player%", player.displayName))
+            messages.add(string.replace("%player%", player?.displayName ?: plugin.langYml.getString("console-displayname")))
         }
 
         return messages
     }
 
+    @Suppress("DEPRECATION")
     val expiryMessages: List<String> = config.getFormattedStrings("messages.expiry")
 
+    @Suppress("DEPRECATION")
     val activationCommands: List<String> = config.getFormattedStrings("commands.activation")
 
+    @Suppress("DEPRECATION")
+    val incrementCommands: List<String> = config.getFormattedStrings("commands.increment")
+
+    @Suppress("DEPRECATION")
     val expiryCommands: List<String> = config.getFormattedStrings("commands.expiry")
+
+    // * Deprecated options, to be removed in the future * //
+    init {
+        if (config.has("commands.activation")) {
+            plugin.logger.warning(
+                "Booster '$id' uses deprecated 'commands.activation'. Please switch to 'activation-effects'."
+            )
+        }
+
+        if (config.has("messages.activation")) {
+            plugin.logger.warning(
+                "Booster '$id' uses deprecated 'messages.activation'. Please switch to 'activation-effects'."
+            )
+        }
+
+        if (config.has("commands.increment")) {
+            plugin.logger.warning(
+                "Booster '$id' uses deprecated 'commands.increment'. Please switch to 'increment-effects'."
+            )
+        }
+
+        if (config.has("messages.increment")) {
+            plugin.logger.warning(
+                "Booster '$id' uses deprecated 'messages.increment'. Please switch to 'increment-effects'."
+            )
+        }
+
+        if (config.has("commands.expiry")) {
+            plugin.logger.warning(
+                "Booster '$id' uses deprecated 'commands.expiry'. Please switch to 'expiry-effects'."
+            )
+        }
+
+        if (config.has("messages.expiry")) {
+            plugin.logger.warning(
+                "Booster '$id' uses deprecated 'messages.expiry'. Please switch to 'expiry-effects'."
+            )
+        }
+    }
 
     fun getGuiItem(player: Player): ItemStack {
         return ItemStackBuilder(Items.lookup(config.getString("gui.item")))
@@ -132,7 +217,7 @@ class Booster(
 
                 if (active != null) {
                     plugin.langYml.getString("active-placeholder")
-                        .replace("%player%", active.player.savedDisplayName)
+                        .replace("%player%", active.player?.savedDisplayName ?: plugin.langYml.getString("console-displayname"))
                         .replace("%booster%", active.booster.name)
                         .formatEco(formatPlaceholders = false)
                 } else {
@@ -147,7 +232,13 @@ class Booster(
                 plugin,
                 "${id}_player",
             ) {
-                active?.player?.savedDisplayName ?: ""
+                val active = this.active
+
+                if (active == null) {
+                    ""
+                } else {
+                    active.player?.savedDisplayName ?: plugin.langYml.getString("console-displayname").formatEco(formatPlaceholders = false)
+                }
             }
         )
 
@@ -158,7 +249,11 @@ class Booster(
             ) {
                 val active = this.active
 
-                active?.booster?.name ?: ""
+                if (active == null) {
+                    ""
+                } else {
+                    active.player?.name ?: plugin.langYml.getString("console-displayname").formatEco(formatPlaceholders = false)
+                }
             }
         )
 
@@ -217,6 +312,27 @@ class Booster(
                     plugin.langYml.getString("no-currently-active-list").formatEco(formatPlaceholders = false)
                 if (activeList.size > 0) {
                     outputString = activeList.joinToString(", ")
+                }
+
+                outputString
+            }
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "active_ids_list",
+            ) {
+                var activeList = mutableListOf<String>()
+
+                for (active in Bukkit.getServer().activeBoosters) {
+                    activeList.add(active.booster.getID())
+                }
+
+                var outputString =
+                    plugin.langYml.getString("no-currently-active-ids-list").formatEco(formatPlaceholders = false)
+                if (activeList.size > 0) {
+                    outputString = activeList.joinToString(",")
                 }
 
                 outputString

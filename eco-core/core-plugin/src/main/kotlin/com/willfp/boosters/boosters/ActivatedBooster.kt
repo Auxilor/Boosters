@@ -10,6 +10,15 @@ import java.util.*
 
 private val boosters = mutableSetOf<ActivatedBooster>()
 
+fun Server.increaseBooster(activatedBooster: ActivatedBooster?, booster: Booster) {
+    val profile = ServerProfile.load()
+    val currentExpiry = profile.read(booster.expiryTimeKey)
+    val extraTime = booster.duration.toDouble() * 50
+    val newExpiry = currentExpiry + extraTime;
+    profile.write(booster.expiryTimeKey, newExpiry)
+}
+
+
 fun Server.activateBooster(activatedBooster: ActivatedBooster) {
     val (booster, uuid) = activatedBooster
 
@@ -49,10 +58,10 @@ fun Server.scanForBoosters() {
 
 data class ActivatedBooster(
     val booster: Booster,
-    val uuid: UUID
+    val uuid: UUID?
 ) {
-    val player: OfflinePlayer
-        get() = Bukkit.getOfflinePlayer(uuid)
+    val player: OfflinePlayer?
+        get() = uuid?.let { Bukkit.getOfflinePlayer(it) }
 
     override fun equals(other: Any?): Boolean {
         if (other !is ActivatedBooster) {

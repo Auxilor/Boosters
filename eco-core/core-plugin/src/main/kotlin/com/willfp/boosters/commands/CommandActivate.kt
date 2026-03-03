@@ -1,10 +1,13 @@
 package com.willfp.boosters.commands
 
 import com.willfp.boosters.activateBooster
+import com.willfp.boosters.activateBoosterConsole
 import com.willfp.boosters.boosters.Boosters
-import com.willfp.boosters.incrementBoosters
+import com.willfp.boosters.increaseBooster
+import com.willfp.boosters.incrementBoosterConsole
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
@@ -14,11 +17,10 @@ class CommandActivate(plugin: EcoPlugin) :
         plugin,
         "activate",
         "boosters.command.activate",
-        true
+        false
     ) {
 
     override fun onExecute(sender: CommandSender, args: List<String>) {
-        val player = sender as? Player ?: return
 
         if (args.isEmpty()) {
             sender.sendMessage(plugin.langYml.getMessage("requires-booster"))
@@ -32,8 +34,22 @@ class CommandActivate(plugin: EcoPlugin) :
             return
         }
 
-        player.incrementBoosters(booster, 1)
-        player.activateBooster(booster)
+        val player = sender as? Player
+
+        if (player == null) {
+            if (booster.active != null) {
+                Bukkit.getServer().incrementBoosterConsole(booster)
+            } else {
+                Bukkit.getServer().activateBoosterConsole(booster)
+            }
+            return
+        }
+
+        if (booster.active != null) {
+            player.increaseBooster(booster)
+        } else {
+            player.activateBooster(booster)
+        }
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
