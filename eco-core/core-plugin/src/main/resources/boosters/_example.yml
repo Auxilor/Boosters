@@ -7,6 +7,16 @@
 name: "1.5x Sell Multiplier" # The name of the booster, shown to players
 duration: 72000 # The duration, in ticks
 
+# Optional per-booster bossbar settings.
+# The bossbar progress tracks remaining duration and updates if the booster is incremented.
+# Valid colors: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
+# Valid styles: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+bossbar:
+  enabled: true
+  name: "&a1.5x Sell Multiplier" # Defaults to booster "name" if omitted
+  color: GREEN
+  style: SOLID
+
 # The effects of the booster (i.e. the functionality)
 # See here: https://plugins.auxilor.io/effects/configuring-an-effect
 effects:
