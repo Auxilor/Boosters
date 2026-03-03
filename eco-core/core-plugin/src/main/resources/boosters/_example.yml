@@ -7,6 +7,10 @@
 name: "1.5x Sell Multiplier" # The name of the booster, shown to players
 duration: 72000 # The duration, in ticks
 
+category: "sell_multiplier" # The category of the booster, used for queueing and preventing boosters of the same category from being active at the same time. Optional.
+
+merge-tag: "1.5x_Sell_Multiplier" # The tag used to identify boosters that can be merged together. Optional.
+
 # The effects of the booster (i.e. the functionality)
 # See here: https://plugins.auxilor.io/effects/configuring-an-effect
 effects:
@@ -14,12 +18,16 @@ effects:
     args:
       multiplier: 1.5
 
+# The conditions required for the Booster to be activated (applies to the player activating the booster)
+activation-conditions: []
+
 # The conditions required for the effects to activate
 conditions: []
 
 # Effects to be run when the Booster is activated (applies to all players)
 # %activator% - The player who activated the booster
 # %player% - The player receiving the message/effect
+# %time% - The time remaining on the booster
 activation-effects:
   - id: send_message
     args:
@@ -27,10 +35,13 @@ activation-effects:
       messages:
         - ""
         - " %activator%&f has activated a &a1.5x Sell Multiplier Booster&f!"
-        - " &fThis booster will last an hour, be sure to thank them!"
+        - " &fThis booster will last %time%, be sure to thank them!"
         - ""
 
 # Effects to be run when the Booster is incremented (applies to all players)
+# %activator% - The player who queued the booster
+# %player% - The player receiving the message/effect
+# %time% - The time remaining on the booster
 increment-effects:
   - id: send_message
     args:
@@ -38,7 +49,36 @@ increment-effects:
       messages:
         - ""
         - " %activator%&f has increased the &a1.5x Sell Multiplier Booster's duration&f!"
-        - " &fThis booster will last another hour, be sure to thank them!"
+        - " &fThis booster will last %time%, be sure to thank them!"
+        - ""
+
+# Effects to be run when the Booster is queued (applies to all players)
+# %activator% - The player who queued the booster
+# %player% - The player receiving the message/effect
+# %time% - The time remaining on the booster
+queue-effects:
+  - id: send_message
+    args:
+      action_bar: false
+      messages:
+        - ""
+        - " %activator%&f has queued a &a1.5x Sell Multiplier Booster&f!"
+        - " &fThis booster will last %time%, when its time comes!"
+        - ""
+
+
+# Effects to be run when the Booster is incremented in the queue (applies to all players)
+# %activator% - The player who queued the booster
+# %player% - The player receiving the message/effect
+# %time% - The time remaining on the booster
+queue-increment-effects:
+  - id: send_message
+    args:
+      action_bar: false
+      messages:
+        - ""
+        - " %activator%&f has increased a &a1.5x Sell Multiplier Booster&f in the queue!"
+        - " &fThis booster will now last %time%, when its time comes!"
         - ""
 
 # Effects to be run when the Booster expires (applies to all players)
