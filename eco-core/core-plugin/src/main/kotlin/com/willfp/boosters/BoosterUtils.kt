@@ -57,6 +57,7 @@ fun Server.activateBoosterConsole(booster: Booster) {
         )
     }
 
+    @Suppress("DEPRECATION")
     for (activationCommand in booster.activationCommands) {
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
@@ -94,6 +95,7 @@ fun Server.incrementBoosterConsole(booster: Booster) {
         )
     }
 
+    @Suppress("DEPRECATION")
     for (incrementCommand in booster.incrementCommands) {
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
@@ -132,6 +134,7 @@ fun Player.activateBooster(booster: Booster): Boolean {
         Bukkit.broadcastMessage(activationMessage)
     }
 
+    @Suppress("DEPRECATION")
     for (activationCommand in booster.activationCommands) {
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
@@ -200,6 +203,7 @@ fun Player.increaseBooster(booster: Booster): Boolean {
         Bukkit.broadcastMessage(incrementMessage)
     }
 
+    @Suppress("DEPRECATION")
     for (incrementCommand in booster.incrementCommands) {
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
