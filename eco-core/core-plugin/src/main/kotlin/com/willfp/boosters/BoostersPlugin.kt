@@ -7,6 +7,7 @@ import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.libreforge.ConditionIsBoosterActive
 import com.willfp.eco.core.command.impl.PluginCommand
+import com.willfp.eco.util.SoundConfigUtils
 import com.willfp.libreforge.SimpleProvidedHolder
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.loader.LibreforgePlugin
@@ -55,13 +56,7 @@ class BoostersPlugin : LibreforgePlugin() {
 
                     Bukkit.getOnlinePlayers().forEach { player ->
                         booster.expiryEffects?.trigger(player.toDispatcher())
-
-                        player.playSound(
-                            player.location,
-                            Sound.ENTITY_ENDER_DRAGON_DEATH,
-                            2f,
-                            0.9f
-                        )
+                        SoundConfigUtils.playIfEnabled(this, player, "sounds.expire")
                     }
 
                     Bukkit.getServer().expireBooster(booster)

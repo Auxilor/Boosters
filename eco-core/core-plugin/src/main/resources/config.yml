@@ -18,3 +18,23 @@ gui:
       - "111111111"
       - "101101101"
       - "111111111"
+
+sounds:
+  activate:
+    enabled: true
+    sound: ENTITY_PLAYER_LEVELUP
+    volume: 2
+    pitch: 0.9
+    category: AMBIENT
+  increment:
+    enabled: true
+    sound: ENTITY_EXPERIENCE_ORB_PICKUP
+    volume: 2
+    pitch: 0.9
+    category: AMBIENT
+  expire:
+    enabled: true
+    sound: ENTITY_ITEM_BREAK
+    volume: 2
+    pitch: 0.9
+    category: AMBIENT

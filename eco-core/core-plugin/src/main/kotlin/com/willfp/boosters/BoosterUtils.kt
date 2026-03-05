@@ -8,6 +8,7 @@ import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activateBooster
 import com.willfp.boosters.boosters.increaseBooster
 import com.willfp.eco.core.data.profile
+import com.willfp.eco.util.SoundConfigUtils
 import com.willfp.eco.util.formatEco
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.toDispatcher
@@ -73,12 +74,7 @@ fun Server.activateBoosterConsole(booster: Booster) {
     this.activateBooster(ActivatedBooster(booster, null))
 
     for (player in Bukkit.getOnlinePlayers()) {
-        player.playSound(
-            player.location,
-            Sound.UI_TOAST_CHALLENGE_COMPLETE,
-            2f,
-            0.9f
-        )
+        SoundConfigUtils.playIfEnabled(BoostersPlugin.instance, player, "sounds.activate")
     }
 }
 
@@ -104,12 +100,8 @@ fun Server.incrementBoosterConsole(booster: Booster) {
     }
 
     for (player in Bukkit.getOnlinePlayers()) {
-        player.playSound(
-            player.location,
-            Sound.UI_TOAST_CHALLENGE_COMPLETE,
-            2f,
-            0.9f
-        )
+        SoundConfigUtils.playIfEnabled(BoostersPlugin.instance, player, "sounds.increment")
+
         for (incrementMessage in booster.getIncrementMessage(null)) {
             @Suppress("DEPRECATION")
             Bukkit.broadcastMessage(incrementMessage)
@@ -160,12 +152,7 @@ fun Player.activateBooster(booster: Booster): Boolean {
     )
 
     for (player in Bukkit.getOnlinePlayers()) {
-        player.playSound(
-            player.location,
-            Sound.UI_TOAST_CHALLENGE_COMPLETE,
-            2f,
-            0.9f
-        )
+        SoundConfigUtils.playIfEnabled(BoostersPlugin.instance, player, "sounds.activate")
     }
 
     return true
@@ -197,6 +184,10 @@ fun Player.increaseBooster(booster: Booster): Boolean {
     }
 
     Bukkit.getServer().increaseBooster(booster.active, booster)
+
+    for (player in Bukkit.getOnlinePlayers()) {
+        SoundConfigUtils.playIfEnabled(BoostersPlugin.instance, player, "sounds.increment")
+    }
 
     for (incrementMessage in booster.getIncrementMessage(this)) {
         @Suppress("DEPRECATION")
