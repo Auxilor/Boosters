@@ -8,7 +8,7 @@ import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activateBooster
 import com.willfp.boosters.boosters.increaseBooster
 import com.willfp.eco.core.data.profile
-import com.willfp.eco.util.SoundConfigUtils
+import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.util.formatEco
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.toDispatcher
@@ -16,8 +16,9 @@ import com.willfp.libreforge.triggers.TriggerData
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Server
-import org.bukkit.Sound
 import org.bukkit.entity.Player
+
+val plugin = BoostersPlugin.instance
 
 val OfflinePlayer.boosters: List<Booster>
     get() {
@@ -74,7 +75,7 @@ fun Server.activateBoosterConsole(booster: Booster) {
     this.activateBooster(ActivatedBooster(booster, null))
 
     for (player in Bukkit.getOnlinePlayers()) {
-        SoundConfigUtils.playIfEnabled(BoostersPlugin.instance, player, "sounds.activate")
+        PlayableSound.create(plugin.configYml.getSubsection("sounds.activate"))?.playTo(player)
     }
 }
 
@@ -100,7 +101,7 @@ fun Server.incrementBoosterConsole(booster: Booster) {
     }
 
     for (player in Bukkit.getOnlinePlayers()) {
-        SoundConfigUtils.playIfEnabled(BoostersPlugin.instance, player, "sounds.increment")
+        PlayableSound.create(plugin.configYml.getSubsection("sounds.increment"))?.playTo(player)
 
         for (incrementMessage in booster.getIncrementMessage(null)) {
             @Suppress("DEPRECATION")
@@ -152,7 +153,7 @@ fun Player.activateBooster(booster: Booster): Boolean {
     )
 
     for (player in Bukkit.getOnlinePlayers()) {
-        SoundConfigUtils.playIfEnabled(BoostersPlugin.instance, player, "sounds.activate")
+        PlayableSound.create(plugin.configYml.getSubsection("sounds.activate"))?.playTo(player)
     }
 
     return true
@@ -186,7 +187,7 @@ fun Player.increaseBooster(booster: Booster): Boolean {
     Bukkit.getServer().increaseBooster(booster.active, booster)
 
     for (player in Bukkit.getOnlinePlayers()) {
-        SoundConfigUtils.playIfEnabled(BoostersPlugin.instance, player, "sounds.increment")
+        PlayableSound.create(plugin.configYml.getSubsection("sounds.increment"))?.playTo(player)
     }
 
     for (incrementMessage in booster.getIncrementMessage(this)) {
