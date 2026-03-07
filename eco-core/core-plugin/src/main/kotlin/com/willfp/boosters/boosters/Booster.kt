@@ -128,15 +128,19 @@ class Booster(
         return messages
     }
 
+    @Deprecated("Use expiryEffects instead")
     @Suppress("DEPRECATION")
     val expiryMessages: List<String> = config.getFormattedStrings("messages.expiry")
 
+    @Deprecated("Use activationEffects instead")
     @Suppress("DEPRECATION")
     val activationCommands: List<String> = config.getFormattedStrings("commands.activation")
 
+    @Deprecated("Use incrementEffects instead")
     @Suppress("DEPRECATION")
     val incrementCommands: List<String> = config.getFormattedStrings("commands.increment")
 
+    @Deprecated("Use expiryEffects instead")
     @Suppress("DEPRECATION")
     val expiryCommands: List<String> = config.getFormattedStrings("commands.expiry")
 

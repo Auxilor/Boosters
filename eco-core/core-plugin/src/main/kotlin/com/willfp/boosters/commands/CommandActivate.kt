@@ -3,7 +3,8 @@ package com.willfp.boosters.commands
 import com.willfp.boosters.activateBooster
 import com.willfp.boosters.activateBoosterConsole
 import com.willfp.boosters.boosters.Boosters
-import com.willfp.boosters.incrementBoosters
+import com.willfp.boosters.increaseBooster
+import com.willfp.boosters.incrementBoosterConsole
 import com.willfp.boosters.plugin
 import com.willfp.eco.core.command.impl.Subcommand
 import org.bukkit.Bukkit
@@ -35,12 +36,19 @@ object CommandActivate : Subcommand(
         val player = sender as? Player
 
         if (player == null) {
-            Bukkit.getServer().activateBoosterConsole(booster)
+            if (booster.active != null) {
+                Bukkit.getServer().incrementBoosterConsole(booster)
+            } else {
+                Bukkit.getServer().activateBoosterConsole(booster)
+            }
             return
         }
 
-        player.incrementBoosters(booster, 1)
-        player.activateBooster(booster)
+        if (booster.active != null) {
+            player.increaseBooster(booster)
+        } else {
+            player.activateBooster(booster)
+        }
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {

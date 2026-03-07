@@ -7,7 +7,6 @@ import com.willfp.libreforge.NoCompileData
 import com.willfp.libreforge.ProvidedHolder
 import com.willfp.libreforge.arguments
 import com.willfp.libreforge.conditions.Condition
-import org.bukkit.entity.Player
 
 object ConditionIsBoosterActive : Condition<NoCompileData>("is_booster_active") {
     override val arguments = arguments {
