@@ -13,9 +13,28 @@ messages:
   already-active: "&cThis booster is already active!"
   dont-have: "&cYou don't have any of these boosters! Get some at &astore.ecomc.net"
   cancelled: "Cancelled the active boosters"
+  activated-booster: "Activated %booster% for %duration%!"
+  merged-booster: "Merged %booster%, new duration: %duration%!"
+  queued-booster: "Queued %booster% for activation after the current one expires!"
+  denied-conditions: "&cYou don't meet the conditions to activate this booster!"
+  requires-category: "&cYou must specify a category!"
 
 no-currently-active: "&cNot Active!"
 no-currently-active-list: "&cThere isn't any booster active!"
 no-currently-active-ids-list: "None"
 active-placeholder: "&fThanks %player% &ffor activating %booster%&f!"
 console-displayname: "&cConsole"
+
+queue-format:
+    - "&a&lQueued Boosters for category %category%&r &8» &r"
+    - ""
+    - "&b%number%&8) &f%booster% &8» &fActivated by %activator%&f, duration: &b%time%"
+    - ""
+    - "&e&oUse &b/boosters queue %category% &eto see the this page!"
+
+empty-queue-format:
+    - "&a&lQueued Boosters for category %category%&r &8» &r"
+    - ""
+    - "&cThere isn't any booster in the queue for this category!"
+    - ""
+    - "&e&oUse &b/boosters queue %category% &eto see the this page!"

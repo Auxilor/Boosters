@@ -47,6 +47,10 @@ class Booster(
         0.0
     )
 
+    val category: String? = config.getStringOrNull("category")
+
+    val mergeTag: String? = config.getStringOrNull("merge-tag")
+
     val active: ActivatedBooster?
         get() {
             val activeKey = Bukkit.getServer().profile.read(activeDataKey)
@@ -75,6 +79,30 @@ class Booster(
             }
         }
 
+    val canBeActivated: Boolean
+        get() {
+            return active == null && Bukkit.getServer().activeBoosters.none { it.booster.category == this.category }
+        }
+
+    fun canBeMerged(booster: Booster): Boolean {
+        if (booster.id == this.id) {
+            return true
+        }
+
+        if (this.mergeTag == null || booster.mergeTag == null) {
+            return false
+        }
+
+        return this.mergeTag == booster.mergeTag
+    }
+
+    fun isCategorizedWith(booster: Booster): Boolean {
+        if (this.category == null || booster.category == null) {
+            return false
+        }
+        return this.category == booster.category
+    }
+
     val name = config.getFormattedString("name")
 
     val duration = config.getInt("duration")
@@ -85,6 +113,12 @@ class Booster(
         ViolationContext(plugin, "Booster $id Activation Effects")
     )
 
+    val queueEffects = Effects.compileChain(
+        config.getSubsections("queue-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Queue Effects")
+    )
+
     val expiryEffects = Effects.compileChain(
         config.getSubsections("expiry-effects"),
         NormalExecutorFactory.create(),
@@ -93,6 +127,12 @@ class Booster(
 
     val incrementEffects = Effects.compileChain(
         config.getSubsections("increment-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Increment Effects")
+    )
+
+    val queueIncrementEffects = Effects.compileChain(
+        config.getSubsections("queue-increment-effects"),
         NormalExecutorFactory.create(),
         ViolationContext(plugin, "Booster $id Increment Effects")
     )
@@ -194,18 +234,42 @@ class Booster(
             .build()
     }
 
+    fun getFormattedTimeLeft(overrideTime: Int? = null): String {
+        val secLeft = overrideTime ?: secondsLeft
+
+        if (secLeft <= 0) {
+            return "00:00:00"
+        }
+
+        // if you've seen this code on the internet, no you haven't. shush
+        val seconds = secLeft % 3600 % 60
+        val minutes = floor(secLeft % 3600 / 60.0).toInt()
+        val hours = floor(secLeft / 3600.0).toInt()
+
+        val hh = (if (hours < 10) "0" else "") + hours
+        val mm = (if (minutes < 10) "0" else "") + minutes
+        val ss = (if (seconds < 10) "0" else "") + seconds
+
+        return "${hh}:${mm}:${ss}"
+    }
+
     val guiRow = config.getInt("gui.position.row")
 
     val guiColumn = config.getInt("gui.position.column")
 
     override val conditions = Conditions.compile(
         config.getSubsections("conditions"),
-        ViolationContext(plugin, "Booster $id")
+        ViolationContext(plugin, "Booster $id conditions")
+    )
+
+    val activationConditions = Conditions.compile(
+        config.getSubsections("activation-conditions"),
+        ViolationContext(plugin, "Booster $id activation conditions")
     )
 
     override val effects = Effects.compile(
         config.getSubsections("effects"),
-        ViolationContext(plugin, "Booster $id")
+        ViolationContext(plugin, "Booster $id effects")
     )
 
     override val id = plugin.createNamespacedKey(id)

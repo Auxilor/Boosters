@@ -18,6 +18,7 @@ object CommandBoosters : PluginCommand(
             .addSubcommand(CommandReload)
             .addSubcommand(CommandCancel)
             .addSubcommand(CommandActivate)
+            .addSubcommand(CommandQueue)
     }
 
     override fun onExecute(sender: CommandSender, args: List<String>) {

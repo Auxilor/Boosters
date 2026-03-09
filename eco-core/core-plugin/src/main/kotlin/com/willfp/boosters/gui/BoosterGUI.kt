@@ -1,10 +1,11 @@
 package com.willfp.boosters.gui
 
+import com.willfp.boosters.BoostersPlugin
 import com.willfp.boosters.activateBooster
+import com.willfp.boosters.boosters.ActivationResult
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.increaseBooster
-import com.willfp.boosters.plugin
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.slot
@@ -23,21 +24,17 @@ object BoosterGUI {
         return SlotHandler { event, _, _ ->
             val player = event.whoClicked.tryAsPlayer() ?: return@SlotHandler
 
-            if (booster.active != null) {
-                if (!player.increaseBooster(booster)) {
-                    player.sendMessage(plugin.langYml.getMessage("dont-have"))
-                    player.playSound(
-                        player.location,
-                        Sound.BLOCK_NOTE_BLOCK_BASS,
-                        1f,
-                        0.5f
-                    )
-                }
-                return@SlotHandler
-            }
+            val activationResult = player.activateBooster(booster)
 
-            if (!player.activateBooster(booster)) {
-                player.sendMessage(plugin.langYml.getMessage("dont-have"))
+            player.sendMessage(
+                plugin.langYml.getMessage(activationResult.result.langString)
+                    .replace("%booster%", booster.name)
+                    .replace("%duration%", booster.getFormattedTimeLeft())
+            )
+
+            if (activationResult.result in listOf(ActivationResult.DENIED_CONDITIONS,
+                    ActivationResult.INSUFFICIENT_AMOUNT
+                )) {
                 player.playSound(
                     player.location,
                     Sound.BLOCK_NOTE_BLOCK_BASS,

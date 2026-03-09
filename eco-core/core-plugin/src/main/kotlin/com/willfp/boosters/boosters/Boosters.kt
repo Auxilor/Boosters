@@ -28,6 +28,16 @@ object Boosters : ConfigCategory("booster", "boosters") {
     }
 
     /**
+     * Get all unique categories of boosters.
+     *
+     * @return A set of all booster categories.
+     */
+    @JvmStatic
+    fun getCategories(): Set<String> {
+        return registry.values().mapNotNull { it.category }.toSet()
+    }
+
+    /**
      * Get [Booster] matching ID.
      *
      * @param name The name to search for.

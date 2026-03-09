@@ -1,5 +1,10 @@
 name: "1.5x Sell Multiplier"
 duration: 72000
+
+category: "sell_multiplier" # The category of the booster, used for queueing and preventing boosters of the same category from being active at the same time. Optional.
+
+merge-tag: "1.5x_Sell_Multiplier" # The tag used to identify boosters that can be merged together. Optional.
+
 effects:
   - id: sell_multiplier
     args:
@@ -13,7 +18,7 @@ activation-effects:
       messages:
         - ""
         - " %activator%&f has activated a &a1.5x Sell Multiplier Booster&f!"
-        - " &fThis booster will last an hour, be sure to thank them!"
+        - " &fThis booster will last %time%, be sure to thank them!"
         - ""
 
 increment-effects:
@@ -23,7 +28,27 @@ increment-effects:
       messages:
         - ""
         - " %activator%&f has increased the &a1.5x Sell Multiplier Booster's duration&f!"
-        - " &fThis booster will last another hour, be sure to thank them!"
+        - " &fThis booster will last %time%, be sure to thank them!"
+        - ""
+
+queue-effects:
+  - id: send_message
+    args:
+      action_bar: false
+      messages:
+        - ""
+        - " %activator%&f has queued a &a1.5x Sell Multiplier Booster&f!"
+        - " &fThis booster will last %time%, when its time comes!"
+        - ""
+
+queue-increment-effects:
+  - id: send_message
+    args:
+      action_bar: false
+      messages:
+        - ""
+        - " %activator%&f has increased a &a1.5x Sell Multiplier Booster&f in the queue!"
+        - " &fThis booster will now last %time%, when its time comes!"
         - ""
 
 expiry-effects:
