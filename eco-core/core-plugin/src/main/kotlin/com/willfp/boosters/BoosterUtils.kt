@@ -18,8 +18,6 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.Server
 import org.bukkit.entity.Player
 
-val plugin = BoostersPlugin.instance
-
 val OfflinePlayer.boosters: List<Booster>
     get() {
         val found = mutableListOf<Booster>()
@@ -46,8 +44,9 @@ fun OfflinePlayer.incrementBoosters(booster: Booster, amount: Int) {
     this.setAmountOfBooster(booster, this.getAmountOfBooster(booster) + amount)
 }
 
+@Suppress("DEPRECATION")
 fun Server.activateBoosterConsole(booster: Booster) {
-    val consoleName = BoostersPlugin.instance.langYml
+    val consoleName = plugin.langYml
         .getMessage("console-displayname")
         .formatEco(formatPlaceholders = false)
 
@@ -68,7 +67,6 @@ fun Server.activateBoosterConsole(booster: Booster) {
     }
 
     for (activationMessage in booster.getActivationMessages(null)) {
-        @Suppress("DEPRECATION")
         Bukkit.broadcastMessage(activationMessage)
     }
 
@@ -79,8 +77,9 @@ fun Server.activateBoosterConsole(booster: Booster) {
     }
 }
 
+@Suppress("DEPRECATION")
 fun Server.incrementBoosterConsole(booster: Booster) {
-    val consoleName = BoostersPlugin.instance.langYml
+    val consoleName = plugin.langYml
         .getMessage("console-displayname")
         .formatEco(formatPlaceholders = false)
 
@@ -92,7 +91,6 @@ fun Server.incrementBoosterConsole(booster: Booster) {
         )
     }
 
-    @Suppress("DEPRECATION")
     for (incrementCommand in booster.incrementCommands) {
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
@@ -113,6 +111,7 @@ fun Server.incrementBoosterConsole(booster: Booster) {
 }
 
 
+@Suppress("DEPRECATION")
 fun Player.activateBooster(booster: Booster): Boolean {
     val amount = this.getAmountOfBooster(booster)
 
@@ -123,11 +122,9 @@ fun Player.activateBooster(booster: Booster): Boolean {
     this.setAmountOfBooster(booster, amount - 1)
 
     for (activationMessage in booster.getActivationMessages(this)) {
-        @Suppress("DEPRECATION")
         Bukkit.broadcastMessage(activationMessage)
     }
 
-    @Suppress("DEPRECATION")
     for (activationCommand in booster.activationCommands) {
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),

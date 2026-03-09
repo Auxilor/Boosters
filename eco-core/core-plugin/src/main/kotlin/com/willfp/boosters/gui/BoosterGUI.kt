@@ -1,10 +1,10 @@
 package com.willfp.boosters.gui
 
-import com.willfp.boosters.BoostersPlugin
 import com.willfp.boosters.activateBooster
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.increaseBooster
+import com.willfp.boosters.plugin
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.slot
@@ -19,7 +19,7 @@ import org.bukkit.entity.Player
 object BoosterGUI {
     private lateinit var gui: Menu
 
-    private fun makeHandler(booster: Booster, plugin: BoostersPlugin): SlotHandler {
+    private fun makeHandler(booster: Booster): SlotHandler {
         return SlotHandler { event, _, _ ->
             val player = event.whoClicked.tryAsPlayer() ?: return@SlotHandler
 
@@ -51,7 +51,7 @@ object BoosterGUI {
         }
     }
 
-    internal fun update(plugin: BoostersPlugin) {
+    internal fun update() {
         gui = menu(plugin.configYml.getInt("gui.rows")) {
             setMask(
                 FillerMask(
@@ -67,7 +67,7 @@ object BoosterGUI {
                     slot(
                         { player, _ -> booster.getGuiItem(player) }
                     ) {
-                        onLeftClick(makeHandler(booster, plugin))
+                        onLeftClick(makeHandler(booster))
                     }
                 )
             }
@@ -80,7 +80,7 @@ object BoosterGUI {
                 )
             }
 
-            setTitle(plugin.configYml.getFormattedString("gui.title"))
+            title = plugin.configYml.getFormattedString("gui.title")
         }
     }
 

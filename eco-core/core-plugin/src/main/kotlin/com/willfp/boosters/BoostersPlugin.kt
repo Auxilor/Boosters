@@ -16,7 +16,14 @@ import com.willfp.libreforge.registerGenericHolderProvider
 import com.willfp.libreforge.toDispatcher
 import org.bukkit.Bukkit
 
+internal lateinit var plugin: BoostersPlugin
+    private set
+
 class BoostersPlugin : LibreforgePlugin() {
+    init {
+        plugin = this
+    }
+
     override fun loadConfigCategories(): List<ConfigCategory> {
         return listOf(
             Boosters
@@ -73,15 +80,7 @@ class BoostersPlugin : LibreforgePlugin() {
 
     override fun loadPluginCommands(): List<PluginCommand> {
         return listOf(
-            CommandBoosters(this)
+            CommandBoosters
         )
-    }
-
-    init {
-        instance = this
-    }
-
-    companion object {
-        lateinit var instance: BoostersPlugin
     }
 }

@@ -2,20 +2,19 @@ package com.willfp.boosters.commands
 
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.incrementBoosters
-import com.willfp.eco.core.EcoPlugin
+import com.willfp.boosters.plugin
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.util.StringUtils
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
 
-class CommandGive(plugin: EcoPlugin) :
-    Subcommand(
-        plugin,
-        "give",
-        "boosters.command.give",
-        false
-    ) {
+object CommandGive : Subcommand(
+    plugin,
+    "give",
+    "boosters.command.give",
+    false
+) {
 
     override fun onExecute(sender: CommandSender, args: List<String>) {
         if (args.isEmpty()) {
