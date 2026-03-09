@@ -20,8 +20,11 @@ import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.effects.Effects
 import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
 import org.bukkit.Bukkit
+import org.bukkit.boss.BarColor
+import org.bukkit.boss.BarStyle
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.util.Locale
 import java.util.UUID
 import kotlin.math.floor
 
@@ -43,6 +46,12 @@ class Booster(
 
     val expiryTimeKey = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_expiry_time"),
+        PersistentDataKeyType.DOUBLE,
+        0.0
+    )
+
+    val totalDurationKey = PersistentDataKey(
+        plugin.namespacedKeyFactory.create("${id}_total_duration"),
         PersistentDataKeyType.DOUBLE,
         0.0
     )
@@ -105,7 +114,33 @@ class Booster(
 
     val name = config.getFormattedString("name")
 
+    val bossBarEnabled = config.getBool("bossbar.enabled")
+
+    val bossBarName = if (config.has("bossbar.name")) {
+        config.getFormattedString("bossbar.name")
+    } else {
+        name
+    }
+
+    val bossBarColor = parseBarColor(config.getString("bossbar.color"))
+
+    val bossBarStyle = parseBarStyle(config.getString("bossbar.style"))
+
     val duration = config.getInt("duration")
+
+    val bossBarProgress: Double
+        get() {
+            if (active == null) {
+                return 0.0
+            }
+
+            val endTime = Bukkit.getServer().profile.read(expiryTimeKey)
+            val remainingMillis = (endTime - System.currentTimeMillis()).coerceAtLeast(0.0)
+            val totalMillis = Bukkit.getServer().profile.read(totalDurationKey)
+                .coerceAtLeast(1.0)
+
+            return (remainingMillis / totalMillis).coerceIn(0.0, 1.0)
+        }
 
     val activationEffects = Effects.compileChain(
         config.getSubsections("activation-effects"),
@@ -421,5 +456,41 @@ class Booster(
 
     override fun hashCode(): Int {
         return this.id.hashCode()
+    }
+
+    private fun parseBarColor(raw: String): BarColor {
+        if (raw.isBlank()) {
+            return BarColor.WHITE
+        }
+
+        val normalized = raw.trim()
+            .replace("-", "_")
+            .replace(" ", "_")
+            .uppercase(Locale.ROOT)
+
+        return try {
+            BarColor.valueOf(normalized)
+        } catch (_: IllegalArgumentException) {
+            plugin.logger.warning("Invalid bossbar color '$raw' for booster '${id.key}', defaulting to WHITE.")
+            BarColor.WHITE
+        }
+    }
+
+    private fun parseBarStyle(raw: String): BarStyle {
+        if (raw.isBlank()) {
+            return BarStyle.SOLID
+        }
+
+        val normalized = raw.trim()
+            .replace("-", "_")
+            .replace(" ", "_")
+            .uppercase(Locale.ROOT)
+
+        return try {
+            BarStyle.valueOf(normalized)
+        } catch (_: IllegalArgumentException) {
+            plugin.logger.warning("Invalid bossbar style '$raw' for booster '${id.key}', defaulting to SOLID.")
+            BarStyle.SOLID
+        }
     }
 }

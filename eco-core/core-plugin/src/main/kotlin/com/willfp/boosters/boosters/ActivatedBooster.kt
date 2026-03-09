@@ -11,10 +11,18 @@ import java.util.UUID
 
 private val boosters = mutableSetOf<ActivatedBooster>()
 
-fun Server.increaseBooster(activatedBooster: ActivatedBooster?, booster: Booster) {
+fun Server.increaseBooster(booster: Booster) {
     val profile = ServerProfile.load()
-    val currentExpiry = profile.read(booster.expiryTimeKey)
     val extraTime = booster.duration.toDouble() * 50
+
+    val currentExpiry = profile.read(booster.expiryTimeKey)
+    profile.write(booster.expiryTimeKey, currentExpiry + extraTime)
+
+    val currentTotalDuration = profile.read(booster.totalDurationKey)
+    val fallbackTotalDuration = (currentExpiry - System.currentTimeMillis()).coerceAtLeast(0.0)
+    val baseDuration = if (currentTotalDuration > 0) currentTotalDuration else fallbackTotalDuration
+
+    profile.write(booster.totalDurationKey, baseDuration + extraTime)
     val newExpiry = currentExpiry + extraTime
     profile.write(booster.expiryTimeKey, newExpiry)
 }
@@ -22,13 +30,21 @@ fun Server.increaseBooster(activatedBooster: ActivatedBooster?, booster: Booster
 
 fun Server.activateBooster(activatedBooster: ActivatedBooster) {
     val (booster, uuid) = activatedBooster
+    val profile = ServerProfile.load()
 
-    ServerProfile.load().write(
+    val durationMillis = booster.duration.toDouble() * 50
+
+    profile.write(
         booster.expiryTimeKey,
-        (booster.duration.toDouble() * 50) + System.currentTimeMillis()
+        durationMillis + System.currentTimeMillis()
     )
 
-    ServerProfile.load().write(
+    profile.write(
+        booster.totalDurationKey,
+        durationMillis
+    )
+
+    profile.write(
         booster.activeDataKey,
         uuid.toString()
     )
@@ -42,17 +58,36 @@ val Server.activeBoosters: Set<ActivatedBooster>
 fun Server.expireBooster(booster: Booster) {
     boosters.removeIf { it.booster == booster }
 
-    ServerProfile.load().write(
+    val profile = ServerProfile.load()
+
+    profile.write(
         booster.activeDataKey,
         ""
+    )
+
+    profile.write(
+        booster.expiryTimeKey,
+        0.0
+    )
+
+    profile.write(
+        booster.totalDurationKey,
+        0.0
     )
 }
 
 fun Server.scanForBoosters() {
+    val profile = ServerProfile.load()
+
     for (booster in Boosters.values()) {
         val active = booster.active ?: continue
         if (!boosters.contains(active)) {
             boosters += active
+        }
+
+        if (profile.read(booster.totalDurationKey) <= 0.0) {
+            val remaining = (profile.read(booster.expiryTimeKey) - System.currentTimeMillis()).coerceAtLeast(0.0)
+            profile.write(booster.totalDurationKey, remaining)
         }
     }
 }
