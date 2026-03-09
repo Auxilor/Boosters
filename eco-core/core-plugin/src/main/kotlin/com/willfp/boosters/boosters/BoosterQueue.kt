@@ -1,6 +1,6 @@
 package com.willfp.boosters.boosters
 
-import com.willfp.boosters.BoostersPlugin
+import com.willfp.boosters.plugin
 import com.willfp.boosters.serverUUID
 import com.willfp.eco.core.config.emptyConfig
 import com.willfp.eco.core.config.interfaces.Config
@@ -16,7 +16,7 @@ object BoosterQueue {
     val queue = mutableMapOf<String, MutableList<QueuedBooster>>()
 
     val queuePDK = PersistentDataKey(
-        BoostersPlugin.instance.namespacedKeyFactory.create("booster-queue"),
+        plugin.namespacedKeyFactory.create("booster-queue"),
         PersistentDataKeyType.CONFIG,
         emptyConfig()
     )
@@ -34,7 +34,7 @@ object BoosterQueue {
         val category = booster.category
 
         if (category == null) {
-            BoostersPlugin.instance.logger.warning { "Tried queueing ${booster.id.key} without a category" }
+            plugin.logger.warning { "Tried queueing ${booster.id.key} without a category" }
             return
         }
 
@@ -112,7 +112,7 @@ object BoosterQueue {
 
         val count = queue.values.sumOf { it.size }
 
-        BoostersPlugin.instance.logger.info { "Loaded $count queued boosters" }
+        plugin.logger.info { "Loaded $count queued boosters" }
     }
 }
 
@@ -123,7 +123,7 @@ data class QueuedBooster(
 ) {
     fun getActivatorName(): String {
         if (this.activator == serverUUID) {
-            return BoostersPlugin.instance.langYml.getFormattedString("console-displayname")
+            return plugin.langYml.getFormattedString("console-displayname")
         }
         val player = Bukkit.getOfflinePlayer(activator)
         return player.player?.name ?: player.savedDisplayName

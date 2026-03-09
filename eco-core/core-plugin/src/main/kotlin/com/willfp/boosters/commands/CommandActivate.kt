@@ -4,9 +4,6 @@ import com.willfp.boosters.activateBooster
 import com.willfp.boosters.activateBoosterConsole
 import com.willfp.boosters.boosters.BoosterActivationResult
 import com.willfp.boosters.boosters.Boosters
-import com.willfp.eco.core.EcoPlugin
-import com.willfp.boosters.increaseBooster
-import com.willfp.boosters.incrementBoosterConsole
 import com.willfp.boosters.plugin
 import com.willfp.eco.core.command.impl.Subcommand
 import org.bukkit.Bukkit

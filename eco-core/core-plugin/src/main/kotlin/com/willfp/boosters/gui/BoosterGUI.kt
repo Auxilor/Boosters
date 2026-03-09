@@ -1,11 +1,10 @@
 package com.willfp.boosters.gui
 
-import com.willfp.boosters.BoostersPlugin
 import com.willfp.boosters.activateBooster
 import com.willfp.boosters.boosters.ActivationResult
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
-import com.willfp.boosters.increaseBooster
+import com.willfp.boosters.plugin
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.slot
