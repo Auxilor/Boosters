@@ -3,7 +3,6 @@ package com.willfp.boosters.commands
 import com.willfp.boosters.boosters.BoosterQueue
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.plugin
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.util.formatEco
 import org.bukkit.command.CommandSender

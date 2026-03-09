@@ -130,7 +130,7 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
                 )
             }
 
-            Bukkit.getServer().increaseBooster(booster.active, booster)
+            Bukkit.getServer().increaseBooster(booster)
 
             for (player in Bukkit.getOnlinePlayers()) {
                 PlayableSound.create(plugin.configYml.getSubsection("sounds.increment"))?.playTo(player)
@@ -168,7 +168,7 @@ fun Server.incrementBoosterConsole(booster: Booster) {
         Bukkit.broadcastMessage(incrementMessage)
     }
 
-    Bukkit.getServer().increaseBooster(booster.active, booster)
+    Bukkit.getServer().increaseBooster(booster)
 
     for (player in Bukkit.getOnlinePlayers()) {
         PlayableSound.create(plugin.configYml.getSubsection("sounds.increment"))?.playTo(player)
@@ -247,7 +247,7 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
             )
         }
 
-        Bukkit.getServer().increaseBooster(booster.active, booster)
+        Bukkit.getServer().increaseBooster(booster)
     }
 
     if (effects != null) {
@@ -280,6 +280,7 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
     return BoosterActivationResult(status, newTime)
 }
 
+@Suppress("DEPRECATION")
 fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long) {
     val player = this.player
 
@@ -323,6 +324,7 @@ fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long) {
     }
 }
 
+@Suppress("DEPRECATION")
 fun Server.activateQueuedBoosterConsole(booster: Booster, time: Long) {
     val consoleName = plugin.langYml
         .getMessage("console-displayname")

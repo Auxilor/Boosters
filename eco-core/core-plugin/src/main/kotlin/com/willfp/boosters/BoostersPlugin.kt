@@ -109,9 +109,6 @@ class BoostersPlugin : LibreforgePlugin() {
 
     override fun handleDisable() {
         bossBarManager.clearAll()
-    }
-
-    override fun handleDisable() {
         BoosterQueue.saveQueue()
     }
 
