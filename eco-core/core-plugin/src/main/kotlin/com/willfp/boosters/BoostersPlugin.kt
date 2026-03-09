@@ -25,6 +25,8 @@ class BoostersPlugin : LibreforgePlugin() {
         plugin = this
     }
 
+    private val bossBarManager = BoosterBossBarManager()
+
     override fun loadConfigCategories(): List<ConfigCategory> {
         return listOf(
             Boosters
@@ -43,10 +45,9 @@ class BoostersPlugin : LibreforgePlugin() {
 
     override fun handleReload() {
         BoosterQueue.saveQueue()
-
+        bossBarManager.clearAll()
         BoosterQueue.loadQueue()
-
-        this.scheduler.runTimer(20L, 20L) {     // was 1,1 → now 20,20
+        this.scheduler.runTimer(20L, 20L) {
             for (booster in Boosters.values()) {
                 if (booster.active == null) {
                     continue
@@ -74,6 +75,7 @@ class BoostersPlugin : LibreforgePlugin() {
                             ?.playTo(player)
                     }
 
+                    bossBarManager.clearFor(booster)
                     Bukkit.getServer().expireBooster(booster)
 
                     // Check the queue
@@ -94,12 +96,19 @@ class BoostersPlugin : LibreforgePlugin() {
                     }
                 }
             }
+
+            bossBarManager.render()
         }
 
         // Just run it later enough
         this.scheduler.runLater(3) {
             Bukkit.getServer().scanForBoosters()
+            bossBarManager.render()
         }
+    }
+
+    override fun handleDisable() {
+        bossBarManager.clearAll()
     }
 
     override fun handleDisable() {

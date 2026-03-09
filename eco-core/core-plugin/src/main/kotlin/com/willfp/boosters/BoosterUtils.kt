@@ -262,6 +262,20 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
         }
     }
 
+    Bukkit.getServer().increaseBooster(booster)
+
+    for (incrementMessage in booster.getIncrementMessage(this)) {
+        @Suppress("DEPRECATION")
+        Bukkit.broadcastMessage(incrementMessage)
+    }
+
+    @Suppress("DEPRECATION")
+    for (incrementCommand in booster.incrementCommands) {
+        Bukkit.dispatchCommand(
+            Bukkit.getConsoleSender(),
+            incrementCommand.replace("%player%", this.name)
+        )
+    }
 
     return BoosterActivationResult(status, newTime)
 }
