@@ -6,7 +6,8 @@ import com.willfp.eco.core.data.ServerProfile
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Server
-import java.util.*
+import java.util.Objects
+import java.util.UUID
 
 private val boosters = mutableSetOf<ActivatedBooster>()
 
@@ -14,7 +15,7 @@ fun Server.increaseBooster(activatedBooster: ActivatedBooster?, booster: Booster
     val profile = ServerProfile.load()
     val currentExpiry = profile.read(booster.expiryTimeKey)
     val extraTime = booster.duration.toDouble() * 50
-    val newExpiry = currentExpiry + extraTime;
+    val newExpiry = currentExpiry + extraTime
     profile.write(booster.expiryTimeKey, newExpiry)
 }
 

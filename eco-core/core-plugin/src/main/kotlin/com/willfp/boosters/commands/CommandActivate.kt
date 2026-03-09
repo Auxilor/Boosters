@@ -5,19 +5,21 @@ import com.willfp.boosters.activateBoosterConsole
 import com.willfp.boosters.boosters.BoosterActivationResult
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.boosters.increaseBooster
+import com.willfp.boosters.incrementBoosterConsole
+import com.willfp.boosters.plugin
 import com.willfp.eco.core.command.impl.Subcommand
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 
-class CommandActivate(plugin: EcoPlugin) :
-    Subcommand(
-        plugin,
-        "activate",
-        "boosters.command.activate",
-        false
-    ) {
+object CommandActivate : Subcommand(
+    plugin,
+    "activate",
+    "boosters.command.activate",
+    false
+) {
 
     override fun onExecute(sender: CommandSender, args: List<String>) {
 

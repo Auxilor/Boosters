@@ -1,7 +1,7 @@
 package com.willfp.boosters.boosters
 
-import com.willfp.boosters.BoostersPlugin
 import com.willfp.boosters.getAmountOfBooster
+import com.willfp.boosters.plugin
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
@@ -26,7 +26,6 @@ import java.util.UUID
 import kotlin.math.floor
 
 class Booster(
-    private val plugin: BoostersPlugin,
     id: String,
     val config: Config
 ) : Holder, Registrable {
@@ -62,7 +61,7 @@ class Booster(
 
             val uuid = try {
                 UUID.fromString(activeKey)
-            } catch (e: IllegalArgumentException) {
+            } catch (_: IllegalArgumentException) {
                 null
             }
 
@@ -169,15 +168,19 @@ class Booster(
         return messages
     }
 
+    @Deprecated("Use expiryEffects instead")
     @Suppress("DEPRECATION")
     val expiryMessages: List<String> = config.getFormattedStrings("messages.expiry")
 
+    @Deprecated("Use activationEffects instead")
     @Suppress("DEPRECATION")
     val activationCommands: List<String> = config.getFormattedStrings("commands.activation")
 
+    @Deprecated("Use incrementEffects instead")
     @Suppress("DEPRECATION")
     val incrementCommands: List<String> = config.getFormattedStrings("commands.increment")
 
+    @Deprecated("Use expiryEffects instead")
     @Suppress("DEPRECATION")
     val expiryCommands: List<String> = config.getFormattedStrings("commands.expiry")
 

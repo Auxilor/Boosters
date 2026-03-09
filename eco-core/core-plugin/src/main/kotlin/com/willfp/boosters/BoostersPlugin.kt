@@ -8,6 +8,7 @@ import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.libreforge.ConditionIsBoosterActive
 import com.willfp.eco.core.command.impl.PluginCommand
+import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.libreforge.SimpleProvidedHolder
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.loader.LibreforgePlugin
@@ -15,9 +16,15 @@ import com.willfp.libreforge.loader.configs.ConfigCategory
 import com.willfp.libreforge.registerGenericHolderProvider
 import com.willfp.libreforge.toDispatcher
 import org.bukkit.Bukkit
-import org.bukkit.Sound
+
+internal lateinit var plugin: BoostersPlugin
+    private set
 
 class BoostersPlugin : LibreforgePlugin() {
+    init {
+        plugin = this
+    }
+
     override fun loadConfigCategories(): List<ConfigCategory> {
         return listOf(
             Boosters
@@ -46,11 +53,13 @@ class BoostersPlugin : LibreforgePlugin() {
                 }
 
                 if (booster.secondsLeft <= 0) {
+                    @Suppress("DEPRECATION")
                     for (expiryMessage in booster.expiryMessages) {
                         @Suppress("DEPRECATION")
                         Bukkit.broadcastMessage(expiryMessage)
                     }
 
+                    @Suppress("DEPRECATION")
                     for (expiryCommand in booster.expiryCommands) {
                         Bukkit.dispatchCommand(
                             Bukkit.getConsoleSender(),
@@ -61,12 +70,8 @@ class BoostersPlugin : LibreforgePlugin() {
                     Bukkit.getOnlinePlayers().forEach { player ->
                         booster.expiryEffects?.trigger(player.toDispatcher())
 
-                        player.playSound(
-                            player.location,
-                            Sound.ENTITY_ENDER_DRAGON_DEATH,
-                            2f,
-                            0.9f
-                        )
+                        PlayableSound.create(plugin.configYml.getSubsection("sounds.expire"))
+                            ?.playTo(player)
                     }
 
                     Bukkit.getServer().expireBooster(booster)
@@ -103,15 +108,7 @@ class BoostersPlugin : LibreforgePlugin() {
 
     override fun loadPluginCommands(): List<PluginCommand> {
         return listOf(
-            CommandBoosters(this)
+            CommandBoosters
         )
-    }
-
-    init {
-        instance = this
-    }
-
-    companion object {
-        lateinit var instance: BoostersPlugin
     }
 }
