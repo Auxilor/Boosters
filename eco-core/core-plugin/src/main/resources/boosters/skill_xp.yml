@@ -1,4 +1,9 @@
 name: "2x Skill XP Multiplier"
+
+category: "skill_multiplier"
+
+merge-tag: "2x_Skill_Multiplier"
+
 duration: 72000
 effects:
   - id: skill_xp_multiplier
@@ -12,8 +17,8 @@ activation-effects:
       action_bar: false
       messages:
         - ""
-        - " %activator%&f has activated a &a2x Skill XP Booster&f!"
-        - " &fThis booster will last an hour, be sure to thank them!"
+        - " %activator%&f has activated a &a2x Skill XP Multiplier Booster&f!"
+        - " &fThis booster will last %time%, be sure to thank them!"
         - ""
 
 increment-effects:
@@ -22,8 +27,28 @@ increment-effects:
       action_bar: false
       messages:
         - ""
-        - " %activator%&f has increased the &a2x Skill XP Booster's duration&f!"
-        - " &fThis booster will last another hour, be sure to thank them!"
+        - " %activator%&f has increased the &a2x Skill XP Multiplier Booster's duration&f!"
+        - " &fThis booster will last %time%, be sure to thank them!"
+        - ""
+
+queue-effects:
+  - id: send_message
+    args:
+      action_bar: false
+      messages:
+        - ""
+        - " %activator%&f has queued a &a2x Skill XP Multiplier Booster&f!"
+        - " &fThis booster will last %time%, when its time comes!"
+        - ""
+
+queue-increment-effects:
+  - id: send_message
+    args:
+      action_bar: false
+      messages:
+        - ""
+        - " %activator%&f has increased a &a2x Skill XP Multiplier Booster&f in the queue!"
+        - " &fThis booster will now last %time%, when its time comes!"
         - ""
 
 expiry-effects:

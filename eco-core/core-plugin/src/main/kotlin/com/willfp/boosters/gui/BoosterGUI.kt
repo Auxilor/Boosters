@@ -2,6 +2,7 @@ package com.willfp.boosters.gui
 
 import com.willfp.boosters.BoostersPlugin
 import com.willfp.boosters.activateBooster
+import com.willfp.boosters.boosters.ActivationResult
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.increaseBooster
@@ -19,25 +20,21 @@ import org.bukkit.entity.Player
 object BoosterGUI {
     private lateinit var gui: Menu
 
-    private fun makeHandler(booster: Booster, plugin: BoostersPlugin): SlotHandler {
+    private fun makeHandler(booster: Booster): SlotHandler {
         return SlotHandler { event, _, _ ->
             val player = event.whoClicked.tryAsPlayer() ?: return@SlotHandler
 
-            if (booster.active != null) {
-                if (!player.increaseBooster(booster)) {
-                    player.sendMessage(plugin.langYml.getMessage("dont-have"))
-                    player.playSound(
-                        player.location,
-                        Sound.BLOCK_NOTE_BLOCK_BASS,
-                        1f,
-                        0.5f
-                    )
-                }
-                return@SlotHandler
-            }
+            val activationResult = player.activateBooster(booster)
 
-            if (!player.activateBooster(booster)) {
-                player.sendMessage(plugin.langYml.getMessage("dont-have"))
+            player.sendMessage(
+                plugin.langYml.getMessage(activationResult.result.langString)
+                    .replace("%booster%", booster.name)
+                    .replace("%duration%", booster.getFormattedTimeLeft())
+            )
+
+            if (activationResult.result in listOf(ActivationResult.DENIED_CONDITIONS,
+                    ActivationResult.INSUFFICIENT_AMOUNT
+                )) {
                 player.playSound(
                     player.location,
                     Sound.BLOCK_NOTE_BLOCK_BASS,
@@ -51,7 +48,7 @@ object BoosterGUI {
         }
     }
 
-    internal fun update(plugin: BoostersPlugin) {
+    internal fun update() {
         gui = menu(plugin.configYml.getInt("gui.rows")) {
             setMask(
                 FillerMask(
@@ -67,7 +64,7 @@ object BoosterGUI {
                     slot(
                         { player, _ -> booster.getGuiItem(player) }
                     ) {
-                        onLeftClick(makeHandler(booster, plugin))
+                        onLeftClick(makeHandler(booster))
                     }
                 )
             }
@@ -80,7 +77,7 @@ object BoosterGUI {
                 )
             }
 
-            setTitle(plugin.configYml.getFormattedString("gui.title"))
+            title = plugin.configYml.getFormattedString("gui.title")
         }
     }
 

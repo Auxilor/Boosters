@@ -2,23 +2,24 @@ package com.willfp.boosters.commands
 
 import com.willfp.boosters.activateBooster
 import com.willfp.boosters.activateBoosterConsole
+import com.willfp.boosters.boosters.BoosterActivationResult
 import com.willfp.boosters.boosters.Boosters
+import com.willfp.eco.core.EcoPlugin
 import com.willfp.boosters.increaseBooster
 import com.willfp.boosters.incrementBoosterConsole
-import com.willfp.eco.core.EcoPlugin
+import com.willfp.boosters.plugin
 import com.willfp.eco.core.command.impl.Subcommand
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 
-class CommandActivate(plugin: EcoPlugin) :
-    Subcommand(
-        plugin,
-        "activate",
-        "boosters.command.activate",
-        false
-    ) {
+object CommandActivate : Subcommand(
+    plugin,
+    "activate",
+    "boosters.command.activate",
+    false
+) {
 
     override fun onExecute(sender: CommandSender, args: List<String>) {
 
@@ -36,20 +37,18 @@ class CommandActivate(plugin: EcoPlugin) :
 
         val player = sender as? Player
 
+        var result: BoosterActivationResult
+
         if (player == null) {
-            if (booster.active != null) {
-                Bukkit.getServer().incrementBoosterConsole(booster)
-            } else {
-                Bukkit.getServer().activateBoosterConsole(booster)
-            }
-            return
+            result = Bukkit.getServer().activateBoosterConsole(booster)
+        } else {
+            result = player.activateBooster(booster)
         }
 
-        if (booster.active != null) {
-            player.increaseBooster(booster)
-        } else {
-            player.activateBooster(booster)
-        }
+        sender.sendMessage(plugin.langYml.getMessage(result.result.langString)
+            .replace("%booster%", booster.name)
+            .replace("%duration%", booster.getFormattedTimeLeft(result.duration.toInt() / 20))
+        )
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
