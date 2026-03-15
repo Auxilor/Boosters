@@ -18,6 +18,7 @@ gui:
       - "111111111"
       - "101101101"
       - "111111111"
+  custom-slots: []
 
 sounds:
   activate:
