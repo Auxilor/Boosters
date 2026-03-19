@@ -54,7 +54,6 @@ fun OfflinePlayer.incrementBoosters(booster: Booster, amount: Int) {
     this.setAmountOfBooster(booster, this.getAmountOfBooster(booster) + amount)
 }
 
-@Suppress("DEPRECATION")
 fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
     val consoleName = plugin.langYml
         .getMessage("console-displayname")
@@ -100,17 +99,6 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
 
     when (status) {
         ActivationResult.ACTIVATED -> {
-            for (activationCommand in booster.activationCommands) {
-                Bukkit.dispatchCommand(
-                    Bukkit.getConsoleSender(),
-                    activationCommand.replace("%player%", consoleName)
-                )
-            }
-
-            for (activationMessage in booster.getActivationMessages(null)) {
-                Bukkit.broadcastMessage(activationMessage)
-            }
-
             this.activateBooster(ActivatedBooster(booster, null))
 
             for (player in Bukkit.getOnlinePlayers()) {
@@ -119,17 +107,6 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
         }
 
         ActivationResult.MERGED -> {
-            for (incrementMessage in booster.getIncrementMessage(null)) {
-                Bukkit.broadcastMessage(incrementMessage)
-            }
-
-            for (incrementCommand in booster.incrementCommands) {
-                Bukkit.dispatchCommand(
-                    Bukkit.getConsoleSender(),
-                    incrementCommand.replace("%player%", consoleName)
-                )
-            }
-
             Bukkit.getServer().increaseBooster(booster)
 
             for (player in Bukkit.getOnlinePlayers()) {
@@ -143,7 +120,6 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
     return BoosterActivationResult(status, newTime)
 }
 
-@Suppress("DEPRECATION")
 fun Server.incrementBoosterConsole(booster: Booster) {
     val consoleName = plugin.langYml
         .getMessage("console-displayname")
@@ -157,17 +133,6 @@ fun Server.incrementBoosterConsole(booster: Booster) {
         )
     }
 
-    for (incrementCommand in booster.incrementCommands) {
-        Bukkit.dispatchCommand(
-            Bukkit.getConsoleSender(),
-            incrementCommand.replace("%player%", consoleName)
-        )
-    }
-
-    for (incrementMessage in booster.getIncrementMessage(null)) {
-        Bukkit.broadcastMessage(incrementMessage)
-    }
-
     Bukkit.getServer().increaseBooster(booster)
 
     for (player in Bukkit.getOnlinePlayers()) {
@@ -175,7 +140,6 @@ fun Server.incrementBoosterConsole(booster: Booster) {
     }
 }
 
-@Suppress("DEPRECATION")
 fun Player.activateBooster(booster: Booster): BoosterActivationResult {
     val amount = this.getAmountOfBooster(booster)
 
@@ -219,34 +183,12 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
     }
 
     if (status == ActivationResult.ACTIVATED) {
-        for (activationMessage in booster.getActivationMessages(this)) {
-            Bukkit.broadcastMessage(activationMessage)
-        }
-
-        for (activationCommand in booster.activationCommands) {
-            Bukkit.dispatchCommand(
-                Bukkit.getConsoleSender(),
-                activationCommand.replace("%player%", this.name)
-            )
-        }
-
         Bukkit.getServer().activateBooster(ActivatedBooster(booster, this.uniqueId))
 
         for (player in Bukkit.getOnlinePlayers()) {
             PlayableSound.create(plugin.configYml.getSubsection("sounds.activate"))?.playTo(player)
         }
     } else if (status == ActivationResult.MERGED) {
-        for (incrementMessage in booster.getIncrementMessage(this)) {
-            Bukkit.broadcastMessage(incrementMessage)
-        }
-
-        for (incrementCommand in booster.incrementCommands) {
-            Bukkit.dispatchCommand(
-                Bukkit.getConsoleSender(),
-                incrementCommand.replace("%player%", this.name)
-            )
-        }
-
         Bukkit.getServer().increaseBooster(booster)
     }
 
@@ -264,39 +206,11 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
 
     Bukkit.getServer().increaseBooster(booster)
 
-    for (incrementMessage in booster.getIncrementMessage(this)) {
-        @Suppress("DEPRECATION")
-        Bukkit.broadcastMessage(incrementMessage)
-    }
-
-    @Suppress("DEPRECATION")
-    for (incrementCommand in booster.incrementCommands) {
-        Bukkit.dispatchCommand(
-            Bukkit.getConsoleSender(),
-            incrementCommand.replace("%player%", this.name)
-        )
-    }
-
     return BoosterActivationResult(status, newTime)
 }
 
-@Suppress("DEPRECATION")
 fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long) {
     val player = this.player
-
-    if (player != null) {
-        for (activationMessage in booster.getActivationMessages(player)) {
-            @Suppress("DEPRECATION")
-            Bukkit.broadcastMessage(activationMessage)
-        }
-
-        for (activationCommand in booster.activationCommands) {
-            Bukkit.dispatchCommand(
-                Bukkit.getConsoleSender(),
-                activationCommand.replace("%player%", player.name)
-            )
-        }
-    }
 
     if (booster.activationEffects != null) {
         Bukkit.getOnlinePlayers().forEach { target ->
@@ -324,23 +238,11 @@ fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long) {
     }
 }
 
-@Suppress("DEPRECATION")
 fun Server.activateQueuedBoosterConsole(booster: Booster, time: Long) {
     val consoleName = plugin.langYml
         .getMessage("console-displayname")
         .formatEco(formatPlaceholders = false)
 
-    for (activationMessage in booster.getActivationMessages(null)) {
-        @Suppress("DEPRECATION")
-        Bukkit.broadcastMessage(activationMessage)
-    }
-
-    for (activationCommand in booster.activationCommands) {
-        Bukkit.dispatchCommand(
-            Bukkit.getConsoleSender(),
-            activationCommand.replace("%player%", consoleName)
-        )
-    }
 
     if (booster.activationEffects != null) {
         Bukkit.getOnlinePlayers().forEach { target ->

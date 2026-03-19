@@ -54,19 +54,6 @@ class BoostersPlugin : LibreforgePlugin() {
                 }
 
                 if (booster.secondsLeft <= 0) {
-                    @Suppress("DEPRECATION")
-                    for (expiryMessage in booster.expiryMessages) {
-                        @Suppress("DEPRECATION")
-                        Bukkit.broadcastMessage(expiryMessage)
-                    }
-
-                    @Suppress("DEPRECATION")
-                    for (expiryCommand in booster.expiryCommands) {
-                        Bukkit.dispatchCommand(
-                            Bukkit.getConsoleSender(),
-                            expiryCommand.replace("%player%", booster.active?.player?.name ?: "")
-                        )
-                    }
 
                     Bukkit.getOnlinePlayers().forEach { player ->
                         booster.expiryEffects?.trigger(player.toDispatcher())
