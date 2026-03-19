@@ -42,6 +42,13 @@ val OfflinePlayer.boosters: List<Booster>
 
 val serverUUID = UUID.fromString("0000fff-0000-0000-0000-000000000000")
 
+fun Booster.runExpiryEffects() {
+    Bukkit.getOnlinePlayers().forEach { player ->
+        this.expiryEffects?.trigger(player.toDispatcher())
+        PlayableSound.create(plugin.configYml.getSubsection("sounds.expire"))?.playTo(player)
+    }
+}
+
 fun OfflinePlayer.getAmountOfBooster(booster: Booster): Int {
     return this.profile.read(booster.ownedDataKey)
 }
