@@ -13,7 +13,7 @@ private val boosters = mutableSetOf<ActivatedBooster>()
 
 fun Server.increaseBooster(booster: Booster) {
     val profile = ServerProfile.load()
-    val extraTime = booster.duration.toDouble() * 50
+    val extraTime = booster.duration.toDouble() * 20
 
     val currentExpiry = profile.read(booster.expiryTimeKey)
     profile.write(booster.expiryTimeKey, currentExpiry + extraTime)
@@ -32,7 +32,7 @@ fun Server.activateBooster(activatedBooster: ActivatedBooster) {
     val (booster, uuid) = activatedBooster
     val profile = ServerProfile.load()
 
-    val durationMillis = booster.duration.toDouble() * 50
+    val durationMillis = booster.duration.toDouble() * 20
 
     profile.write(
         booster.expiryTimeKey,
