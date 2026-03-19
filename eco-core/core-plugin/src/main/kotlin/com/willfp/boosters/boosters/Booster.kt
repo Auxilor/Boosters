@@ -115,10 +115,23 @@ class Booster(
 
     val bossBarEnabled = config.getBool("bossbar.enabled")
 
-    val bossBarName = if (config.has("bossbar.name")) {
+    private val bossBarNameTemplate = if (config.has("bossbar.name")) {
         config.getFormattedString("bossbar.name")
     } else {
-        name
+        null
+    }
+
+    val bossBarName: String
+        get() = getCurrentBossBarName()
+
+    fun getCurrentBossBarName(): String {
+        return if (bossBarNameTemplate != null) {
+            bossBarNameTemplate
+                .replace("%time_remaining%", getFormattedTimeLeft())
+                .formatEco(formatPlaceholders = true)
+        } else {
+            name
+        }
     }
 
     val bossBarColor = parseBarColor(config.getString("bossbar.color"))
@@ -352,6 +365,21 @@ class Booster(
                 }
 
                 outputString
+            }
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "time_remaining",
+            ) {
+                val currentActive = Bukkit.getServer().activeBoosters.firstOrNull()
+
+                if (currentActive == null) {
+                    "00:00:00"
+                } else {
+                    currentActive.booster.getFormattedTimeLeft()
+                }
             }
         )
     }
