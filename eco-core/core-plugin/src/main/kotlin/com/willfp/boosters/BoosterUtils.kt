@@ -219,7 +219,6 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
         }
     }
 
-    Bukkit.getServer().increaseBooster(booster)
 
     return BoosterActivationResult(status, newTime)
 }

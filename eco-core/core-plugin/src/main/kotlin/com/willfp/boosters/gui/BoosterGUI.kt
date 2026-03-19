@@ -28,7 +28,7 @@ object BoosterGUI {
             player.sendMessage(
                 plugin.langYml.getMessage(activationResult.result.langString)
                     .replace("%booster%", booster.name)
-                    .replace("%duration%", booster.getFormattedTimeLeft())
+                    .replace("%duration%", booster.getFormattedTimeLeft(activationResult.duration.toInt() / 20))
             )
 
             if (activationResult.result in listOf(ActivationResult.DENIED_CONDITIONS,
