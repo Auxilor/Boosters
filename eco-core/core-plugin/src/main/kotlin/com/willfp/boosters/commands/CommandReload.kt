@@ -1,6 +1,7 @@
 package com.willfp.boosters.commands
 
 import com.willfp.boosters.plugin
+import com.willfp.boosters.boosters.Boosters
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.toNiceString
@@ -17,6 +18,7 @@ object CommandReload : Subcommand(
         sender.sendMessage(
             plugin.langYml.getMessage("reloaded", StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)
                 .replace("%time%", plugin.reloadWithTime().toNiceString())
+                .replace("%count%", Boosters.values().size.toString())
         )
     }
 }
