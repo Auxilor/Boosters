@@ -16,14 +16,13 @@ fun Server.increaseBooster(booster: Booster) {
     val extraTime = booster.duration.toDouble() * 50
 
     val currentExpiry = profile.read(booster.expiryTimeKey)
-    profile.write(booster.expiryTimeKey, currentExpiry + extraTime)
+    val newExpiry = currentExpiry + extraTime
 
     val currentTotalDuration = profile.read(booster.totalDurationKey)
     val fallbackTotalDuration = (currentExpiry - System.currentTimeMillis()).coerceAtLeast(0.0)
     val baseDuration = if (currentTotalDuration > 0) currentTotalDuration else fallbackTotalDuration
 
     profile.write(booster.totalDurationKey, baseDuration + extraTime)
-    val newExpiry = currentExpiry + extraTime
     profile.write(booster.expiryTimeKey, newExpiry)
 }
 

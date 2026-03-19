@@ -53,7 +53,7 @@ val serverUUID = UUID.fromString("0000fff-0000-0000-0000-000000000000")
 fun Booster.runExpiryEffects() {
     Bukkit.getOnlinePlayers().forEach { player ->
         this.expiryEffects?.trigger(player.toDispatcher())
-        PlayableSound.create(plugin.configYml.getSubsection("sounds.expire"))?.playTo(player)
+        expireSound?.playTo(player)
     }
 }
 
@@ -69,11 +69,23 @@ fun OfflinePlayer.incrementBoosters(booster: Booster, amount: Int) {
     this.setAmountOfBooster(booster, this.getAmountOfBooster(booster) + amount)
 }
 
-fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
-    val consoleName = plugin.langYml
-        .getMessage("console-displayname")
-        .formatEco(formatPlaceholders = false)
+val consoleName = plugin.langYml
+    .getFormattedString("console-displayname")
+    .formatEco(formatPlaceholders = false)
 
+val activateSound by lazy {
+    PlayableSound.create(plugin.configYml.getSubsection("sounds.activate"))
+}
+
+val incrementSound by lazy {
+    PlayableSound.create(plugin.configYml.getSubsection("sounds.increment"))
+}
+
+val expireSound by lazy {
+    PlayableSound.create(plugin.configYml.getSubsection("sounds.expire"))
+}
+
+fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
     var effects: Chain?
     var status: ActivationResult
     var newTime = booster.duration.toLong()
@@ -117,7 +129,7 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
             this.activateBooster(ActivatedBooster(booster, null))
 
             for (player in Bukkit.getOnlinePlayers()) {
-                PlayableSound.create(plugin.configYml.getSubsection("sounds.activate"))?.playTo(player)
+                activateSound?.playTo(player)
             }
         }
 
@@ -125,7 +137,7 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
             Bukkit.getServer().increaseBooster(booster)
 
             for (player in Bukkit.getOnlinePlayers()) {
-                PlayableSound.create(plugin.configYml.getSubsection("sounds.increment"))?.playTo(player)
+                incrementSound?.playTo(player)
             }
         }
 
@@ -136,10 +148,6 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
 }
 
 fun Server.incrementBoosterConsole(booster: Booster) {
-    val consoleName = plugin.langYml
-        .getMessage("console-displayname")
-        .formatEco(formatPlaceholders = false)
-
     Bukkit.getOnlinePlayers().forEach { target ->
         booster.incrementEffects?.trigger(
             TriggerData(player = target)
@@ -151,7 +159,7 @@ fun Server.incrementBoosterConsole(booster: Booster) {
     Bukkit.getServer().increaseBooster(booster)
 
     for (player in Bukkit.getOnlinePlayers()) {
-        PlayableSound.create(plugin.configYml.getSubsection("sounds.increment"))?.playTo(player)
+        incrementSound?.playTo(player)
     }
 }
 
@@ -201,10 +209,14 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
         Bukkit.getServer().activateBooster(ActivatedBooster(booster, this.uniqueId))
 
         for (player in Bukkit.getOnlinePlayers()) {
-            PlayableSound.create(plugin.configYml.getSubsection("sounds.activate"))?.playTo(player)
+            activateSound?.playTo(player)
         }
     } else if (status == ActivationResult.MERGED) {
         Bukkit.getServer().increaseBooster(booster)
+
+        for (player in Bukkit.getOnlinePlayers()) {
+            incrementSound?.playTo(player)
+        }
     }
 
     if (effects != null) {
@@ -248,16 +260,11 @@ fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long) {
     )
 
     for (player in Bukkit.getOnlinePlayers()) {
-        PlayableSound.create(plugin.configYml.getSubsection("sounds.activate"))?.playTo(player)
+        activateSound?.playTo(player)
     }
 }
 
 fun Server.activateQueuedBoosterConsole(booster: Booster, time: Long) {
-    val consoleName = plugin.langYml
-        .getMessage("console-displayname")
-        .formatEco(formatPlaceholders = false)
-
-
     if (booster.activationEffects != null) {
         Bukkit.getOnlinePlayers().forEach { target ->
             val dispatched = TriggerData(player = target)
@@ -280,7 +287,7 @@ fun Server.activateQueuedBoosterConsole(booster: Booster, time: Long) {
     )
 
     for (player in Bukkit.getOnlinePlayers()) {
-        PlayableSound.create(plugin.configYml.getSubsection("sounds.activate"))?.playTo(player)
+        activateSound?.playTo(player)
     }
 }
 
