@@ -18,6 +18,8 @@ messages:
   queued-booster: "Queued %booster% for activation after the current one expires!"
   denied-conditions: "&cYou don't meet the conditions to activate this booster!"
   requires-category: "&cYou must specify a category!"
+  bossbar-enabled: "&aBossbar visibility enabled!"
+  bossbar-disabled: "&cBossbar visibility disabled!"
 
 no-currently-active: "&cNot Active!"
 no-currently-active-list: "&cThere isn't any booster active!"

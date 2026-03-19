@@ -39,6 +39,13 @@ class BoosterBossBarManager {
             val onlinePlayers = Bukkit.getOnlinePlayers().toSet()
 
             for (player in onlinePlayers) {
+                if (!player.isBossBarVisible()) {
+                    if (bar.players.contains(player)) {
+                        bar.removePlayer(player)
+                    }
+                    continue
+                }
+
                 if (!bar.players.contains(player)) {
                     bar.addPlayer(player)
                 }

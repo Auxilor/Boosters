@@ -18,12 +18,14 @@ import org.bukkit.Bukkit
 internal lateinit var plugin: BoostersPlugin
     private set
 
+internal lateinit var bossBarManager: BoosterBossBarManager
+    private set
+
 class BoostersPlugin : LibreforgePlugin() {
     init {
         plugin = this
+        bossBarManager = BoosterBossBarManager()
     }
-
-    private val bossBarManager = BoosterBossBarManager()
 
     override fun loadConfigCategories(): List<ConfigCategory> {
         return listOf(

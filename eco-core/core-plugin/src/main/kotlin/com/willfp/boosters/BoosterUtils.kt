@@ -11,6 +11,8 @@ import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activateBooster
 import com.willfp.boosters.boosters.activeBoosters
 import com.willfp.boosters.boosters.increaseBooster
+import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.util.formatEco
@@ -25,6 +27,12 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.Server
 import org.bukkit.entity.Player
 import java.util.UUID
+
+private val bossBarVisibilityDataKey = PersistentDataKey(
+    plugin.namespacedKeyFactory.create("bossbar-visible"),
+    PersistentDataKeyType.INT,
+    1
+)
 
 val OfflinePlayer.boosters: List<Booster>
     get() {
@@ -275,4 +283,18 @@ fun Server.activateQueuedBoosterConsole(booster: Booster, time: Long) {
     for (player in Bukkit.getOnlinePlayers()) {
         PlayableSound.create(plugin.configYml.getSubsection("sounds.activate"))?.playTo(player)
     }
+}
+
+fun OfflinePlayer.isBossBarVisible(): Boolean {
+    return this.profile.read(bossBarVisibilityDataKey) == 1
+}
+
+fun OfflinePlayer.setBossBarVisibility(visible: Boolean) {
+    this.profile.write(bossBarVisibilityDataKey, if (visible) 1 else 0)
+}
+
+fun Player.toggleBossBarVisibility(): Boolean {
+    val nowVisible = !this.isBossBarVisible()
+    this.setBossBarVisibility(nowVisible)
+    return nowVisible
 }
