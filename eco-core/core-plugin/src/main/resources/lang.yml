@@ -9,6 +9,8 @@ messages:
   invalid-player: "&cInvalid player!"
   requires-booster: "&cYou must specify a booster!"
   invalid-booster: "&cInvalid booster!"
+  invalid-active-booster: "&cThat booster is not currently active!"
+  invalid-active-category: "&cThat category has no active boosters!"
   gave-booster: "Gave %player% %booster% &fx%amount%!"
   already-active: "&cThis booster is already active!"
   dont-have: "&cYou don't have any of these boosters! Get some at &astore.ecomc.net"
