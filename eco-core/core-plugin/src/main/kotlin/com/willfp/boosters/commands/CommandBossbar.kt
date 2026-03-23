@@ -1,6 +1,6 @@
 package com.willfp.boosters.commands
 
-import com.willfp.boosters.bossBarManager
+import com.willfp.boosters.boosters.BoosterBossBar
 import com.willfp.boosters.plugin
 import com.willfp.boosters.toggleBossBarVisibility
 import com.willfp.eco.core.command.impl.Subcommand
@@ -22,7 +22,7 @@ object CommandBossbar : Subcommand(
         }
 
         val isVisible = player.toggleBossBarVisibility()
-        bossBarManager.render()
+        BoosterBossBar.render()
 
         if (isVisible) {
             player.sendMessage(plugin.langYml.getMessage("bossbar-enabled"))
