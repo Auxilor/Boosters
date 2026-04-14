@@ -48,7 +48,7 @@ val OfflinePlayer.boosters: List<Booster>
         return found
     }
 
-val serverUUID = UUID.fromString("0000fff-0000-0000-0000-000000000000")
+val serverUUID = UUID.fromString("00000fff-0000-0000-0000-000000000000")
 
 fun Booster.runExpiryEffects() {
     Bukkit.getOnlinePlayers().forEach { player ->
