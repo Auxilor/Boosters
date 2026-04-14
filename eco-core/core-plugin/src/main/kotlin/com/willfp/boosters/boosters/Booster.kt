@@ -327,63 +327,6 @@ class Booster(
                 "${hh}:${mm}:${ss}"
             }
         )
-
-        PlaceholderManager.registerPlaceholder(
-            PlayerlessPlaceholder(
-                plugin,
-                "active_list",
-            ) {
-                var activeList = mutableListOf<String>()
-
-                for (active in Bukkit.getServer().activeBoosters) {
-                    activeList.add(active.booster.name)
-                }
-
-                var outputString =
-                    plugin.langYml.getString("no-currently-active-list").formatEco(formatPlaceholders = false)
-                if (activeList.size > 0) {
-                    outputString = activeList.joinToString(", ")
-                }
-
-                outputString
-            }
-        )
-
-        PlaceholderManager.registerPlaceholder(
-            PlayerlessPlaceholder(
-                plugin,
-                "active_ids_list",
-            ) {
-                var activeList = mutableListOf<String>()
-
-                for (active in Bukkit.getServer().activeBoosters) {
-                    activeList.add(active.booster.getID())
-                }
-
-                var outputString =
-                    plugin.langYml.getString("no-currently-active-ids-list").formatEco(formatPlaceholders = false)
-                if (activeList.size > 0) {
-                    outputString = activeList.joinToString(",")
-                }
-
-                outputString
-            }
-        )
-
-        PlaceholderManager.registerPlaceholder(
-            PlayerlessPlaceholder(
-                plugin,
-                "time_remaining",
-            ) {
-                val currentActive = Bukkit.getServer().activeBoosters.firstOrNull()
-
-                if (currentActive == null) {
-                    "00:00:00"
-                } else {
-                    currentActive.booster.getFormattedTimeLeft()
-                }
-            }
-        )
     }
 
     override fun getID(): String {

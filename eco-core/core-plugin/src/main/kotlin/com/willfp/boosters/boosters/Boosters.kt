@@ -7,6 +7,12 @@ import com.willfp.eco.core.registry.Registry
 import com.willfp.libreforge.loader.LibreforgePlugin
 import com.willfp.libreforge.loader.configs.ConfigCategory
 import com.willfp.libreforge.loader.configs.LegacyLocation
+import com.willfp.boosters.boosters.activeBoosters
+import com.willfp.boosters.plugin
+import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
+import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
+import com.willfp.eco.util.formatEco
+import org.bukkit.Bukkit
 
 object Boosters : ConfigCategory("booster", "boosters") {
     /** Registered boosters. */
@@ -57,6 +63,50 @@ object Boosters : ConfigCategory("booster", "boosters") {
     }
 
     override fun afterReload(plugin: LibreforgePlugin) {
+        registerGlobalPlaceholders()
         BoosterGUI.update()
+    }
+
+    fun registerGlobalPlaceholders() {
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "active_list",
+            ) {
+                val activeList = Bukkit.getServer().activeBoosters.map { it.booster.name }
+
+                if (activeList.isEmpty()) {
+                    plugin.langYml.getString("no-currently-active-list").formatEco(formatPlaceholders = false)
+                } else {
+                    activeList.joinToString(", ")
+                }
+            }
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "active_ids_list",
+            ) {
+                val activeList = Bukkit.getServer().activeBoosters.map { it.booster.getID() }
+
+                if (activeList.isEmpty()) {
+                    plugin.langYml.getString("no-currently-active-ids-list").formatEco(formatPlaceholders = false)
+                } else {
+                    activeList.joinToString(",")
+                }
+            }
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "time_remaining",
+            ) {
+                val currentActive = Bukkit.getServer().activeBoosters.firstOrNull()
+
+                currentActive?.booster?.getFormattedTimeLeft() ?: "00:00:00"
+            }
+        )
     }
 }
