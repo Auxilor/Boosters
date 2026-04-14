@@ -1,10 +1,13 @@
 package com.willfp.boosters.commands
 
 import com.willfp.boosters.boosters.BoosterQueue
+import com.willfp.boosters.activateQueuedBooster
+import com.willfp.boosters.activateQueuedBoosterConsole
 import com.willfp.boosters.boosters.activeBoosters
 import com.willfp.boosters.boosters.expireBooster
 import com.willfp.boosters.plugin
 import com.willfp.boosters.runExpiryEffects
+import com.willfp.boosters.serverUUID
 import com.willfp.eco.core.command.impl.Subcommand
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -64,8 +67,23 @@ object CommandCancel : Subcommand(
                 }
 
                 Bukkit.getServer().expireBooster(target.booster)
-                target.booster.category?.let { BoosterQueue.queue.remove(it) }
-                BoosterQueue.saveQueue()
+
+                val queued = BoosterQueue.popBooster(target.booster)
+                if (queued != null) {
+                    val activator = queued.activator
+                    if (activator == serverUUID) {
+                        Bukkit.getServer().activateQueuedBoosterConsole(
+                            queued.booster,
+                            queued.duration.toLong()
+                        )
+                    } else {
+                        val player = Bukkit.getOfflinePlayer(activator)
+                        player.activateQueuedBooster(
+                            queued.booster,
+                            queued.duration.toLong()
+                        )
+                    }
+                }
 
                 sender.sendMessage(plugin.langYml.getMessage("cancelled"))
             }
