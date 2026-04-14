@@ -32,6 +32,7 @@ permissions:
       boosters.command.cancel: true
       boosters.command.activate: true
       boosters.command.bossbar: true
+      boosters.command.queue: true
 
   boosters.command.reload:
     description: Allows reloading the config
@@ -51,3 +52,6 @@ permissions:
   boosters.command.bossbar:
     description: Allows the use of /boosters bossbar.
     default: true
+  boosters.command.queue:
+    description: Allows the use of /boosters queue.
+    default: op
