@@ -89,7 +89,9 @@ class Booster(
 
     val canBeActivated: Boolean
         get() {
-            return active == null && Bukkit.getServer().activeBoosters.none { it.booster.category == this.category }
+            if (active != null) return false
+            val cat = this.category ?: return true
+            return Bukkit.getServer().activeBoosters.none { it.booster.category == cat }
         }
 
     fun canBeMerged(booster: Booster): Boolean {
