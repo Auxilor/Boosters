@@ -91,9 +91,21 @@ object BoosterQueue {
             val boosterStrings = config.getStrings(key) ?: continue
             val boosters = boosterStrings.mapNotNull {
                 val split = it.split("__")
+                if (split.size < 3) {
+                    plugin.logger.warning("Skipping malformed queue entry: $it")
+                    return@mapNotNull null
+                }
                 val booster = Boosters.getByID(split[0]) ?: return@mapNotNull null
-                val duration = split[1].toIntOrNull() ?: return@mapNotNull null
-                val uuid = UUID.fromString(split[2])
+                val duration = split[1].toIntOrNull() ?: run {
+                    plugin.logger.warning("Skipping queue entry with invalid duration: $it")
+                    return@mapNotNull null
+                }
+                val uuid = try {
+                    UUID.fromString(split[2])
+                } catch (e: IllegalArgumentException) {
+                    plugin.logger.warning("Skipping queue entry with invalid UUID: $it")
+                    return@mapNotNull null
+                }
                 QueuedBooster(booster, duration, uuid)
             }.toMutableList()
             queue[key] = boosters
