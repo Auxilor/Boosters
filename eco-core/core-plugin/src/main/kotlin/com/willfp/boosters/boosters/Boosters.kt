@@ -17,6 +17,7 @@ import org.bukkit.Bukkit
 object Boosters : ConfigCategory("booster", "boosters") {
     /** Registered boosters. */
     private val registry = Registry<Booster>()
+    private var cachedValues: List<Booster> = emptyList()
 
     override val legacyLocation = LegacyLocation(
         "boosters.yml",
@@ -30,7 +31,7 @@ object Boosters : ConfigCategory("booster", "boosters") {
      */
     @JvmStatic
     fun values(): List<Booster> {
-        return ImmutableList.copyOf(registry.values())
+        return cachedValues
     }
 
     /**
@@ -56,10 +57,12 @@ object Boosters : ConfigCategory("booster", "boosters") {
 
     override fun clear(plugin: LibreforgePlugin) {
         registry.clear()
+        cachedValues = emptyList()
     }
 
     override fun acceptConfig(plugin: LibreforgePlugin, id: String, config: Config) {
         registry.register(Booster(id, config))
+        cachedValues = ImmutableList.copyOf(registry.values())
     }
 
     override fun afterReload(plugin: LibreforgePlugin) {
