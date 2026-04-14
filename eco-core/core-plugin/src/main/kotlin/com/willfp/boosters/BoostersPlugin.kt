@@ -8,6 +8,7 @@ import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.libreforge.ConditionIsBoosterActive
 import com.willfp.eco.core.command.impl.PluginCommand
+import org.bukkit.scheduler.BukkitTask
 import com.willfp.libreforge.SimpleProvidedHolder
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.loader.LibreforgePlugin
@@ -22,6 +23,8 @@ internal lateinit var bossBarManager: BoosterBossBarManager
     private set
 
 class BoostersPlugin : LibreforgePlugin() {
+    private var tickTask: BukkitTask? = null
+
     init {
         plugin = this
         bossBarManager = BoosterBossBarManager()
@@ -47,7 +50,9 @@ class BoostersPlugin : LibreforgePlugin() {
         BoosterQueue.saveQueue()
         bossBarManager.clearAll()
         BoosterQueue.loadQueue()
-        this.scheduler.runTimer(20L, 20L) {
+
+        tickTask?.cancel()
+        tickTask = this.scheduler.runTimer(20L, 20L) {
             for (booster in Boosters.values()) {
                 if (booster.active == null) {
                     continue
@@ -67,12 +72,16 @@ class BoostersPlugin : LibreforgePlugin() {
                         val activator = queued.activator
 
                         if (activator == serverUUID) {
-                            Bukkit.getServer().activateQueuedBoosterConsole(queued.booster,
-                                queued.duration.toLong())
+                            Bukkit.getServer().activateQueuedBoosterConsole(
+                                queued.booster,
+                                queued.duration.toLong()
+                            )
                         } else {
                             val player = Bukkit.getOfflinePlayer(activator)
-                            player.activateQueuedBooster(queued.booster,
-                                queued.duration.toLong())
+                            player.activateQueuedBooster(
+                                queued.booster,
+                                queued.duration.toLong()
+                            )
                         }
                     }
                 }
@@ -89,6 +98,8 @@ class BoostersPlugin : LibreforgePlugin() {
     }
 
     override fun handleDisable() {
+        tickTask?.cancel()
+        tickTask = null
         bossBarManager.clearAll()
         BoosterQueue.saveQueue()
     }
