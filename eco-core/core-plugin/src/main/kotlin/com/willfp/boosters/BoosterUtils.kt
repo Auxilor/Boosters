@@ -256,7 +256,8 @@ fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long) {
     }
 
     Bukkit.getServer().activateBooster(
-        ActivatedBooster(booster, this.uniqueId)
+        ActivatedBooster(booster, this.uniqueId),
+        durationTicks = time.toInt()
     )
 
     for (player in Bukkit.getOnlinePlayers()) {
@@ -283,7 +284,8 @@ fun Server.activateQueuedBoosterConsole(booster: Booster, time: Long) {
     }
 
     this.activateBooster(
-        ActivatedBooster(booster, null)
+        ActivatedBooster(booster, null),
+        durationTicks = time.toInt()
     )
 
     for (player in Bukkit.getOnlinePlayers()) {

@@ -27,11 +27,12 @@ fun Server.increaseBooster(booster: Booster) {
 }
 
 
-fun Server.activateBooster(activatedBooster: ActivatedBooster) {
+fun Server.activateBooster(activatedBooster: ActivatedBooster, durationTicks: Int? = null) {
     val (booster, uuid) = activatedBooster
     val profile = ServerProfile.load()
 
-    val durationMillis = booster.duration.toDouble() * 50
+    val effectiveDuration = durationTicks ?: booster.duration
+    val durationMillis = effectiveDuration.toDouble() * 50
 
     profile.write(
         booster.expiryTimeKey,
