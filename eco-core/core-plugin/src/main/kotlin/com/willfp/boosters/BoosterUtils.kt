@@ -69,21 +69,19 @@ fun OfflinePlayer.incrementBoosters(booster: Booster, amount: Int) {
     this.setAmountOfBooster(booster, this.getAmountOfBooster(booster) + amount)
 }
 
-val consoleName = plugin.langYml
-    .getFormattedString("console-displayname")
-    .formatEco(formatPlaceholders = false)
+val consoleName: String
+    get() = plugin.langYml
+        .getFormattedString("console-displayname")
+        .formatEco(formatPlaceholders = false)
 
-val activateSound by lazy {
-    PlayableSound.create(plugin.configYml.getSubsection("sounds.activate"))
-}
+val activateSound: PlayableSound?
+    get() = PlayableSound.create(plugin.configYml.getSubsection("sounds.activate"))
 
-val incrementSound by lazy {
-    PlayableSound.create(plugin.configYml.getSubsection("sounds.increment"))
-}
+val incrementSound: PlayableSound?
+    get() = PlayableSound.create(plugin.configYml.getSubsection("sounds.increment"))
 
-val expireSound by lazy {
-    PlayableSound.create(plugin.configYml.getSubsection("sounds.expire"))
-}
+val expireSound: PlayableSound?
+    get() = PlayableSound.create(plugin.configYml.getSubsection("sounds.expire"))
 
 fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
     var effects: Chain?
