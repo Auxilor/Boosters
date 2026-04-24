@@ -1,5 +1,6 @@
 package com.willfp.boosters
 
+import com.willfp.boosters.boosters.BoosterBossBar
 import com.willfp.boosters.boosters.BoosterQueue
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activeBoosters
@@ -8,7 +9,7 @@ import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.libreforge.ConditionIsBoosterActive
 import com.willfp.eco.core.command.impl.PluginCommand
-import org.bukkit.scheduler.BukkitTask
+import com.willfp.eco.core.scheduling.EcoWrappedTask
 import com.willfp.libreforge.SimpleProvidedHolder
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.loader.LibreforgePlugin
@@ -19,15 +20,11 @@ import org.bukkit.Bukkit
 internal lateinit var plugin: BoostersPlugin
     private set
 
-internal lateinit var bossBarManager: BoosterBossBarManager
-    private set
-
 class BoostersPlugin : LibreforgePlugin() {
-    private var tickTask: BukkitTask? = null
+    private var tickTask: EcoWrappedTask? = null
 
     init {
         plugin = this
-        bossBarManager = BoosterBossBarManager()
     }
 
     override fun loadConfigCategories(): List<ConfigCategory> {
@@ -48,11 +45,11 @@ class BoostersPlugin : LibreforgePlugin() {
 
     override fun handleReload() {
         BoosterQueue.saveQueue()
-        bossBarManager.clearAll()
+        BoosterBossBar.clearAll()
         BoosterQueue.loadQueue()
 
-        tickTask?.cancel()
-        tickTask = this.scheduler.runTimer(20L, 20L) {
+        tickTask?.cancelTask()
+        tickTask = this.scheduler.runTaskTimer(20L, 20L) {
             for (booster in Boosters.values()) {
                 if (booster.active == null) {
                     continue
@@ -61,7 +58,7 @@ class BoostersPlugin : LibreforgePlugin() {
                 if (booster.secondsLeft <= 0) {
                     booster.runExpiryEffects()
 
-                    bossBarManager.clearFor(booster)
+                    BoosterBossBar.clearFor(booster)
                     Bukkit.getServer().expireBooster(booster)
 
                     // Check the queue
@@ -87,20 +84,20 @@ class BoostersPlugin : LibreforgePlugin() {
                 }
             }
 
-            bossBarManager.render()
+            BoosterBossBar.render()
         }
 
         // Just run it later enough
-        this.scheduler.runLater(3) {
+        this.scheduler.runTaskLater(3) {
             Bukkit.getServer().scanForBoosters()
-            bossBarManager.render()
+            BoosterBossBar.render()
         }
     }
 
     override fun handleDisable() {
-        tickTask?.cancel()
+        tickTask?.cancelTask()
         tickTask = null
-        bossBarManager.clearAll()
+        BoosterBossBar.clearAll()
         BoosterQueue.saveQueue()
     }
 
