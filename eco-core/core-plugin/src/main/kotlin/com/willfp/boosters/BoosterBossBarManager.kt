@@ -1,10 +1,11 @@
-package com.willfp.boosters.boosters
+package com.willfp.boosters
 
-import com.willfp.boosters.isBossBarVisible
+import com.willfp.boosters.boosters.Booster
+import com.willfp.boosters.boosters.activeBoosters
 import org.bukkit.Bukkit
 import org.bukkit.boss.BossBar
 
-object BoosterBossBar {
+class BoosterBossBarManager {
     private val bars = mutableMapOf<Booster, BossBar>()
 
     fun render() {
@@ -73,3 +74,4 @@ object BoosterBossBar {
         bars.clear()
     }
 }
+
