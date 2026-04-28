@@ -11,7 +11,6 @@ import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activateBooster
 import com.willfp.boosters.boosters.activeBoosters
 import com.willfp.boosters.boosters.increaseBooster
-import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
@@ -113,20 +112,14 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
     }
 
     Bukkit.getOnlinePlayers().forEach { target ->
-        val runnable = Runnable {
-            effects?.trigger(
-                TriggerData(player = target)
-                    .dispatch(target.toDispatcher())
-                    .apply {
-                        addPlaceholder(NamedValue("activator", consoleName))
-                        addPlaceholder(NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20)))
-                    }
-            )
-        }
-        if (Prerequisite.HAS_FOLIA.isMet)
-            plugin.scheduler.runTask(target, runnable)
-        else
-            runnable.run()
+        effects?.trigger(
+            TriggerData(player = target)
+                .dispatch(target.toDispatcher())
+                .apply {
+                    addPlaceholder(NamedValue("activator", consoleName))
+                    addPlaceholder(NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20)))
+                }
+        )
     }
 
     when (status) {
@@ -154,17 +147,11 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
 
 fun Server.incrementBoosterConsole(booster: Booster) {
     Bukkit.getOnlinePlayers().forEach { target ->
-        val runnable = Runnable {
-            booster.incrementEffects?.trigger(
-                TriggerData(player = target)
-                    .dispatch(target.toDispatcher())
-                    .apply { addPlaceholder(NamedValue("activator", consoleName)) }
-            )
-        }
-        if (Prerequisite.HAS_FOLIA.isMet)
-            plugin.scheduler.runTask(target, runnable)
-        else
-            runnable.run()
+        booster.incrementEffects?.trigger(
+            TriggerData(player = target)
+                .dispatch(target.toDispatcher())
+                .apply { addPlaceholder(NamedValue("activator", consoleName)) }
+        )
     }
 
     Bukkit.getServer().increaseBooster(booster)
@@ -232,19 +219,13 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
 
     if (effects != null) {
         Bukkit.getOnlinePlayers().forEach { target ->
-            val runnable = Runnable {
-                val dispatched = TriggerData(player = target)
-                    .dispatch(target.toDispatcher())
+            val dispatched = TriggerData(player = target)
+                .dispatch(target.toDispatcher())
 
-                dispatched.addPlaceholder(NamedValue("activator", this.name))
-                dispatched.addPlaceholder(NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20)))
+            dispatched.addPlaceholder(NamedValue("activator", this.name))
+            dispatched.addPlaceholder(NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20)))
 
-                effects.trigger(dispatched)
-            }
-            if (Prerequisite.HAS_FOLIA.isMet)
-                plugin.scheduler.runTask(target, runnable)
-            else
-                runnable.run()
+            effects.trigger(dispatched)
         }
     }
 
@@ -257,24 +238,18 @@ fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long) {
 
     if (booster.activationEffects != null) {
         Bukkit.getOnlinePlayers().forEach { target ->
-            val runnable = Runnable {
-                val dispatched = TriggerData(player = target)
-                    .dispatch(target.toDispatcher())
+            val dispatched = TriggerData(player = target)
+                .dispatch(target.toDispatcher())
 
-                dispatched.addPlaceholder(
-                    NamedValue("activator", player?.name ?: this.savedDisplayName)
-                )
+            dispatched.addPlaceholder(
+                NamedValue("activator", player?.name ?: this.savedDisplayName)
+            )
 
-                dispatched.addPlaceholder(
-                    NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
-                )
+            dispatched.addPlaceholder(
+                NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
+            )
 
-                booster.activationEffects.trigger(dispatched)
-            }
-            if (Prerequisite.HAS_FOLIA.isMet)
-                plugin.scheduler.runTask(target, runnable)
-            else
-                runnable.run()
+            booster.activationEffects.trigger(dispatched)
         }
     }
 
@@ -291,24 +266,18 @@ fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long) {
 fun Server.activateQueuedBoosterConsole(booster: Booster, time: Long) {
     if (booster.activationEffects != null) {
         Bukkit.getOnlinePlayers().forEach { target ->
-            val runnable = Runnable {
-                val dispatched = TriggerData(player = target)
-                    .dispatch(target.toDispatcher())
+            val dispatched = TriggerData(player = target)
+                .dispatch(target.toDispatcher())
 
-                dispatched.addPlaceholder(
-                    NamedValue("activator", consoleName)
-                )
+            dispatched.addPlaceholder(
+                NamedValue("activator", consoleName)
+            )
 
-                dispatched.addPlaceholder(
-                    NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
-                )
+            dispatched.addPlaceholder(
+                NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
+            )
 
-                booster.activationEffects.trigger(dispatched)
-            }
-            if (Prerequisite.HAS_FOLIA.isMet)
-                plugin.scheduler.runTask(target, runnable)
-            else
-                runnable.run()
+            booster.activationEffects.trigger(dispatched)
         }
     }
 
