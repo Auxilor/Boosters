@@ -7,6 +7,7 @@ import com.willfp.boosters.boosters.expireBooster
 import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.libreforge.ConditionIsBoosterActive
+import com.willfp.eco.core.bstats.EcoMetricsChart
 import com.willfp.eco.core.command.impl.PluginCommand
 import org.bukkit.scheduler.BukkitTask
 import com.willfp.libreforge.SimpleProvidedHolder
@@ -109,4 +110,21 @@ class BoostersPlugin : LibreforgePlugin() {
             CommandBoosters
         )
     }
+
+    override fun getCustomCharts() = listOf(
+        EcoMetricsChart.SingleLine("total_boosters") { Boosters.values().size },
+        EcoMetricsChart.SingleLine("active_boosters") { Bukkit.getServer().activeBoosters.size },
+        EcoMetricsChart.SimplePie("use_local_storage") {
+            if (configYml.getBool("use-local-storage")) "local" else "shared"
+        },
+        EcoMetricsChart.SimplePie("activate_sound_enabled") {
+            if (configYml.getBool("sounds.activate.enabled")) "enabled" else "disabled"
+        },
+        EcoMetricsChart.SimplePie("increment_sound_enabled") {
+            if (configYml.getBool("sounds.increment.enabled")) "enabled" else "disabled"
+        },
+        EcoMetricsChart.SimplePie("expire_sound_enabled") {
+            if (configYml.getBool("sounds.expire.enabled")) "enabled" else "disabled"
+        }
+    )
 }
