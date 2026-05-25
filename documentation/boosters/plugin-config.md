@@ -1,0 +1,45 @@
+---
+title: "Plugin Config"
+sidebar_position: 5
+---
+
+## Default config.yml
+
+```yaml
+# Even if eco is set up to use a database, you can
+# force Boosters to save to local storage to disable
+# cross-server sync.
+use-local-storage: false
+
+gui:
+  title: Boosters
+  rows: 3
+  mask:
+    items:
+      - black_stained_glass_Pane
+    pattern:
+      - "111111111"
+      - "101101101"
+      - "111111111"
+  custom-slots: []
+
+sounds:
+  activate:
+    enabled: true
+    sound: ENTITY_PLAYER_LEVELUP
+    volume: 2
+    pitch: 0.9
+    category: AMBIENT
+  increment:
+    enabled: true
+    sound: ENTITY_EXPERIENCE_ORB_PICKUP
+    volume: 2
+    pitch: 0.9
+    category: AMBIENT
+  expire:
+    enabled: true
+    sound: ENTITY_ITEM_BREAK
+    volume: 2
+    pitch: 0.9
+    category: AMBIENT
+```
