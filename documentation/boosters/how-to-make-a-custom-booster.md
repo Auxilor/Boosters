@@ -1,4 +1,4 @@
----
+﻿---
 title: How to make a Booster
 sidebar_position: 1
 ---
@@ -126,7 +126,7 @@ bossbar:
 ```
 
 ### The Activation, Increment and Expiry Section
-:::dangerEffects Section
+:::danger Effects Section
 
 The effects section is the core functionality of the booster. You can configure effects, conditions, filters, mutators and triggers in this section to run when the booster is activated, incremented, queued, or expires.
 
@@ -196,7 +196,7 @@ expiry-effects:
 ```
 
 ### The Effects Section
-:::dangerEffects Section
+:::danger Effects Section
 
 The effects section is the core functionality of the booster. You can configure effects, conditions, filters, mutators and triggers in this section to run whilst the booster is active.
 
