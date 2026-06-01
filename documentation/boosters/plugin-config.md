@@ -5,11 +5,11 @@ sidebar_position: 5
 
 The plugin-wide settings live in `config.yml` in the Boosters data folder (`/plugins/Boosters/config.yml`). It controls storage, the `/boosters` GUI layout, and the sounds played on booster events. Edit it, then run `/boosters reload` to apply changes.
 
-:::tip
+:::warning
 Changing `use-local-storage` switches where booster data is read from, so re-log after reloading to make sure the player data you see is current.
 :::
 
-## config.yml
+## Default config.yml
 
 ```yaml
 # Force Boosters to save to local storage even when eco uses a database.

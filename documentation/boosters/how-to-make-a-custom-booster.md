@@ -14,7 +14,7 @@ A **booster** is a buyable reward that, once activated, applies an effect to eve
 5. Give it to yourself with `/boosters give <you> sell_multiplier_1.5x`, then open `/boosters`; the booster should appear in the menu, ready to activate.
 
 :::tip
-`_example.yml` ships as a reference, so copy or rename it to make a real booster. You can add and remove booster files freely; each is independent.
+`_example.yml` is included as a reference and is **never loaded**, so copy or rename it to make a real booster. You can also organise boosters into subfolders inside `boosters/`, and they'll still load.
 :::
 
 ## Naming and IDs
