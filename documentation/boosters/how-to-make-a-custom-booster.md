@@ -1,257 +1,182 @@
-﻿---
-title: How to make a Booster
+---
+title: "How to Make a Booster"
 sidebar_position: 1
 ---
-Boosters are a great way to give players a temporary boost in the game, such as a sell multiplier or a resource boost. They can be activated by players to enhance their gameplay experience.
 
-## Creating a Booster
+A **booster** is a buyable reward that, once activated, applies an effect to every online player for a set **duration**, such as a sell multiplier or a resource boost. Each booster is one config file, and the file name is its **ID**. This page walks you through creating one and explains every part of the config you can set.
 
-Each booster has its own config file, placed in the `/boosters/` folder, and you can add or remove them as you please. There's an example config called `_example.yml` to help you out!
+## Quick start
 
-The ID of the booster is the file name. This is what you use in commands and in the [Item Lookup System](https://plugins.auxilor.io/the-item-lookup-system).
-ID's must be lowercase letters, numbers, and underscores only.
+1. Open the `/boosters/` folder in the plugin's data directory.
+2. Copy the bundled `_example.yml` to a new file, e.g. `sell_multiplier_1.5x.yml`. **The file name becomes the booster's ID.**
+3. Edit the `name`, `duration`, and `effects` to taste (see the sections below).
+4. Run `/boosters reload` in-game to load the change.
+5. Give it to yourself with `/boosters give <you> sell_multiplier_1.5x`, then open `/boosters`; the booster should appear in the menu, ready to activate.
 
-## Example Booster Config
+:::tip
+`_example.yml` ships as a reference, so copy or rename it to make a real booster. You can add and remove booster files freely; each is independent.
+:::
+
+## Naming and IDs
+
+The **file name (without `.yml`) is the booster's ID**. So `sell_multiplier_1.5x.yml` has the ID `sell_multiplier_1.5x`.
+
+That ID is what you use in commands (`/boosters give <player> sell_multiplier_1.5x`) and in the [Item Lookup System](https://plugins.auxilor.io/the-item-lookup-system).
+
+:::warning ID rules
+IDs may only contain **lowercase letters, numbers, and underscores** (`a-z`, `0-9`, `_`). No spaces, capitals, or hyphens, or the booster will not load.
+:::
+
+## The structure of a booster
+
+A config has four logical parts, top to bottom:
+
+| Part | What it controls |
+| --- | --- |
+| **Info** | The name, duration, category, and merge behaviour |
+| **Bossbar** | The optional on-screen timer |
+| **Effects** | What runs on activation, increment, queue, and expiry, and while active |
+| **GUI** | How the booster looks and where it sits in the `/boosters` menu |
+
+The rest of this page covers each part in detail. Here's a complete example with everything in place:
 
 ```yaml
-name: "1.5x Sell Multiplier" 
-duration: 72000 
-category: "sell_multipliers"
-merge-tag: "sell_multiplier_1.5x"
+# === Info: identity and duration ===
+name: "1.5x Sell Multiplier" # Display name of the booster
+duration: 72000 # Duration in ticks; 20 ticks = 1 second, so 72000 = 1 hour
+category: "sell_multipliers" # Optional; boosters in the same category queue instead of running together
+merge-tag: "sell_multiplier_1.5x" # Optional; matching tags merge to extend duration instead of stacking
 
+# === Bossbar: optional on-screen timer ===
 bossbar:
-  enabled: true
-  name: "&a1.5x Sell Multiplier &7(%time_remaining%)"
-  color: GREEN
-  style: SOLID
+  enabled: true # Set false to hide the bossbar for this booster
+  name: "&a1.5x Sell Multiplier &7(%time_remaining%)" # Defaults to the booster name if omitted
+  color: GREEN # PINK, BLUE, RED, GREEN, YELLOW, PURPLE, or WHITE
+  style: SOLID # SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, or SEGMENTED_20
 
-activation-effects:
+# === Effects: lifecycle messages and the active functionality ===
+activation-effects: # Run when the booster is activated (applies to every online player)
   - id: send_message
     args:
-      action_bar: false
       messages:
-        - ""
         - " %activator%&f has activated a &a1.5x Sell Multiplier Booster&f!"
-        - " &fThis booster will last an hour, be sure to thank them!"
-        - ""
-
-increment-effects:
-  - id: send_message
-    args:
-      action_bar: false
-      messages:
-        - ""
-        - " %activator%&f has increased the &a1.5x Sell Multiplier Booster's duration&f!"
-        - " &fThis booster will last another hour, be sure to thank them!"
-        - ""
-
-queue-effects:
-  - id: send_message
-    args:
-      action_bar: false
-      messages:
-        - ""
-        - " %activator%&f has queued a &a1.5x Sell Multiplier Booster&f!"
-        - " &fThis booster will last %time%, when its time comes!"
-        - ""
-
-queue-increment-effects:
-  - id: send_message
-    args:
-      action_bar: false
-      messages:
-        - ""
-        - " %activator%&f has increased a &a1.5x Sell Multiplier Booster&f in the queue!"
-        - " &fThis booster will now last %time%, when its time comes!"
-        - ""
-
-expiry-effects:
-  - id: send_message
-    args:
-      action_bar: false
-      messages:
-        - ""
-        - " &fThe &a1.5x Sell Multiplier Booster&f has ended"
-        - " &fGet another one here: &ahttps://store.ecomc.net/package/756887"
-        - ""
-
-
-effects:
+increment-effects: [] # Run when an active booster's duration is extended
+queue-effects: [] # Run when the booster is queued behind an active one in its category
+queue-increment-effects: [] # Run when a queued booster's duration is extended
+expiry-effects: [] # Run when the booster ends
+effects: # Run for the whole duration; this is the booster's functionality
   - id: sell_multiplier
     args:
       multiplier: 1.5
+conditions: [] # Conditions required for the effects to apply ([] = always)
 
-conditions: []
-
+# === GUI: how it appears in /boosters ===
 gui:
-  item: player_head texture:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTM0YjI3YmZjYzhmOWI5NjQ1OTRiNjE4YjExNDZhZjY5ZGUyNzhjZTVlMmUzMDEyY2I0NzFhOWEzY2YzODcxIn19fQ==
-  name: "&d1.5x Sell Multiplier"
+  item: player_head texture:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTM0YjI3YmZjYzhmOWI5NjQ1OTRiNjE4YjExNDZhZjY5ZGUyNzhjZTVlMmUzMDEyY2I0NzFhOWEzY2YzODcxIn19fQ== # Item Lookup System
+  name: "&d1.5x Sell Multiplier" # Name shown in the GUI
   lore:
-    - ""
-    - "&fGives everyone online a"
-    - "&a1.5x Sell Multiplier"
-    - "&fto make money faster!"
-    - ""
-    - "&fDuration: &a1 Hour"
-    - ""
+    - "&fGives everyone online a 1.5x Sell Multiplier"
     - "&fYou have: &a%amount%"
-    - "&fGet more at &astore.ecomc.net"
-    - ""
-    - "&e&oClick to activate!"
-    - ""
   position:
-    row: 2
-    column: 2
+    row: 2 # 1 to 6
+    column: 2 # 1 to 9
 ```
 
-## Understanding all the sections
+### Info
 
-### The Booster Info Section
+The top-level fields that identify the booster and control how long it lasts.
+
 ```yaml
-name: "2x Sell Multiplier" # The display name of the Booster.
-duration: 72000 # The duration (in ticks) of the Booster. (e.g. 6000 = 5 minutes)
-category: "sell_multipliers" # (Optional) The category of the booster, used for queueing and preventing boosters of the same category from being active at the same time.
-merge-tag: "sell_multiplier_1.5x" # (Optional) The tag used to identify boosters that can be merged together to increase duration instead of activating a new booster.
+name: "1.5x Sell Multiplier" # Display name of the booster
+duration: 72000 # Duration in ticks; 20 ticks = 1 second, so 72000 = 1 hour
+category: "sell_multipliers" # Optional; boosters in the same category queue instead of running together
+merge-tag: "sell_multiplier_1.5x" # Optional; matching tags merge to extend duration instead of stacking
 ```
 
-### The Bossbar Section
+### Bossbar
+
+An optional on-screen timer whose progress tracks the remaining duration and updates when the booster is incremented.
+
 ```yaml
-# Optional per-booster bossbar settings.
-# The bossbar progress tracks remaining duration and updates if the booster is incremented.
 bossbar:
-  enabled: true
-  name: "&a1.5x Sell Multiplier" # Defaults to booster "name" if omitted. You can use %time_remaining% here to show the remaining time on the bossbar.
-  color: GREEN # Valid colors: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
-  style: SOLID # Valid styles: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+  enabled: true # Set false to hide the bossbar for this booster
+  name: "&a1.5x Sell Multiplier &7(%time_remaining%)" # Defaults to the booster name if omitted
+  color: GREEN # PINK, BLUE, RED, GREEN, YELLOW, PURPLE, or WHITE
+  style: SOLID # SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, or SEGMENTED_20
 ```
 
-### The Activation, Increment and Expiry Section
-:::danger Effects Section
+### Effects
 
-The effects section is the core functionality of the booster. You can configure effects, conditions, filters, mutators and triggers in this section to run when the booster is activated, incremented, queued, or expires.
+The lifecycle blocks run effects at each point in the booster's life; the `effects` block is what the booster does while it is active, gated by `conditions`.
 
-Check out [Configuring an Effect](https://plugins.auxilor.io/effects/configuring-an-effect) to understand how to configure this section correctly.
-
-For more advanced users or setups, you can configure chains in this section to string together different effects under one trigger. Check out [Configuring an Effect Chain](https://plugins.auxilor.io/effects/configuring-a-chain) for more info.
-
-:::
 ```yaml
-# Effects to be run when the Booster is activated (applies to all players)
-# %activator% - The player who activated the booster
-# %player% - The player receiving the message/effect
-activation-effects:
+# %activator% is the player who activated the booster; %player% is each player receiving the effect
+activation-effects: # Run when the booster is activated
   - id: send_message
     args:
-      action_bar: false
       messages:
-        - ""
         - " %activator%&f has activated a &a1.5x Sell Multiplier Booster&f!"
-        - " &fThis booster will last an hour, be sure to thank them!"
-        - ""
+increment-effects: [] # Run when an active booster's duration is extended
+queue-effects: [] # Run when the booster is queued behind an active one in its category
+queue-increment-effects: [] # Run when a queued booster's duration is extended
+expiry-effects: [] # Run when the booster ends
 
-# Effects to be run when the Booster is incremented (applies to all players)
-increment-effects:
-  - id: send_message
-    args:
-      action_bar: false
-      messages:
-        - ""
-        - " %activator%&f has increased the &a1.5x Sell Multiplier Booster's duration&f!"
-        - " &fThis booster will last another hour, be sure to thank them!"
-        - ""
-
-# Effects to be run when the Booster is queued (applies to all players)
-queue-effects:
-  - id: send_message
-    args:
-      action_bar: false
-      messages:
-        - ""
-        - " %activator%&f has queued a &a1.5x Sell Multiplier Booster&f!"
-        - " &fThis booster will last %time%, when its time comes!"
-        - ""
-
-
-# Effects to be run when the Booster is incremented in the queue (applies to all players)
-queue-increment-effects:
-  - id: send_message
-    args:
-      action_bar: false
-      messages:
-        - ""
-        - " %activator%&f has increased a &a1.5x Sell Multiplier Booster&f in the queue!"
-        - " &fThis booster will now last %time%, when its time comes!"
-        - ""
-
-# Effects to be run when the Booster expires (applies to all players)
-expiry-effects:
-  - id: send_message
-    args:
-      action_bar: false
-      messages:
-        - ""
-        - " &fThe &a1.5x Sell Multiplier Booster&f has ended"
-        - " &fGet another one here: &ahttps://store.ecomc.net/package/756887"
-        - ""
-```
-
-### The Effects Section
-:::danger Effects Section
-
-The effects section is the core functionality of the booster. You can configure effects, conditions, filters, mutators and triggers in this section to run whilst the booster is active.
-
-Check out [Configuring an Effect](https://plugins.auxilor.io/effects/configuring-an-effect) to understand how to configure this section correctly.
-
-For more advanced users or setups, you can configure chains in this section to string together different effects under one trigger. Check out [Configuring an Effect Chain](https://plugins.auxilor.io/effects/configuring-a-chain) for more info.
-
-:::
-```yaml
-# The effects whilst the Booster is active (i.e. the functionality)
-effects:
+effects: # Run for the whole duration; this is the booster's functionality
   - id: sell_multiplier
     args:
-      multiplier: 2
-
-# The conditions required for the effects to activate
-conditions: [ ]
+      multiplier: 1.5
+conditions: [] # Conditions required for the effects to apply ([] = always)
 ```
 
-### The Booster GUI Section
+:::danger Effects are their own system
+Effects, conditions, filters, mutators, triggers, and chains are a shared eco system, not specific to Boosters, with hundreds of options. They are **not** documented here, so see the dedicated guides:
+
+- [Configuring an Effect](https://plugins.auxilor.io/effects/configuring-an-effect) is the full effect, trigger, and condition reference.
+- [Configuring an Effect Chain](https://plugins.auxilor.io/effects/configuring-a-chain) strings multiple effects under one trigger for advanced boosters.
+:::
+
+### GUI
+
+How the booster is rendered in the `/boosters` menu and where it sits.
+
 ```yaml
 gui:
-  item: player_head texture:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjBhN2I5NGM0ZTU4MWI2OTkxNTlkNDg4NDZlYzA5MTM5MjUwNjIzN2M4OWE5N2M5MzI0OGEwZDhhYmM5MTZkNSJ9fX0= # The GUI item: https://plugins.auxilor.io/the-item-lookup-system
-  name: "&d2x Sell Multiplier" # The name of the Booster in the GUI.
-  lore: # The lore of the Booster in the GUI.
-    - ""
+  item: player_head texture:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTM0YjI3YmZjYzhmOWI5NjQ1OTRiNjE4YjExNDZhZjY5ZGUyNzhjZTVlMmUzMDEyY2I0NzFhOWEzY2YzODcxIn19fQ== # GUI item, from the Item Lookup System
+  name: "&d1.5x Sell Multiplier" # Name shown in the GUI
+  lore: # Lore lines shown in the GUI; %amount% is how many the player owns
     - "&fGives everyone online a"
-    - "&a2x Sell Multiplier"
-    - "&fto make money faster!"
-    - ""
+    - "&a1.5x Sell Multiplier"
     - "&fDuration: &a1 Hour"
-    - ""
     - "&fYou have: &a%amount%"
-    - "&fGet more at &astore.ecomc.net"
-    - ""
     - "&e&oClick to activate!"
-    - ""
   position:
-    row: 2 # 1-6
-    column: 5 # 1-9
+    row: 2 # 1 to 6
+    column: 2 # 1 to 9
 ```
 
-## Internal Placeholders
+## Internal placeholders
 
-| Placeholder        | Value                                                      |
-|--------------------|------------------------------------------------------------|
-| `%amount%`         | The amount of the booster the player has (For use in GUI)  |
-| `%activator%`      | The player who activated the booster (For use in messages) |
-| `%time%`           | The time the booster is activated/incremented for          |
-| `%time_remaining%` | The time remaining on the booster (for use in Bossbar)     |
+These placeholders are provided by Boosters and can be used in this booster's messages, lore, and bossbar:
 
+| Placeholder | Value |
+| --- | --- |
+| `%amount%` | How many of this booster the player owns (for use in GUI lore) |
+| `%activator%` | The player who activated the booster (for use in messages) |
+| `%time%` | The time the booster is activated or incremented for |
+| `%time_remaining%` | The time left on the booster (for use in the bossbar) |
+
+:::tip Troubleshooting
+- **Booster not showing in the GUI?** Check the `gui.position` `row` and `column` are within range and not colliding with the config mask, then run `/boosters reload`.
+- **Changes not taking effect?** You did not reload; run `/boosters reload` after editing any booster file.
+- **Two boosters of the same type run at once?** Give them the same `category` so one queues behind the other.
+- **Activating just extends an existing booster?** That is `merge-tag` working; give them different tags to run separately.
+:::
 
 <hr/>
 
-## Default Configs
+## Where to go next
 
-The default configs can be found [here](https://github.com/Auxilor/Boosters/tree/master/eco-core/core-plugin/src/main/resources/boosters). <br/>
-You can find additional user-created configs on [lrcdb](https://lrcdb.auxilor.io/).
+- **Default configs:** study the [bundled boosters](https://github.com/Auxilor/Boosters/tree/master/eco-core/core-plugin/src/main/resources/boosters) for real, working examples.
+- **Community configs:** browse user-created boosters on [lrcdb](https://lrcdb.auxilor.io/).
+- **Effects reference:** the [Configuring an Effect](https://plugins.auxilor.io/effects/configuring-an-effect) guide for everything the effects blocks can do.
+- **Commands:** [Commands and Permissions](commands-and-permissions) for giving, activating, and cancelling boosters.
