@@ -17,16 +17,30 @@ Changing `use-local-storage` switches where booster data is read from, so re-log
 use-local-storage: false
 
 gui:
-  title: Boosters # Title of the /boosters menu
+  title: Boosters # Title of the /boosters menu. Supports %page% and %max_page%
   rows: 3 # Menu height, 1 to 6 rows
-  mask: # Background filler items, drawn behind boosters
-    items:
-      - black_stained_glass_pane # Item used for masked slots
-    pattern: # 1 = masked, 0 = open slot a booster can occupy
-      - "111111111"
-      - "101101101"
-      - "111111111"
-  custom-slots: [] # Optional extra slots; see https://plugins.auxilor.io/all-plugins/custom-gui-slots
+
+  # Navigation arrows, automatically hidden on the first/last page
+  forwards-arrow:
+    item: arrow name:"&fNext Page"
+    row: 3 # 1 to 6
+    column: 6 # 1 to 9
+  backwards-arrow:
+    item: arrow name:"&fPrevious Page"
+    row: 3
+    column: 4
+
+  # Each entry is one page of the menu. Append more to add pages.
+  pages:
+    - page: 1 # Page number boosters reference via their gui.position.page
+      mask: # Background filler items, drawn behind boosters
+        items:
+          - black_stained_glass_pane # Item used for masked slots
+        pattern: # 1 = masked, 0 = open slot a booster can occupy
+          - "111111111"
+          - "101101101"
+          - "111111111"
+      custom-slots: [] # Optional extra slots; see https://plugins.auxilor.io/all-plugins/custom-gui-slots
 
 sounds:
   activate: # Played when a booster is activated

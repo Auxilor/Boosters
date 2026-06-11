@@ -221,6 +221,8 @@ class Booster(
 
     val guiColumn = config.getInt("gui.position.column")
 
+    val guiPage = config.getIntOrNull("gui.position.page") ?: 1
+
     override val conditions = Conditions.compile(
         config.getSubsections("conditions"),
         ViolationContext(plugin, "Booster $id conditions")

@@ -9,16 +9,31 @@
 use-local-storage: false
 
 gui:
-  title: Boosters
-  rows: 3
-  mask:
-    items:
-      - black_stained_glass_Pane
-    pattern:
-      - "111111111"
-      - "101101101"
-      - "111111111"
-  custom-slots: []
+  title: Boosters # Supports %page% and %max_page% placeholders.
+  rows: 3 # The amount of rows to have (1-6).
+
+  # Navigation options, hidden if on the first/last page.
+  forwards-arrow:
+    item: arrow name:"&fNext Page"
+    row: 3
+    column: 6
+  backwards-arrow:
+    item: arrow name:"&fPrevious Page"
+    row: 3
+    column: 4
+
+  # Add as many pages as you want by appending to this list.
+  pages:
+    - page: 1
+      mask:
+        items:
+          - black_stained_glass_pane
+        pattern:
+          - "111111111"
+          - "101101101"
+          - "111111111"
+      # Custom GUI slots; see here: https://plugins.auxilor.io/all-plugins/custom-gui-slots
+      custom-slots: []
 
 sounds:
   activate:

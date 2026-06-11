@@ -83,5 +83,6 @@ gui:
     - "&e&oClick to activate!"
     - ""
   position:
+    page: 1
     row: 2
     column: 5
