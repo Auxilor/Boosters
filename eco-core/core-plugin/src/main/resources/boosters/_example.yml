@@ -119,5 +119,6 @@ gui:
     - "&e&oClick to activate!"
     - ""
   position:
+    page: 1 # The page of the /boosters menu to show this booster on
     row: 2
     column: 2

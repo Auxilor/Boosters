@@ -78,6 +78,7 @@ gui:
     - "&fGives everyone online a 1.5x Sell Multiplier"
     - "&fYou have: &a%amount%"
   position:
+    page: 1 # Which menu page to show on
     row: 2 # 1 to 6
     column: 2 # 1 to 9
 ```
@@ -150,6 +151,7 @@ gui:
     - "&fYou have: &a%amount%"
     - "&e&oClick to activate!"
   position:
+    page: 1 # Which menu page to show on; pages are defined in config.yml
     row: 2 # 1 to 6
     column: 2 # 1 to 9
 ```
@@ -166,7 +168,7 @@ These placeholders are provided by Boosters and can be used in this booster's me
 | `%time_remaining%` | The time left on the booster (for use in the bossbar) |
 
 :::tip Troubleshooting
-- **Booster not showing in the GUI?** Check the `gui.position` `row` and `column` are within range and not colliding with the config mask, then run `/boosters reload`.
+- **Booster not showing in the GUI?** Check the `gui.position` `page`, `row`, and `column` are within range and not colliding with the config mask, and that the `page` exists in `config.yml`, then run `/boosters reload`.
 - **Changes not taking effect?** You did not reload; run `/boosters reload` after editing any booster file.
 - **Two boosters of the same type run at once?** Give them the same `category` so one queues behind the other.
 - **Activating just extends an existing booster?** That is `merge-tag` working; give them different tags to run separately.
