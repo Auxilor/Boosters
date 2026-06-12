@@ -55,6 +55,8 @@ class Booster(
         0.0
     )
 
+    val expiryWarningEnabled: Boolean = config.getBoolOrNull("expiry-warning") ?: true
+
     val category: String? = config.getStringOrNull("category")
 
     val mergeTag: String? = config.getStringOrNull("merge-tag")

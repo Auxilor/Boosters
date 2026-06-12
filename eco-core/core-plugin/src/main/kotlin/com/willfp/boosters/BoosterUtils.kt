@@ -17,6 +17,7 @@ import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
+import com.willfp.eco.util.toComponent
 import com.willfp.libreforge.EmptyProvidedHolder
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.effects.Chain
@@ -82,6 +83,38 @@ val incrementSound: PlayableSound?
 
 val expireSound: PlayableSound?
     get() = PlayableSound.create(plugin.configYml.getSubsection("sounds.expire"))
+
+val expiryWarningSound: PlayableSound?
+    get() = PlayableSound.create(plugin.configYml.getSubsection("sounds.expiry-warning"))
+
+val expiryWarningIntervals: List<Int>
+    get() = plugin.configYml.getInts("expiry-warning-intervals")
+
+fun Booster.runExpiryWarning() {
+    val actionBar = plugin.configYml.getBool("expiry-warning-action-bar")
+
+    val raw = if (actionBar) {
+        // No prefix in the action bar - it looks cramped in the HUD.
+        plugin.langYml.getString("messages.expiry-warning")
+    } else {
+        plugin.langYml.getMessage("expiry-warning")
+    }
+
+    val text = raw
+        .replace("%booster%", this.name)
+        .replace("%time%", this.getFormattedTimeLeft())
+        .formatEco(formatPlaceholders = false)
+
+    for (player in Bukkit.getOnlinePlayers()) {
+        if (actionBar) {
+            player.sendActionBar(text.toComponent())
+        } else {
+            player.sendMessage(text)
+        }
+
+        expiryWarningSound?.playTo(player)
+    }
+}
 
 fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
     var effects: Chain?
