@@ -1,5 +1,6 @@
 package com.willfp.boosters
 
+import com.willfp.boosters.boosters.BoosterExpiryWarnings
 import com.willfp.boosters.boosters.BoosterQueue
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activeBoosters
@@ -50,6 +51,7 @@ class BoostersPlugin : LibreforgePlugin() {
     override fun handleReload() {
         BoosterQueue.saveQueue()
         bossBarManager.clearAll()
+        BoosterExpiryWarnings.clear()
         BoosterQueue.loadQueue()
 
         tickTask?.cancel()
@@ -63,6 +65,7 @@ class BoostersPlugin : LibreforgePlugin() {
                     booster.runExpiryEffects()
 
                     bossBarManager.clearFor(booster)
+                    BoosterExpiryWarnings.remove(booster)
                     Bukkit.getServer().expireBooster(booster)
 
                     // Check the queue
@@ -85,6 +88,8 @@ class BoostersPlugin : LibreforgePlugin() {
                             )
                         }
                     }
+                } else {
+                    BoosterExpiryWarnings.tick(booster)
                 }
             }
 
@@ -125,6 +130,9 @@ class BoostersPlugin : LibreforgePlugin() {
         },
         EcoMetricsChart.SimplePie("expire_sound_enabled") {
             if (configYml.getBool("sounds.expire.enabled")) "enabled" else "disabled"
+        },
+        EcoMetricsChart.SimplePie("expiry_warning_sound_enabled") {
+            if (configYml.getBool("sounds.expiry-warning.enabled")) "enabled" else "disabled"
         }
     )
 }
