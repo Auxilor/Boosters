@@ -17,22 +17,32 @@ Changing `use-local-storage` switches where booster data is read from, so re-log
 use-local-storage: false
 
 gui:
-  title: Boosters # Title of the /boosters menu. Supports %page% and %max_page%
+  title: Boosters (%page%/%max_page%) # Title of the /boosters menu. Supports %page% and %max_page% placeholders.
   rows: 3 # Menu height, 1 to 6 rows
 
-  # Navigation arrows, automatically hidden on the first/last page
+  # Sound played when the page turns.
+  sound:
+    enabled: true
+    sound: ui.button.click
+    pitch: 1.0
+    volume: 1.0
+
+  # Navigation options. Shows the inactive item on the first/last page, or hides
+  # the button when no item-inactive is set.
   forwards-arrow:
     item: arrow name:"&fNext Page"
+    item-inactive: gray_dye name:"&7Next Page"
     row: 3 # 1 to 6
     column: 6 # 1 to 9
   backwards-arrow:
     item: arrow name:"&fPrevious Page"
+    item-inactive: gray_dye name:"&7Previous Page"
     row: 3
     column: 4
 
-  # Each entry is one page of the menu. Append more to add pages.
+  # Add as many pages as you want by appending to this list.
   pages:
-    - page: 1 # Page number boosters reference via their gui.position.page
+    - page: 1
       mask: # Background filler items, drawn behind boosters
         items:
           - black_stained_glass_pane # Item used for masked slots

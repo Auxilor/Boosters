@@ -22,12 +22,12 @@ gui:
   # Navigation options. Shows the inactive item on the first/last page, or hides
   # the button when no item-inactive is set.
   forwards-arrow:
-    item: arrow name:"&fNext Page (%page%/%max_page%)"
+    item: arrow name:"&fNext Page"
     item-inactive: gray_dye name:"&7Next Page"
     row: 3
     column: 6
   backwards-arrow:
-    item: arrow name:"&fPrevious Page (%page%/%max_page%)"
+    item: arrow name:"&fPrevious Page"
     item-inactive: gray_dye name:"&7Previous Page"
     row: 3
     column: 4
