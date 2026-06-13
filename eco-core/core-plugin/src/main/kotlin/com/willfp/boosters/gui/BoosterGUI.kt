@@ -6,18 +6,16 @@ import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.plugin
 import com.willfp.eco.core.gui.addPage
+import com.willfp.eco.core.gui.addPageChanger
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
-import com.willfp.eco.core.gui.menu.MenuLayer
-import com.willfp.eco.core.gui.onEvent
-import com.willfp.eco.core.gui.page.PageChangeEvent
 import com.willfp.eco.core.gui.page.PageChanger
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.ConfigSlot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
-import com.willfp.eco.core.items.Items
+import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.tryAsPlayer
 import org.bukkit.Sound
@@ -58,46 +56,16 @@ object BoosterGUI {
         gui = menu(plugin.configYml.getInt("gui.rows")) {
             val pages = plugin.configYml.getSubsections("gui.pages")
 
-            val maxPage = pages.size.coerceAtLeast(1)
-
-            fun renderTitle(page: Int) = StringUtils.format(
-                plugin.configYml.getString("gui.title")
-                    .replace("%page%", page.toString())
-                    .replace("%max_page%", maxPage.toString())
-            )
-
-            title = renderTitle(1)
-
-            onEvent<PageChangeEvent> { eventPlayer, _, event ->
-                @Suppress("DEPRECATION")
-                eventPlayer.openInventory.setTitle(renderTitle(event.newPage))
-            }
+            title = StringUtils.format(plugin.configYml.getString("gui.title"))
 
             maxPages(pages.size)
 
-            val forwardsArrow = PageChanger(
-                Items.lookup(plugin.configYml.getString("gui.forwards-arrow.item")).item,
-                PageChanger.Direction.FORWARDS
+            val pageChangeSound = PlayableSound.create(
+                plugin.configYml.getSubsection("gui.sound")
             )
 
-            val backwardsArrow = PageChanger(
-                Items.lookup(plugin.configYml.getString("gui.backwards-arrow.item")).item,
-                PageChanger.Direction.BACKWARDS
-            )
-
-            addComponent(
-                MenuLayer.TOP,
-                plugin.configYml.getInt("gui.forwards-arrow.row"),
-                plugin.configYml.getInt("gui.forwards-arrow.column"),
-                forwardsArrow
-            )
-
-            addComponent(
-                MenuLayer.TOP,
-                plugin.configYml.getInt("gui.backwards-arrow.row"),
-                plugin.configYml.getInt("gui.backwards-arrow.column"),
-                backwardsArrow
-            )
+            addPageChanger(plugin.configYml, "gui.forwards-arrow", PageChanger.Direction.FORWARDS, pageChangeSound)
+            addPageChanger(plugin.configYml, "gui.backwards-arrow", PageChanger.Direction.BACKWARDS, pageChangeSound)
 
             for (pageConfig in pages) {
                 val pageNumber = pageConfig.getInt("page")
