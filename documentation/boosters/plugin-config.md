@@ -40,17 +40,15 @@ gui:
     row: 3
     column: 4
 
-  # Add as many pages as you want by appending to this list.
-  pages:
-    - page: 1
-      mask: # Background filler items, drawn behind boosters
-        items:
-          - black_stained_glass_pane # Item used for masked slots
-        pattern: # 1 = masked, 0 = open slot a booster can occupy
-          - "111111111"
-          - "101101101"
-          - "111111111"
-      custom-slots: [] # Optional extra slots; see https://plugins.auxilor.io/all-plugins/custom-gui-slots
+  mask: # Background filler items, drawn behind boosters on every page
+    items:
+      - black_stained_glass_pane # Item used for masked slots
+    pattern: # 1 = masked, 0 = open slot a booster can occupy
+      - "111111111"
+      - "101101101"
+      - "111111111"
+
+  custom-slots: [] # Optional extra slots, shown on every page; see https://plugins.auxilor.io/all-plugins/custom-gui-slots
 
 sounds:
   activate: # Played when a booster is activated

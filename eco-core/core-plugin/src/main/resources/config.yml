@@ -32,18 +32,17 @@ gui:
     row: 3
     column: 4
 
-  # Add as many pages as you want by appending to this list.
-  pages:
-    - page: 1
-      mask:
-        items:
-          - black_stained_glass_pane
-        pattern:
-          - "111111111"
-          - "101101101"
-          - "111111111"
-      # Custom GUI slots; see here: https://plugins.auxilor.io/all-plugins/custom-gui-slots
-      custom-slots: []
+  # The mask is shared across all pages.
+  mask:
+    items:
+      - black_stained_glass_pane
+    pattern:
+      - "111111111"
+      - "101101101"
+      - "111111111"
+
+  # Custom GUI slots, shared across all pages; see here: https://plugins.auxilor.io/all-plugins/custom-gui-slots
+  custom-slots: []
 
 sounds:
   activate:

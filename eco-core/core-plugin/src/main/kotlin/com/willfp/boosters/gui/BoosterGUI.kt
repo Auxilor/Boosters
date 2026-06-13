@@ -54,11 +54,11 @@ object BoosterGUI {
 
     internal fun update() {
         gui = menu(plugin.configYml.getInt("gui.rows")) {
-            val pages = plugin.configYml.getSubsections("gui.pages")
+            val maxPage = Boosters.values().maxOfOrNull { it.guiPage } ?: 1
 
             title = StringUtils.format(plugin.configYml.getString("gui.title"))
 
-            maxPages(pages.size)
+            maxPages(maxPage)
 
             val pageChangeSound = PlayableSound.create(
                 plugin.configYml.getSubsection("gui.sound")
@@ -67,16 +67,16 @@ object BoosterGUI {
             addPageChanger(plugin.configYml, "gui.forwards-arrow", PageChanger.Direction.FORWARDS, pageChangeSound)
             addPageChanger(plugin.configYml, "gui.backwards-arrow", PageChanger.Direction.BACKWARDS, pageChangeSound)
 
-            for (pageConfig in pages) {
-                val pageNumber = pageConfig.getInt("page")
+            val mask = FillerMask(
+                MaskItems.fromItemNames(plugin.configYml.getStrings("gui.mask.items")),
+                *plugin.configYml.getStrings("gui.mask.pattern").toTypedArray()
+            )
 
+            val customSlots = plugin.configYml.getSubsections("gui.custom-slots")
+
+            for (pageNumber in 1..maxPage) {
                 addPage(pageNumber) {
-                    setMask(
-                        FillerMask(
-                            MaskItems.fromItemNames(pageConfig.getStrings("mask.items")),
-                            *pageConfig.getStrings("mask.pattern").toTypedArray()
-                        )
-                    )
+                    setMask(mask)
 
                     for (booster in Boosters.values()) {
                         if (booster.guiPage != pageNumber) {
@@ -94,7 +94,7 @@ object BoosterGUI {
                         )
                     }
 
-                    for (config in pageConfig.getSubsections("custom-slots")) {
+                    for (config in customSlots) {
                         setSlot(
                             config.getInt("row"),
                             config.getInt("column"),
