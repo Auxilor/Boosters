@@ -2,6 +2,7 @@ package com.willfp.boosters.libreforge
 
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.libreforge.ArgType
 import com.willfp.libreforge.Dispatcher
 import com.willfp.libreforge.NoCompileData
 import com.willfp.libreforge.ProvidedHolder
@@ -9,8 +10,17 @@ import com.willfp.libreforge.arguments
 import com.willfp.libreforge.conditions.Condition
 
 object ConditionIsBoosterActive : Condition<NoCompileData>("is_booster_active") {
+    override val description = "Passes when the specified booster is currently active."
+
+    override val categories = setOf("world")
+
     override val arguments = arguments {
-        require("booster", "You must specify the booster!")
+        require(
+            "booster",
+            "You must specify the booster!",
+            description = "The ID of the booster to check.",
+            type = ArgType.STRING
+        )
     }
 
     override fun isMet(
