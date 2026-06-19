@@ -16,6 +16,19 @@ Changing `use-local-storage` switches where booster data is read from, so re-log
 # Disables cross-server sync; leave false for networks.
 use-local-storage: false
 
+# Warn players before active boosters expire. Each value is the ticks remaining
+# at which to warn (20 ticks = 1 second); a warning fires once as the remaining
+# time crosses each threshold. The message lives in lang.yml (expiry-warning)
+# and supports %booster% and %time% (HH:MM:SS). Boosters opt out with
+# "expiry-warning: false".
+expiry-warning-intervals:
+  - 1200 # 60 seconds remaining
+  - 600 # 30 seconds remaining
+  - 200 # 10 seconds remaining
+
+# true = action bar, false = chat
+expiry-warning-action-bar: false
+
 gui:
   title: Boosters (%page%/%max_page%) # Title of the /boosters menu. Supports %page% and %max_page% placeholders.
   rows: 3 # Menu height, 1 to 6 rows
@@ -68,6 +81,12 @@ sounds:
     sound: ENTITY_ITEM_BREAK
     volume: 2
     pitch: 0.9
+    category: AMBIENT
+  expiry-warning: # Played alongside each expiry warning
+    enabled: true
+    sound: BLOCK_NOTE_BLOCK_PLING
+    volume: 2
+    pitch: 1.0
     category: AMBIENT
 ```
 
