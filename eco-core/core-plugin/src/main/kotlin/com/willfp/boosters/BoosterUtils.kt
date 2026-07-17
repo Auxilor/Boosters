@@ -14,7 +14,6 @@ import com.willfp.boosters.boosters.increaseBooster
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.sound.AbstractPlayableSound
 import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
@@ -76,16 +75,16 @@ val consoleName: String
         .getFormattedString("console-displayname")
         .formatEco(formatPlaceholders = false)
 
-val activateSound: AbstractPlayableSound<*>?
+val activateSound
     get() = PlayableSound.create(plugin.configYml.getSubsection("sounds.activate"))
 
-val incrementSound: AbstractPlayableSound<*>?
+val incrementSound
     get() = PlayableSound.create(plugin.configYml.getSubsection("sounds.increment"))
 
-val expireSound: AbstractPlayableSound<*>?
+val expireSound
     get() = PlayableSound.create(plugin.configYml.getSubsection("sounds.expire"))
 
-val expiryWarningSound: AbstractPlayableSound<*>?
+val expiryWarningSound
     get() = PlayableSound.create(plugin.configYml.getSubsection("sounds.expiry-warning"))
 
 val expiryWarningIntervals: List<Int>
