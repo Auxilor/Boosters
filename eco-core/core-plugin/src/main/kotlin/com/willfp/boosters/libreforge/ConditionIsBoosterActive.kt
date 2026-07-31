@@ -19,7 +19,8 @@ object ConditionIsBoosterActive : Condition<NoCompileData>("is_booster_active") 
             "booster",
             "You must specify the booster!",
             description = "The ID of the booster to check.",
-            type = ArgType.STRING
+            type = ArgType.STRING,
+            example = "2sell_multiplier"
         )
     }
 
