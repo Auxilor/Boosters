@@ -65,6 +65,11 @@ increment-effects: [] # Run when an active booster's duration is extended
 queue-effects: [] # Run when the booster is queued behind an active one in its category
 queue-increment-effects: [] # Run when a queued booster's duration is extended
 expiry-effects: [] # Run when the booster ends
+global-activation-effects: # Run once when the booster is activated, not once per player
+  - id: run_command
+    args:
+      command: "broadcast A 1.5x Sell Multiplier Booster is now active!"
+global-expiry-effects: [] # Run once when the booster ends, not once per player
 effects: # Run for the whole duration; this is the booster's functionality
   - id: sell_multiplier
     args:
@@ -122,6 +127,16 @@ increment-effects: [] # Run when an active booster's duration is extended
 queue-effects: [] # Run when the booster is queued behind an active one in its category
 queue-increment-effects: [] # Run when a queued booster's duration is extended
 expiry-effects: [] # Run when the booster ends
+
+# The global- blocks run a single time rather than once per online player.
+# Use them for console commands, which would otherwise run once for every player online.
+# No player is attached, so %player% is empty and player-specific effects
+# (send_message, give_item, etc.) will not run - put those in the blocks above.
+global-activation-effects: # Run once when the booster is activated
+  - id: run_command
+    args:
+      command: "broadcast A 1.5x Sell Multiplier Booster is now active!"
+global-expiry-effects: [] # Run once when the booster ends
 
 effects: # Run for the whole duration; this is the booster's functionality
   - id: sell_multiplier

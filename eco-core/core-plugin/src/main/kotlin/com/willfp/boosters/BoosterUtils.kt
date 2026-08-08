@@ -19,6 +19,7 @@ import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.eco.util.toComponent
 import com.willfp.libreforge.EmptyProvidedHolder
+import com.willfp.libreforge.GlobalDispatcher
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.effects.Chain
 import com.willfp.libreforge.toDispatcher
@@ -51,11 +52,31 @@ val OfflinePlayer.boosters: List<Booster>
 
 val serverUUID = UUID.fromString("00000fff-0000-0000-0000-000000000000")
 
+/**
+ * Trigger a chain a single time, server-wide, rather than once per online player.
+ *
+ * Runs under [GlobalDispatcher], which has no player attached, so %player% resolves
+ * to empty and player-scoped effects (send_message, give_item, ...) will not run.
+ */
+private fun Chain?.triggerGlobally(vararg placeholders: NamedValue) {
+    val chain = this ?: return
+
+    val dispatched = TriggerData().dispatch(GlobalDispatcher)
+
+    for (placeholder in placeholders) {
+        dispatched.addPlaceholder(placeholder)
+    }
+
+    chain.trigger(dispatched)
+}
+
 fun Booster.runExpiryEffects() {
     Bukkit.getOnlinePlayers().forEach { player ->
         this.expiryEffects?.trigger(player.toDispatcher())
         expireSound?.playTo(player)
     }
+
+    this.globalExpiryEffects.triggerGlobally()
 }
 
 fun OfflinePlayer.getAmountOfBooster(booster: Booster): Int {
@@ -159,6 +180,11 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
         ActivationResult.ACTIVATED -> {
             this.activateBooster(ActivatedBooster(booster, null))
 
+            booster.globalActivationEffects.triggerGlobally(
+                NamedValue("activator", consoleName),
+                NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20))
+            )
+
             for (player in Bukkit.getOnlinePlayers()) {
                 activateSound?.playTo(player)
             }
@@ -239,6 +265,11 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
     if (status == ActivationResult.ACTIVATED) {
         Bukkit.getServer().activateBooster(ActivatedBooster(booster, this.uniqueId))
 
+        booster.globalActivationEffects.triggerGlobally(
+            NamedValue("activator", this.name),
+            NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20))
+        )
+
         for (player in Bukkit.getOnlinePlayers()) {
             activateSound?.playTo(player)
         }
@@ -286,6 +317,11 @@ fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long) {
         }
     }
 
+    booster.globalActivationEffects.triggerGlobally(
+        NamedValue("activator", player?.name ?: this.savedDisplayName),
+        NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
+    )
+
     Bukkit.getServer().activateBooster(
         ActivatedBooster(booster, this.uniqueId),
         durationTicks = time.toInt()
@@ -313,6 +349,11 @@ fun Server.activateQueuedBoosterConsole(booster: Booster, time: Long) {
             booster.activationEffects.trigger(dispatched)
         }
     }
+
+    booster.globalActivationEffects.triggerGlobally(
+        NamedValue("activator", consoleName),
+        NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
+    )
 
     this.activateBooster(
         ActivatedBooster(booster, null),
