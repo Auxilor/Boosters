@@ -1,6 +1,6 @@
 ---
 title: "PlaceholderAPI"
-sidebar_position: 3
+sidebar_position: 2
 ---
 
 With PlaceholderAPI installed, Boosters exposes the placeholders below for use in any plugin that resolves them, such as scoreboards, tab lists, and chat. Replace `<booster>` with a booster ID.
