@@ -1,6 +1,6 @@
 ---
 title: "Commands and Permissions"
-sidebar_position: 4
+sidebar_position: 3
 ---
 
 Every Boosters command and the permission node it requires. Players need `boosters.command.boosters` to open the menu; the rest are admin actions you can grant selectively.

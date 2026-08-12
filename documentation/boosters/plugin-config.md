@@ -1,6 +1,6 @@
 ---
 title: "Plugin Config"
-sidebar_position: 5
+sidebar_position: 4
 ---
 
 The plugin-wide settings live in `config.yml` in the Boosters data folder (`/plugins/Boosters/config.yml`). It controls storage, the `/boosters` GUI layout, and the sounds played on booster events. Edit it, then run `/boosters reload` to apply changes.
