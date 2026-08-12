@@ -139,6 +139,7 @@ fun Booster.runExpiryWarning() {
 
 fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
     var effects: Chain?
+    var globalEffects: Chain?
     var status: ActivationResult
     var newTime = booster.duration.toLong()
 
@@ -147,12 +148,14 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
 
     if (toMergeWith != null) {
         effects = booster.incrementEffects
+        globalEffects = booster.globalIncrementEffects
         newTime += toMergeWith.booster.secondsLeft * 20
         status = ActivationResult.MERGED
     } else if (blocking != null) {
         val isQueueMerge = BoosterQueue.shouldMergeInQueue(booster)
 
         effects = if (isQueueMerge > 0) booster.queueIncrementEffects else booster.queueEffects
+        globalEffects = if (isQueueMerge > 0) booster.globalQueueIncrementEffects else booster.globalQueueEffects
         status = ActivationResult.QUEUED
 
         if (isQueueMerge > 0) {
@@ -163,6 +166,7 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
     } else {
         status = ActivationResult.ACTIVATED
         effects = booster.activationEffects
+        globalEffects = booster.globalActivationEffects
     }
 
     Bukkit.getOnlinePlayers().forEach { target ->
@@ -180,11 +184,6 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
         ActivationResult.ACTIVATED -> {
             this.activateBooster(ActivatedBooster(booster, null))
 
-            booster.globalActivationEffects.triggerGlobally(
-                NamedValue("activator", consoleName),
-                NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20))
-            )
-
             for (player in Bukkit.getOnlinePlayers()) {
                 activateSound?.playTo(player)
             }
@@ -201,6 +200,11 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
         else -> {}
     }
 
+    globalEffects.triggerGlobally(
+        NamedValue("activator", consoleName),
+        NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20))
+    )
+
     return BoosterActivationResult(status, newTime)
 }
 
@@ -214,6 +218,10 @@ fun Server.incrementBoosterConsole(booster: Booster) {
     }
 
     Bukkit.getServer().increaseBooster(booster)
+
+    booster.globalIncrementEffects.triggerGlobally(
+        NamedValue("activator", consoleName)
+    )
 
     for (player in Bukkit.getOnlinePlayers()) {
         incrementSound?.playTo(player)
@@ -236,6 +244,7 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
     this.setAmountOfBooster(booster, amount - 1)
 
     var effects: Chain?
+    var globalEffects: Chain?
     var status: ActivationResult
     var newTime = booster.duration.toLong()
 
@@ -244,12 +253,14 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
 
     if (toMergeWith != null) {
         effects = booster.incrementEffects
+        globalEffects = booster.globalIncrementEffects
         newTime += toMergeWith.booster.secondsLeft * 20
         status = ActivationResult.MERGED
     } else if (blocking != null) {
         val isQueueMerge = BoosterQueue.shouldMergeInQueue(booster)
 
         effects = if (isQueueMerge > 0) booster.queueIncrementEffects else booster.queueEffects
+        globalEffects = if (isQueueMerge > 0) booster.globalQueueIncrementEffects else booster.globalQueueEffects
         status = ActivationResult.QUEUED
 
         if (isQueueMerge > 0) {
@@ -260,15 +271,11 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
     } else {
         status = ActivationResult.ACTIVATED
         effects = booster.activationEffects
+        globalEffects = booster.globalActivationEffects
     }
 
     if (status == ActivationResult.ACTIVATED) {
         Bukkit.getServer().activateBooster(ActivatedBooster(booster, this.uniqueId))
-
-        booster.globalActivationEffects.triggerGlobally(
-            NamedValue("activator", this.name),
-            NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20))
-        )
 
         for (player in Bukkit.getOnlinePlayers()) {
             activateSound?.playTo(player)
@@ -280,6 +287,11 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
             incrementSound?.playTo(player)
         }
     }
+
+    globalEffects.triggerGlobally(
+        NamedValue("activator", this.name),
+        NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20))
+    )
 
     if (effects != null) {
         Bukkit.getOnlinePlayers().forEach { target ->

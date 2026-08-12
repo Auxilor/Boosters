@@ -176,6 +176,12 @@ class Booster(
         ViolationContext(plugin, "Booster $id Queue Effects")
     )
 
+    val globalQueueEffects = Effects.compileChain(
+        config.getSubsections("global-queue-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Global Queue Effects")
+    )
+
     val expiryEffects = Effects.compileChain(
         config.getSubsections("expiry-effects"),
         NormalExecutorFactory.create(),
@@ -194,10 +200,22 @@ class Booster(
         ViolationContext(plugin, "Booster $id Increment Effects")
     )
 
+    val globalIncrementEffects = Effects.compileChain(
+        config.getSubsections("global-increment-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Global Increment Effects")
+    )
+
     val queueIncrementEffects = Effects.compileChain(
         config.getSubsections("queue-increment-effects"),
         NormalExecutorFactory.create(),
-        ViolationContext(plugin, "Booster $id Increment Effects")
+        ViolationContext(plugin, "Booster $id Queue Increment Effects")
+    )
+
+    val globalQueueIncrementEffects = Effects.compileChain(
+        config.getSubsections("global-queue-increment-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Global Queue Increment Effects")
     )
 
 

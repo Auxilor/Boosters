@@ -77,6 +77,16 @@ increment-effects:
         - " &fThis booster will last %time%, be sure to thank them!"
         - ""
 
+# Effects to be run once when the Booster is incremented (runs a single time, not per player)
+# Same rules as global-activation-effects: no player is attached, so use this for
+# console commands rather than player-specific effects.
+# %activator% - The player who incremented the booster
+# %time% - The time remaining on the booster
+global-increment-effects:
+  - id: run_command
+    args:
+      command: "broadcast The 1.5x Sell Multiplier Booster has been extended!"
+
 # Effects to be run when the Booster is queued (applies to all players)
 # %activator% - The player who queued the booster
 # %player% - The player receiving the message/effect
@@ -91,6 +101,15 @@ queue-effects:
         - " &fThis booster will last %time%, when its time comes!"
         - ""
 
+# Effects to be run once when the Booster is queued (runs a single time, not per player)
+# Same rules as global-activation-effects: no player is attached, so use this for
+# console commands rather than player-specific effects.
+# %activator% - The player who queued the booster
+# %time% - The time the booster will last for
+global-queue-effects:
+  - id: run_command
+    args:
+      command: "broadcast A 1.5x Sell Multiplier Booster has been queued!"
 
 # Effects to be run when the Booster is incremented in the queue (applies to all players)
 # %activator% - The player who queued the booster
@@ -105,6 +124,16 @@ queue-increment-effects:
         - " %activator%&f has increased a &a1.5x Sell Multiplier Booster&f in the queue!"
         - " &fThis booster will now last %time%, when its time comes!"
         - ""
+
+# Effects to be run once when the Booster is incremented in the queue (runs a single time, not per player)
+# Same rules as global-activation-effects: no player is attached, so use this for
+# console commands rather than player-specific effects.
+# %activator% - The player who incremented the queued booster
+# %time% - The time the booster will last for
+global-queue-increment-effects:
+  - id: run_command
+    args:
+      command: "broadcast A queued 1.5x Sell Multiplier Booster has been extended!"
 
 # Effects to be run when the Booster expires (applies to all players)
 expiry-effects:
