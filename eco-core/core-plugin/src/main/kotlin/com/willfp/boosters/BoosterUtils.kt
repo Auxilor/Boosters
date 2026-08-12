@@ -19,6 +19,7 @@ import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.eco.util.toComponent
 import com.willfp.libreforge.EmptyProvidedHolder
+import com.willfp.libreforge.GlobalDispatcher
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.effects.Chain
 import com.willfp.libreforge.toDispatcher
@@ -51,11 +52,31 @@ val OfflinePlayer.boosters: List<Booster>
 
 val serverUUID = UUID.fromString("00000fff-0000-0000-0000-000000000000")
 
+/**
+ * Trigger a chain a single time, server-wide, rather than once per online player.
+ *
+ * Runs under [GlobalDispatcher], which has no player attached, so %player% resolves
+ * to empty and player-scoped effects (send_message, give_item, ...) will not run.
+ */
+private fun Chain?.triggerGlobally(vararg placeholders: NamedValue) {
+    val chain = this ?: return
+
+    val dispatched = TriggerData().dispatch(GlobalDispatcher)
+
+    for (placeholder in placeholders) {
+        dispatched.addPlaceholder(placeholder)
+    }
+
+    chain.trigger(dispatched)
+}
+
 fun Booster.runExpiryEffects() {
     Bukkit.getOnlinePlayers().forEach { player ->
         this.expiryEffects?.trigger(player.toDispatcher())
         expireSound?.playTo(player)
     }
+
+    this.globalExpiryEffects.triggerGlobally()
 }
 
 fun OfflinePlayer.getAmountOfBooster(booster: Booster): Int {
@@ -118,6 +139,7 @@ fun Booster.runExpiryWarning() {
 
 fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
     var effects: Chain?
+    var globalEffects: Chain?
     var status: ActivationResult
     var newTime = booster.duration.toLong()
 
@@ -126,12 +148,14 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
 
     if (toMergeWith != null) {
         effects = booster.incrementEffects
+        globalEffects = booster.globalIncrementEffects
         newTime += toMergeWith.booster.secondsLeft * 20
         status = ActivationResult.MERGED
     } else if (blocking != null) {
         val isQueueMerge = BoosterQueue.shouldMergeInQueue(booster)
 
         effects = if (isQueueMerge > 0) booster.queueIncrementEffects else booster.queueEffects
+        globalEffects = if (isQueueMerge > 0) booster.globalQueueIncrementEffects else booster.globalQueueEffects
         status = ActivationResult.QUEUED
 
         if (isQueueMerge > 0) {
@@ -142,6 +166,7 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
     } else {
         status = ActivationResult.ACTIVATED
         effects = booster.activationEffects
+        globalEffects = booster.globalActivationEffects
     }
 
     Bukkit.getOnlinePlayers().forEach { target ->
@@ -175,6 +200,11 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
         else -> {}
     }
 
+    globalEffects.triggerGlobally(
+        NamedValue("activator", consoleName),
+        NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20))
+    )
+
     return BoosterActivationResult(status, newTime)
 }
 
@@ -188,6 +218,10 @@ fun Server.incrementBoosterConsole(booster: Booster) {
     }
 
     Bukkit.getServer().increaseBooster(booster)
+
+    booster.globalIncrementEffects.triggerGlobally(
+        NamedValue("activator", consoleName)
+    )
 
     for (player in Bukkit.getOnlinePlayers()) {
         incrementSound?.playTo(player)
@@ -210,6 +244,7 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
     this.setAmountOfBooster(booster, amount - 1)
 
     var effects: Chain?
+    var globalEffects: Chain?
     var status: ActivationResult
     var newTime = booster.duration.toLong()
 
@@ -218,12 +253,14 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
 
     if (toMergeWith != null) {
         effects = booster.incrementEffects
+        globalEffects = booster.globalIncrementEffects
         newTime += toMergeWith.booster.secondsLeft * 20
         status = ActivationResult.MERGED
     } else if (blocking != null) {
         val isQueueMerge = BoosterQueue.shouldMergeInQueue(booster)
 
         effects = if (isQueueMerge > 0) booster.queueIncrementEffects else booster.queueEffects
+        globalEffects = if (isQueueMerge > 0) booster.globalQueueIncrementEffects else booster.globalQueueEffects
         status = ActivationResult.QUEUED
 
         if (isQueueMerge > 0) {
@@ -234,6 +271,7 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
     } else {
         status = ActivationResult.ACTIVATED
         effects = booster.activationEffects
+        globalEffects = booster.globalActivationEffects
     }
 
     if (status == ActivationResult.ACTIVATED) {
@@ -249,6 +287,11 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
             incrementSound?.playTo(player)
         }
     }
+
+    globalEffects.triggerGlobally(
+        NamedValue("activator", this.name),
+        NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20))
+    )
 
     if (effects != null) {
         Bukkit.getOnlinePlayers().forEach { target ->
@@ -286,6 +329,11 @@ fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long) {
         }
     }
 
+    booster.globalActivationEffects.triggerGlobally(
+        NamedValue("activator", player?.name ?: this.savedDisplayName),
+        NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
+    )
+
     Bukkit.getServer().activateBooster(
         ActivatedBooster(booster, this.uniqueId),
         durationTicks = time.toInt()
@@ -313,6 +361,11 @@ fun Server.activateQueuedBoosterConsole(booster: Booster, time: Long) {
             booster.activationEffects.trigger(dispatched)
         }
     }
+
+    booster.globalActivationEffects.triggerGlobally(
+        NamedValue("activator", consoleName),
+        NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
+    )
 
     this.activateBooster(
         ActivatedBooster(booster, null),

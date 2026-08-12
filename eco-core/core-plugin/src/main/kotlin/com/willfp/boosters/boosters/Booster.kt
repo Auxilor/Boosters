@@ -164,10 +164,22 @@ class Booster(
         ViolationContext(plugin, "Booster $id Activation Effects")
     )
 
+    val globalActivationEffects = Effects.compileChain(
+        config.getSubsections("global-activation-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Global Activation Effects")
+    )
+
     val queueEffects = Effects.compileChain(
         config.getSubsections("queue-effects"),
         NormalExecutorFactory.create(),
         ViolationContext(plugin, "Booster $id Queue Effects")
+    )
+
+    val globalQueueEffects = Effects.compileChain(
+        config.getSubsections("global-queue-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Global Queue Effects")
     )
 
     val expiryEffects = Effects.compileChain(
@@ -176,16 +188,34 @@ class Booster(
         ViolationContext(plugin, "Booster $id Expiry Effects")
     )
 
+    val globalExpiryEffects = Effects.compileChain(
+        config.getSubsections("global-expiry-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Global Expiry Effects")
+    )
+
     val incrementEffects = Effects.compileChain(
         config.getSubsections("increment-effects"),
         NormalExecutorFactory.create(),
         ViolationContext(plugin, "Booster $id Increment Effects")
     )
 
+    val globalIncrementEffects = Effects.compileChain(
+        config.getSubsections("global-increment-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Global Increment Effects")
+    )
+
     val queueIncrementEffects = Effects.compileChain(
         config.getSubsections("queue-increment-effects"),
         NormalExecutorFactory.create(),
-        ViolationContext(plugin, "Booster $id Increment Effects")
+        ViolationContext(plugin, "Booster $id Queue Increment Effects")
+    )
+
+    val globalQueueIncrementEffects = Effects.compileChain(
+        config.getSubsections("global-queue-increment-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Booster $id Global Queue Increment Effects")
     )
 
 
