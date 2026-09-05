@@ -10,7 +10,7 @@ import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.libreforge.ConditionIsBoosterActive
 import com.willfp.eco.core.bstats.EcoMetricsChart
 import com.willfp.eco.core.command.impl.PluginCommand
-import org.bukkit.scheduler.BukkitTask
+import com.willfp.eco.core.scheduling.EcoTask
 import com.willfp.libreforge.SimpleProvidedHolder
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.loader.LibreforgePlugin
@@ -25,7 +25,7 @@ internal lateinit var bossBarManager: BoosterBossBarManager
     private set
 
 class BoostersPlugin : LibreforgePlugin() {
-    private var tickTask: BukkitTask? = null
+    private var tickTask: EcoTask? = null
 
     init {
         plugin = this
