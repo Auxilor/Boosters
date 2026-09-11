@@ -79,11 +79,13 @@ fun Server.expireBooster(booster: Booster) {
 fun Server.scanForBoosters() {
     val profile = ServerProfile.load()
 
+    // Rebuilt from scratch so that reloads replace stale Booster instances with the ones
+    // from the freshly-loaded registry.
+    boosters.clear()
+
     for (booster in Boosters.values()) {
         val active = booster.active ?: continue
-        if (!boosters.contains(active)) {
-            boosters += active
-        }
+        boosters += active
 
         if (profile.read(booster.totalDurationKey) <= 0.0) {
             val remaining = (profile.read(booster.expiryTimeKey) - System.currentTimeMillis()).coerceAtLeast(0.0)
