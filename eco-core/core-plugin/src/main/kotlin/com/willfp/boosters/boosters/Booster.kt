@@ -11,6 +11,7 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
 import com.willfp.eco.core.registry.Registrable
+import com.willfp.eco.util.containsIgnoreCase
 import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.libreforge.Holder
@@ -19,6 +20,7 @@ import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.effects.Effects
 import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
 import org.bukkit.Bukkit
+import org.bukkit.World
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarStyle
 import org.bukkit.entity.Player
@@ -60,6 +62,13 @@ class Booster(
     val category: String? = config.getStringOrNull("category")
 
     val mergeTag: String? = config.getStringOrNull("merge-tag")
+
+    private val disabledInWorlds = config.getStrings("disabled-in-worlds")
+
+    val audience: List<Player>
+        get() = Bukkit.getOnlinePlayers().filterNot { isDisabledIn(it.world) }
+
+    fun isDisabledIn(world: World): Boolean = disabledInWorlds.containsIgnoreCase(world.name)
 
     val active: ActivatedBooster?
         get() {

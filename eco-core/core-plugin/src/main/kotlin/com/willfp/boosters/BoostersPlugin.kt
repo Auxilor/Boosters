@@ -41,8 +41,10 @@ class BoostersPlugin : LibreforgePlugin() {
     override fun handleEnable() {
         Conditions.register(ConditionIsBoosterActive)
 
-        registerGenericHolderProvider {
-            Bukkit.getServer().activeBoosters.map { it.booster }.map { SimpleProvidedHolder(it) }
+        registerGenericHolderProvider { dispatcher ->
+            Bukkit.getServer().activeBoosters.map { it.booster }
+                .filterNot { booster -> dispatcher.location?.world?.let { booster.isDisabledIn(it) } ?: false }
+                .map { SimpleProvidedHolder(it) }
         }
 
         BoosterQueue.loadQueue()
