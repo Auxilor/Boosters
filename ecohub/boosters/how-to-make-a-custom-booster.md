@@ -33,7 +33,7 @@ A config has four logical parts, top to bottom:
 
 | Part | What it controls |
 | --- | --- |
-| **Info** | The name, duration, category, and merge behaviour |
+| **Info** | The name, duration, category, merge behaviour, and disabled worlds |
 | **Bossbar** | The optional on-screen timer |
 | **Effects** | What runs on activation, increment, queue, and expiry, and while active |
 | **GUI** | How the booster looks and where it sits in the `/boosters` menu |
@@ -46,6 +46,7 @@ name: "1.5x Sell Multiplier" # Display name of the booster
 duration: 72000 # Duration in ticks; 20 ticks = 1 second, so 72000 = 1 hour
 category: "sell_multipliers" # Optional; boosters in the same category queue instead of running together
 merge-tag: "sell_multiplier_1.5x" # Optional; matching tags merge to extend duration instead of stacking
+disabled-in-worlds: [] # Optional; worlds where this booster has no effect and its bossbar, messages and sounds are hidden
 
 # === Bossbar: optional on-screen timer ===
 bossbar:
@@ -100,6 +101,7 @@ name: "1.5x Sell Multiplier" # Display name of the booster
 duration: 72000 # Duration in ticks; 20 ticks = 1 second, so 72000 = 1 hour
 category: "sell_multipliers" # Optional; boosters in the same category queue instead of running together
 merge-tag: "sell_multiplier_1.5x" # Optional; matching tags merge to extend duration instead of stacking
+disabled-in-worlds: [] # Optional; worlds where this booster has no effect and its bossbar, messages and sounds are hidden
 ```
 
 ### Bossbar

@@ -11,6 +11,9 @@ category: "sell_multiplier" # The category of the booster, used for queueing and
 
 merge-tag: "1.5x_Sell_Multiplier" # The tag used to identify boosters that can be merged together. Optional.
 
+# Worlds this booster has no effect in. Players in these worlds don't see its bossbar, messages or sounds. Optional.
+disabled-in-worlds: []
+
 # Whether to send expiry warnings for this booster as it nears expiry.
 # Warning message, intervals, sound and chat/action-bar are configured globally in config.yml.
 expiry-warning: true # Defaults to true if omitted.
