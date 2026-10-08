@@ -24,7 +24,7 @@ object CommandQueue : Subcommand(
 
         val category = args[0].lowercase()
 
-        val queued = BoosterQueue.queue[category] ?: emptyList()
+        val queued = synchronized(BoosterQueue.queue) { BoosterQueue.queue[category]?.toList() } ?: emptyList()
 
         val format = if (queued.isEmpty()) {
             plugin.langYml.getStrings("empty-queue-format")

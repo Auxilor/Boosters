@@ -10,6 +10,7 @@ import com.willfp.boosters.boosters.BoosterQueue
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activateBooster
 import com.willfp.boosters.boosters.activeBoosters
+import com.willfp.boosters.boosters.boosterLock
 import com.willfp.boosters.boosters.increaseBooster
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
@@ -72,8 +73,10 @@ private fun Chain?.triggerGlobally(vararg placeholders: NamedValue) {
 
 fun Booster.runExpiryEffects() {
     audience.forEach { player ->
-        this.expiryEffects?.trigger(player.toDispatcher())
-        expireSound?.playTo(player)
+        player.runOwned {
+            this.expiryEffects?.trigger(player.toDispatcher())
+            expireSound?.playTo(player)
+        }
     }
 
     this.globalExpiryEffects.triggerGlobally()
@@ -127,17 +130,19 @@ fun Booster.runExpiryWarning() {
         .formatEco(formatPlaceholders = false)
 
     for (player in audience) {
-        if (actionBar) {
-            player.sendActionBar(text.toComponent())
-        } else {
-            player.sendMessage(text)
-        }
+        player.runOwned {
+            if (actionBar) {
+                player.sendActionBar(text.toComponent())
+            } else {
+                player.sendMessage(text)
+            }
 
-        expiryWarningSound?.playTo(player)
+            expiryWarningSound?.playTo(player)
+        }
     }
 }
 
-fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
+fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult = synchronized(boosterLock) {
     var effects: Chain?
     var globalEffects: Chain?
     var status: ActivationResult
@@ -170,14 +175,16 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
     }
 
     booster.audience.forEach { target ->
-        effects?.trigger(
-            TriggerData(player = target)
-                .dispatch(target.toDispatcher())
-                .apply {
-                    addPlaceholder(NamedValue("activator", consoleName))
-                    addPlaceholder(NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20)))
-                }
-        )
+        target.runOwned {
+            effects?.trigger(
+                TriggerData(player = target)
+                    .dispatch(target.toDispatcher())
+                    .apply {
+                        addPlaceholder(NamedValue("activator", consoleName))
+                        addPlaceholder(NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20)))
+                    }
+            )
+        }
     }
 
     when (status) {
@@ -185,7 +192,7 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
             this.activateBooster(ActivatedBooster(booster, null))
 
             for (player in booster.audience) {
-                activateSound?.playTo(player)
+                player.runOwned { activateSound?.playTo(player) }
             }
         }
 
@@ -193,7 +200,7 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
             Bukkit.getServer().increaseBooster(booster)
 
             for (player in booster.audience) {
-                incrementSound?.playTo(player)
+                player.runOwned { incrementSound?.playTo(player) }
             }
         }
 
@@ -208,13 +215,15 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult {
     return BoosterActivationResult(status, newTime)
 }
 
-fun Server.incrementBoosterConsole(booster: Booster) {
+fun Server.incrementBoosterConsole(booster: Booster): Unit = synchronized(boosterLock) {
     booster.audience.forEach { target ->
-        booster.incrementEffects?.trigger(
-            TriggerData(player = target)
-                .dispatch(target.toDispatcher())
-                .apply { addPlaceholder(NamedValue("activator", consoleName)) }
-        )
+        target.runOwned {
+            booster.incrementEffects?.trigger(
+                TriggerData(player = target)
+                    .dispatch(target.toDispatcher())
+                    .apply { addPlaceholder(NamedValue("activator", consoleName)) }
+            )
+        }
     }
 
     Bukkit.getServer().increaseBooster(booster)
@@ -224,11 +233,11 @@ fun Server.incrementBoosterConsole(booster: Booster) {
     )
 
     for (player in booster.audience) {
-        incrementSound?.playTo(player)
+        player.runOwned { incrementSound?.playTo(player) }
     }
 }
 
-fun Player.activateBooster(booster: Booster): BoosterActivationResult {
+fun Player.activateBooster(booster: Booster): BoosterActivationResult = synchronized(boosterLock) {
     val amount = this.getAmountOfBooster(booster)
 
     if (amount <= 0) {
@@ -278,13 +287,13 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
         Bukkit.getServer().activateBooster(ActivatedBooster(booster, this.uniqueId))
 
         for (player in booster.audience) {
-            activateSound?.playTo(player)
+            player.runOwned { activateSound?.playTo(player) }
         }
     } else if (status == ActivationResult.MERGED) {
         Bukkit.getServer().increaseBooster(booster)
 
         for (player in booster.audience) {
-            incrementSound?.playTo(player)
+            player.runOwned { incrementSound?.playTo(player) }
         }
     }
 
@@ -295,13 +304,15 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
 
     if (effects != null) {
         booster.audience.forEach { target ->
-            val dispatched = TriggerData(player = target)
-                .dispatch(target.toDispatcher())
+            target.runOwned {
+                val dispatched = TriggerData(player = target)
+                    .dispatch(target.toDispatcher())
 
-            dispatched.addPlaceholder(NamedValue("activator", this.name))
-            dispatched.addPlaceholder(NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20)))
+                dispatched.addPlaceholder(NamedValue("activator", this.name))
+                dispatched.addPlaceholder(NamedValue("time", booster.getFormattedTimeLeft(newTime.toInt() / 20)))
 
-            effects.trigger(dispatched)
+                effects.trigger(dispatched)
+            }
         }
     }
 
@@ -309,23 +320,25 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult {
     return BoosterActivationResult(status, newTime)
 }
 
-fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long) {
+fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long): Unit = synchronized(boosterLock) {
     val player = this.player
 
     if (booster.activationEffects != null) {
         booster.audience.forEach { target ->
-            val dispatched = TriggerData(player = target)
-                .dispatch(target.toDispatcher())
+            target.runOwned {
+                val dispatched = TriggerData(player = target)
+                    .dispatch(target.toDispatcher())
 
-            dispatched.addPlaceholder(
-                NamedValue("activator", player?.name ?: this.savedDisplayName)
-            )
+                dispatched.addPlaceholder(
+                    NamedValue("activator", player?.name ?: this.savedDisplayName)
+                )
 
-            dispatched.addPlaceholder(
-                NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
-            )
+                dispatched.addPlaceholder(
+                    NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
+                )
 
-            booster.activationEffects.trigger(dispatched)
+                booster.activationEffects.trigger(dispatched)
+            }
         }
     }
 
@@ -340,25 +353,27 @@ fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long) {
     )
 
     for (player in booster.audience) {
-        activateSound?.playTo(player)
+        player.runOwned { activateSound?.playTo(player) }
     }
 }
 
-fun Server.activateQueuedBoosterConsole(booster: Booster, time: Long) {
+fun Server.activateQueuedBoosterConsole(booster: Booster, time: Long): Unit = synchronized(boosterLock) {
     if (booster.activationEffects != null) {
         booster.audience.forEach { target ->
-            val dispatched = TriggerData(player = target)
-                .dispatch(target.toDispatcher())
+            target.runOwned {
+                val dispatched = TriggerData(player = target)
+                    .dispatch(target.toDispatcher())
 
-            dispatched.addPlaceholder(
-                NamedValue("activator", consoleName)
-            )
+                dispatched.addPlaceholder(
+                    NamedValue("activator", consoleName)
+                )
 
-            dispatched.addPlaceholder(
-                NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
-            )
+                dispatched.addPlaceholder(
+                    NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
+                )
 
-            booster.activationEffects.trigger(dispatched)
+                booster.activationEffects.trigger(dispatched)
+            }
         }
     }
 
@@ -373,7 +388,7 @@ fun Server.activateQueuedBoosterConsole(booster: Booster, time: Long) {
     )
 
     for (player in booster.audience) {
-        activateSound?.playTo(player)
+        player.runOwned { activateSound?.playTo(player) }
     }
 }
 

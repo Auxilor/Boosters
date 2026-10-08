@@ -2,6 +2,7 @@ package com.willfp.boosters.boosters
 
 import com.willfp.boosters.expiryWarningIntervals
 import com.willfp.boosters.runExpiryWarning
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Tracks remaining time per active booster and fires expiry warnings as the
@@ -12,7 +13,7 @@ import com.willfp.boosters.runExpiryWarning
  * produces a spurious warning.
  */
 object BoosterExpiryWarnings {
-    private val lastRemainingTicks = mutableMapOf<Booster, Int>()
+    private val lastRemainingTicks = ConcurrentHashMap<Booster, Int>()
 
     fun tick(booster: Booster) {
         val current = booster.secondsLeft * 20

@@ -2,13 +2,20 @@ package com.willfp.boosters
 
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.activeBoosters
+import com.willfp.eco.core.Prerequisite
 import org.bukkit.Bukkit
 import org.bukkit.boss.BossBar
+import java.util.concurrent.ConcurrentHashMap
 
 class BoosterBossBarManager {
-    private val bars = mutableMapOf<Booster, BossBar>()
+    private val bars = ConcurrentHashMap<Booster, BossBar>()
 
     fun render() {
+        if (Prerequisite.HAS_FOLIA.isMet && !Bukkit.isGlobalTickThread()) {
+            plugin.scheduler.global().run { render() }
+            return
+        }
+
         val activeBoosters = Bukkit.getServer().activeBoosters
             .map { it.booster }
             .toSet()
@@ -23,7 +30,7 @@ class BoosterBossBarManager {
                 continue
             }
 
-            val bar = bars.getOrPut(booster) {
+            val bar = bars.computeIfAbsent(booster) {
                 Bukkit.createBossBar(
                     booster.bossBarName,
                     booster.bossBarColor,

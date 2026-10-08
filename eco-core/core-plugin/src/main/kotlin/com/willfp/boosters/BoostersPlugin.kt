@@ -4,6 +4,7 @@ import com.willfp.boosters.boosters.BoosterExpiryWarnings
 import com.willfp.boosters.boosters.BoosterQueue
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activeBoosters
+import com.willfp.boosters.boosters.boosterLock
 import com.willfp.boosters.boosters.expireBooster
 import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
@@ -57,51 +58,57 @@ class BoostersPlugin : LibreforgePlugin() {
         BoosterQueue.loadQueue()
 
         tickTask?.cancel()
-        tickTask = this.scheduler.runTimer(20L, 20L) {
-            for (booster in Boosters.values()) {
-                if (booster.active == null) {
-                    continue
-                }
-
-                if (booster.secondsLeft <= 0) {
-                    booster.runExpiryEffects()
-
-                    bossBarManager.clearFor(booster)
-                    BoosterExpiryWarnings.remove(booster)
-                    Bukkit.getServer().expireBooster(booster)
-
-                    // Check the queue
-
-                    val queued = BoosterQueue.popBooster(booster)
-
-                    if (queued != null) {
-                        val activator = queued.activator
-
-                        if (activator == serverUUID) {
-                            Bukkit.getServer().activateQueuedBoosterConsole(
-                                queued.booster,
-                                queued.duration.toLong()
-                            )
-                        } else {
-                            val player = Bukkit.getOfflinePlayer(activator)
-                            player.activateQueuedBooster(
-                                queued.booster,
-                                queued.duration.toLong()
-                            )
-                        }
-                    }
-                } else {
-                    BoosterExpiryWarnings.tick(booster)
-                }
+        tickTask = this.scheduler.global().runTimer(20L, 20L) {
+            synchronized(boosterLock) {
+                tickBoosters()
             }
 
             bossBarManager.render()
         }
 
         // Just run it later enough
-        this.scheduler.runLater(3) {
+        this.scheduler.global().runLater(3) {
             Bukkit.getServer().scanForBoosters()
             bossBarManager.render()
+        }
+    }
+
+    private fun tickBoosters() {
+        for (booster in Boosters.values()) {
+            if (booster.active == null) {
+                continue
+            }
+
+            if (booster.secondsLeft <= 0) {
+                booster.runExpiryEffects()
+
+                bossBarManager.clearFor(booster)
+                BoosterExpiryWarnings.remove(booster)
+                Bukkit.getServer().expireBooster(booster)
+
+                // Check the queue
+
+                val queued = BoosterQueue.popBooster(booster)
+
+                if (queued != null) {
+                    val activator = queued.activator
+
+                    if (activator == serverUUID) {
+                        Bukkit.getServer().activateQueuedBoosterConsole(
+                            queued.booster,
+                            queued.duration.toLong()
+                        )
+                    } else {
+                        val player = Bukkit.getOfflinePlayer(activator)
+                        player.activateQueuedBooster(
+                            queued.booster,
+                            queued.duration.toLong()
+                        )
+                    }
+                }
+            } else {
+                BoosterExpiryWarnings.tick(booster)
+            }
         }
     }
 
