@@ -17,6 +17,7 @@ import org.bukkit.Bukkit
 object Boosters : ConfigCategory("booster", "boosters") {
     /** Registered boosters. */
     private val registry = Registry<Booster>()
+    @Volatile
     private var cachedValues: List<Booster> = emptyList()
 
     override val legacyLocation = LegacyLocation(
@@ -41,7 +42,7 @@ object Boosters : ConfigCategory("booster", "boosters") {
      */
     @JvmStatic
     fun getCategories(): Set<String> {
-        return registry.values().mapNotNull { it.category }.toSet()
+        return cachedValues.mapNotNull { it.category }.toSet()
     }
 
     /**

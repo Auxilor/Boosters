@@ -9,7 +9,13 @@ import org.bukkit.Server
 import java.util.Objects
 import java.util.UUID
 
-private val boosters = mutableSetOf<ActivatedBooster>()
+/**
+ * Guards check-then-act sequences on booster state, which run on several region threads on Folia.
+ */
+internal val boosterLock = Any()
+
+@Volatile
+private var boosters: Set<ActivatedBooster> = emptySet()
 
 fun Server.increaseBooster(booster: Booster) {
     val profile = ServerProfile.load()
@@ -49,14 +55,18 @@ fun Server.activateBooster(activatedBooster: ActivatedBooster, durationTicks: In
         uuid.toString()
     )
 
-    boosters += activatedBooster
+    synchronized(boosterLock) {
+        boosters = boosters + activatedBooster
+    }
 }
 
 val Server.activeBoosters: Set<ActivatedBooster>
     get() = boosters.toSet()
 
 fun Server.expireBooster(booster: Booster) {
-    boosters.removeIf { it.booster == booster }
+    synchronized(boosterLock) {
+        boosters = boosters.filterNot { it.booster == booster }.toSet()
+    }
 
     val profile = ServerProfile.load()
 
@@ -76,22 +86,24 @@ fun Server.expireBooster(booster: Booster) {
     )
 }
 
-fun Server.scanForBoosters() {
+fun Server.scanForBoosters(): Unit = synchronized(boosterLock) {
     val profile = ServerProfile.load()
 
     // Rebuilt from scratch so that reloads replace stale Booster instances with the ones
     // from the freshly-loaded registry.
-    boosters.clear()
+    val found = mutableSetOf<ActivatedBooster>()
 
     for (booster in Boosters.values()) {
         val active = booster.active ?: continue
-        boosters += active
+        found += active
 
         if (profile.read(booster.totalDurationKey) <= 0.0) {
             val remaining = (profile.read(booster.expiryTimeKey) - System.currentTimeMillis()).coerceAtLeast(0.0)
             profile.write(booster.totalDurationKey, remaining)
         }
     }
+
+    boosters = found
 }
 
 data class ActivatedBooster(

@@ -4,6 +4,7 @@ import com.willfp.boosters.boosters.BoosterQueue
 import com.willfp.boosters.activateQueuedBooster
 import com.willfp.boosters.activateQueuedBoosterConsole
 import com.willfp.boosters.boosters.activeBoosters
+import com.willfp.boosters.boosters.boosterLock
 import com.willfp.boosters.boosters.expireBooster
 import com.willfp.boosters.plugin
 import com.willfp.boosters.runExpiryEffects
@@ -20,7 +21,7 @@ object CommandCancel : Subcommand(
     false
 ) {
 
-    override fun onExecute(sender: CommandSender, args: List<String>) {
+    override fun onExecute(sender: CommandSender, args: List<String>): Unit = synchronized(boosterLock) {
         if (args.isEmpty()) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-command"))
             return

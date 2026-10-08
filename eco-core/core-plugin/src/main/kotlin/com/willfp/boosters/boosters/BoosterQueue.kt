@@ -10,10 +10,14 @@ import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.util.savedDisplayName
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
+import java.util.Collections
 import java.util.UUID
 
 object BoosterQueue {
-    val queue = mutableMapOf<String, MutableList<QueuedBooster>>()
+    /**
+     * Hold `synchronized(queue)` for compound operations or when iterating, including the lists.
+     */
+    val queue: MutableMap<String, MutableList<QueuedBooster>> = Collections.synchronizedMap(mutableMapOf())
 
     val queuePDK = PersistentDataKey(
         plugin.namespacedKeyFactory.create("booster-queue"),
@@ -21,7 +25,7 @@ object BoosterQueue {
         emptyConfig()
     )
 
-    fun shouldMergeInQueue(booster: Booster): Int {
+    fun shouldMergeInQueue(booster: Booster): Int = synchronized(queue) {
         val category = booster.category ?: return -1
         if (!queue.containsKey(category)) return -1
         val currentQueue = queue[category] ?: return -1
@@ -30,7 +34,7 @@ object BoosterQueue {
         return if (lastBooster.booster.canBeMerged(booster)) lastBooster.duration else -1
     }
 
-    fun addBooster(booster: Booster, activator: CommandSender) {
+    fun addBooster(booster: Booster, activator: CommandSender): Unit = synchronized(queue) {
         val category = booster.category
 
         if (category == null) {
@@ -64,7 +68,7 @@ object BoosterQueue {
         saveQueue()
     }
 
-    fun popBooster(previous: Booster): QueuedBooster? {
+    fun popBooster(previous: Booster): QueuedBooster? = synchronized(queue) {
         val category = previous.category ?: return null
         if (!queue.containsKey(category)) return null
         val currentQueue = queue[category]!!
@@ -76,7 +80,7 @@ object BoosterQueue {
         return next
     }
 
-    fun serializeQueue(): Config {
+    fun serializeQueue(): Config = synchronized(queue) {
         val base = emptyConfig()
 
         for ((category, boosters) in queue) {
@@ -119,10 +123,12 @@ object BoosterQueue {
 
     fun loadQueue() {
         val config = ServerProfile.load().read(queuePDK)
-        queue.clear()
-        deserializeQueue(config)
 
-        val count = queue.values.sumOf { it.size }
+        val count = synchronized(queue) {
+            queue.clear()
+            deserializeQueue(config)
+            queue.values.sumOf { it.size }
+        }
 
         plugin.logger.info { "Loaded $count queued boosters" }
     }

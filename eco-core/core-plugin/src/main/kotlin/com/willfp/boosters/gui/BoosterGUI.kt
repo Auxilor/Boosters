@@ -22,6 +22,7 @@ import org.bukkit.Sound
 import org.bukkit.entity.Player
 
 object BoosterGUI {
+    @Volatile
     private lateinit var gui: Menu
 
     private fun makeHandler(booster: Booster): SlotHandler {
