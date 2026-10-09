@@ -23,7 +23,7 @@ object CommandCancel : Subcommand(
 
     override fun onExecute(sender: CommandSender, args: List<String>): Unit = synchronized(boosterLock) {
         if (args.isEmpty()) {
-            sender.sendMessage(plugin.langYml.getMessage("invalid-command"))
+            sender.sendMessage(plugin.langYml.getMessage("cancel-usage"))
             return
         }
 
