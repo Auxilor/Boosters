@@ -15,6 +15,7 @@ messages:
   already-active: "&cThis booster is already active!"
   dont-have: "&cYou don't have any of these boosters! Get some at &astore.ecomc.net"
   cancelled: "Cancelled the active boosters"
+  cancel-usage: "&cUsage: /boosters cancel <all|booster <id>|category <id>> [silent]"
   activated-booster: "Activated %booster% for %duration%!"
   merged-booster: "Merged %booster%, new duration: %duration%!"
   queued-booster: "Queued %booster% for activation after the current one expires!"
