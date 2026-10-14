@@ -197,7 +197,7 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult = s
         }
 
         ActivationResult.MERGED -> {
-            Bukkit.getServer().increaseBooster(booster)
+            Bukkit.getServer().increaseBooster(toMergeWith!!.booster, booster.duration)
 
             for (player in booster.audience) {
                 player.runOwned { incrementSound?.playTo(player) }
@@ -290,7 +290,7 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult = synchron
             player.runOwned { activateSound?.playTo(player) }
         }
     } else if (status == ActivationResult.MERGED) {
-        Bukkit.getServer().increaseBooster(booster)
+        Bukkit.getServer().increaseBooster(toMergeWith!!.booster, booster.duration)
 
         for (player in booster.audience) {
             player.runOwned { incrementSound?.playTo(player) }
