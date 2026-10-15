@@ -17,12 +17,12 @@ internal val boosterLock = Any()
 @Volatile
 private var boosters: Set<ActivatedBooster> = emptySet()
 
-fun Server.increaseBooster(booster: Booster) {
+fun Server.increaseBooster(booster: Booster, extraTicks: Int = booster.duration) {
     val profile = ServerProfile.load()
-    val extraTime = booster.duration.toDouble() * 50
+    val extraTime = extraTicks.toDouble() * 50
 
     val currentExpiry = profile.read(booster.expiryTimeKey)
-    val newExpiry = currentExpiry + extraTime
+    val newExpiry = maxOf(currentExpiry, System.currentTimeMillis().toDouble()) + extraTime
 
     val currentTotalDuration = profile.read(booster.totalDurationKey)
     val fallbackTotalDuration = (currentExpiry - System.currentTimeMillis()).coerceAtLeast(0.0)
