@@ -5,15 +5,14 @@ import com.willfp.boosters.boosters.ActivationResult
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.plugin
+import com.willfp.eco.core.gui.addCustomSlots
 import com.willfp.eco.core.gui.addPage
 import com.willfp.eco.core.gui.addPageChanger
-import com.willfp.eco.core.gui.getSlotLocations
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.page.PageChanger
 import com.willfp.eco.core.gui.setMask
 import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.gui.slot.ConfigSlot
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.util.StringUtils
@@ -68,8 +67,6 @@ object BoosterGUI {
             addPageChanger(plugin.configYml, "gui.forwards-arrow", PageChanger.Direction.FORWARDS, pageChangeSound)
             addPageChanger(plugin.configYml, "gui.backwards-arrow", PageChanger.Direction.BACKWARDS, pageChangeSound)
 
-            val customSlots = plugin.configYml.getSubsections("gui.custom-slots")
-
             for (pageNumber in 1..maxPage) {
                 addPage(pageNumber) {
                     setMask(plugin.configYml, "gui")
@@ -90,11 +87,7 @@ object BoosterGUI {
                         )
                     }
 
-                    for (config in customSlots) {
-                        for (location in config.getSlotLocations()) {
-                            setSlot(location.row, location.column, ConfigSlot(config))
-                        }
-                    }
+                    addCustomSlots(plugin.configYml, "gui")
                 }
             }
         }
