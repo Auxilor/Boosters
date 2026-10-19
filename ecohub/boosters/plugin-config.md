@@ -47,11 +47,13 @@ gui:
     item-inactive: gray_dye name:"&7Next Page"
     row: 3 # 1 to 6
     column: 6 # 1 to 9
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
   backwards-arrow:
     item: arrow name:"&fPrevious Page"
     item-inactive: gray_dye name:"&7Previous Page"
     row: 3
     column: 4
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
 
   mask: # Background filler items, drawn behind boosters on every page
     items:
