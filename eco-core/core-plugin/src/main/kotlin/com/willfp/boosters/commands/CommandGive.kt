@@ -40,8 +40,9 @@ object CommandGive : Subcommand(
             amount = args[2].toIntOrNull() ?: amount
         }
 
-        val player = Bukkit.getPlayerExact(args[0]) ?: Bukkit.getOfflinePlayerIfCached(args[0])
-        if (player == null || (!player.hasPlayedBefore() && !player.isOnline)) {
+        val player = Bukkit.getPlayerExact(args[0])
+            ?: Bukkit.getOfflinePlayers().firstOrNull { it.name.equals(args[0], ignoreCase = true) }
+        if (player == null) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
             return
         }
