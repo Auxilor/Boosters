@@ -40,9 +40,9 @@ object CommandGive : Subcommand(
             amount = args[2].toIntOrNull() ?: amount
         }
 
-        @Suppress("DEPRECATION")
-        val player = Bukkit.getOfflinePlayer(args[0])
-        if (!player.hasPlayedBefore() && !player.isOnline) {
+        val player = Bukkit.getPlayerExact(args[0])
+            ?: Bukkit.getOfflinePlayers().firstOrNull { it.name.equals(args[0], ignoreCase = true) }
+        if (player == null) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
             return
         }
@@ -51,7 +51,7 @@ object CommandGive : Subcommand(
 
         sender.sendMessage(
             plugin.langYml.getMessage("gave-booster", StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)
-                .replace("%player%", player.name ?: return)
+                .replace("%player%", player.name ?: args[0])
                 .replace("%booster%", booster.name)
                 .replace("%amount%", amount.toString())
         )
