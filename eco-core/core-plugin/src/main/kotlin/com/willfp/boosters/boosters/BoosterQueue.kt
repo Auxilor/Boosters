@@ -97,8 +97,8 @@ object BoosterQueue {
         for (key in config.getKeys(false)) {
             val boosterStrings = config.getStrings(key) ?: continue
             val boosters = boosterStrings.mapNotNull {
-                val withoutUUID = it.substringBeforeLast("__", "")
-                val boosterId = withoutUUID.substringBeforeLast("__", "")
+                val withoutUUID = it.substringBeforeLast("__", missingDelimiterValue = "")
+                val boosterId = withoutUUID.substringBeforeLast("__", missingDelimiterValue = "")
                 if (boosterId.isEmpty()) {
                     plugin.logger.warning("Skipping malformed queue entry: $it")
                     return@mapNotNull null
