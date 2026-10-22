@@ -19,6 +19,9 @@ object BoosterQueue {
      */
     val queue: MutableMap<String, MutableList<QueuedBooster>> = Collections.synchronizedMap(mutableMapOf())
 
+    @Volatile
+    private var loaded = false
+
     val queuePDK = PersistentDataKey(
         plugin.namespacedKeyFactory.create("booster-queue"),
         PersistentDataKeyType.CONFIG,
@@ -118,6 +121,10 @@ object BoosterQueue {
     }
 
     fun saveQueue() {
+        if (!loaded) {
+            return
+        }
+
         val config = serializeQueue()
         ServerProfile.load().write(queuePDK, config)
     }
@@ -130,6 +137,8 @@ object BoosterQueue {
             deserializeQueue(config)
             queue.values.sumOf { it.size }
         }
+
+        loaded = true
 
         plugin.logger.info { "Loaded $count queued boosters" }
     }

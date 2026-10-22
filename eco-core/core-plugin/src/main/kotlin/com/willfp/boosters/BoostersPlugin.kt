@@ -47,8 +47,6 @@ class BoostersPlugin : LibreforgePlugin() {
                 .filterNot { booster -> dispatcher.location?.world?.let { booster.isDisabledIn(it) } ?: false }
                 .map { SimpleProvidedHolder(it) }
         }
-
-        BoosterQueue.loadQueue()
     }
 
     override fun handleReload() {
