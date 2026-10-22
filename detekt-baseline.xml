@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>BracesOnWhenStatements:CommandCancel.kt:CommandCancel$when</ID>
+    <ID>CognitiveComplexMethod:BoosterBossBarManager.kt:BoosterBossBarManager$fun render</ID>
+    <ID>CognitiveComplexMethod:BoosterUtils.kt:fun Player.activateBooster: BoosterActivationResult</ID>
+    <ID>CognitiveComplexMethod:BoosterUtils.kt:fun Server.activateBoosterConsole: BoosterActivationResult</ID>
+    <ID>CognitiveComplexMethod:CommandCancel.kt:CommandCancel$override fun onExecute: Unit</ID>
+    <ID>CouldBeSequence:BoostersPlugin.kt:BoostersPlugin$map { it.booster }</ID>
+    <ID>CyclomaticComplexMethod:BoosterBossBarManager.kt:BoosterBossBarManager$fun render</ID>
+    <ID>CyclomaticComplexMethod:CommandCancel.kt:CommandCancel$override fun onExecute: Unit</ID>
+    <ID>DocumentationOverPrivateFunction:BoosterUtils.kt:private fun Chain?.triggerGlobally</ID>
+    <ID>DocumentationOverPrivateProperty:Boosters.kt:Boosters$/** Registered boosters. */ private val registry = Registry&lt;Booster&gt;()</ID>
+    <ID>ElseCaseInsteadOfExhaustiveWhen:BoosterUtils.kt:when (status) { ActivationResult.ACTIVATED -&gt; { this.activateBooster(ActivatedBooster(booster, null)) for (player in booster.audience) { player.runOwned { activateSound?.playTo(player) } } } ActivationResult.MERGED -&gt; { Bukkit.getServer().increaseBooster(toMergeWith!!.booster, booster.duration, consoleName) for (player in booster.audience) { player.runOwned { incrementSound?.playTo(player) } } } else -&gt; {} }</ID>
+    <ID>ExpressionBodySyntax:ActivatedBooster.kt:ActivatedBooster$return Objects.hash(this.booster)</ID>
+    <ID>ExpressionBodySyntax:Booster.kt:Booster$return this.id.hashCode()</ID>
+    <ID>ExpressionBodySyntax:Booster.kt:Booster$return this.id.key</ID>
+    <ID>ExpressionBodySyntax:BoosterUtils.kt:return this.profile.read(booster.ownedDataKey)</ID>
+    <ID>ExpressionBodySyntax:BoosterUtils.kt:return this.profile.read(bossBarVisibilityDataKey) == 1</ID>
+    <ID>ExpressionBodySyntax:Boosters.kt:Boosters$return cachedValues</ID>
+    <ID>ExpressionBodySyntax:Boosters.kt:Boosters$return cachedValues.mapNotNull { it.category }.toSet()</ID>
+    <ID>ExpressionBodySyntax:Boosters.kt:Boosters$return registry[name]</ID>
+    <ID>ExpressionBodySyntax:ConditionIsBoosterActive.kt:ConditionIsBoosterActive$return Boosters.getByID(config.getString("booster"))?.active != null</ID>
+    <ID>IC002:ActivatedBooster.kt:// Rebuilt from scratch so that reloads replace stale Booster instances with the ones</ID>
+    <ID>IC002:Booster.kt:Booster$// if you've seen this code on the internet, no you haven't. shush</ID>
+    <ID>IC002:BoosterExpiryWarnings.kt:BoosterExpiryWarnings$// previous == null is the first observation: seed state without warning.</ID>
+    <ID>IC002:BoosterQueue.kt:BoosterQueue$// If the last booster in the queue is the same as the new one, increase its duration</ID>
+    <ID>IC002:BoosterQueue.kt:BoosterQueue$// Otherwise, add the new booster to the end of the queue</ID>
+    <ID>IC002:BoosterUtils.kt:// No prefix in the action bar - it looks cramped in the HUD.</ID>
+    <ID>IC002:BoostersPlugin.kt:BoostersPlugin$// Check the queue</ID>
+    <ID>IC002:BoostersPlugin.kt:BoostersPlugin$// Just run it later enough</ID>
+    <ID>IM001:BoosterQueue.kt:org.bukkit.entity.Player</ID>
+    <ID>LabeledExpression:Booster.kt:Booster$@PlayerlessPlaceholder</ID>
+    <ID>LabeledExpression:BoosterGUI.kt:BoosterGUI$@SlotHandler</ID>
+    <ID>LabeledExpression:BoosterQueue.kt:BoosterQueue$@mapNotNull</ID>
+    <ID>LongMethod:BoosterUtils.kt:fun Player.activateBooster: BoosterActivationResult</ID>
+    <ID>LongMethod:CommandCancel.kt:CommandCancel$override fun onExecute: Unit</ID>
+    <ID>MagicNumber:BoosterGUI.kt:BoosterGUI$0.5f</ID>
+    <ID>MagicNumber:BoosterGUI.kt:BoosterGUI$20</ID>
+    <ID>MagicNumber:BoosterUtils.kt:20</ID>
+    <ID>MagicNumber:BoostersPlugin.kt:BoostersPlugin$20L</ID>
+    <ID>MagicNumber:BoostersPlugin.kt:BoostersPlugin$3</ID>
+    <ID>MagicNumber:CommandActivate.kt:CommandActivate$20</ID>
+    <ID>MagicNumber:CommandCancel.kt:CommandCancel$3</ID>
+    <ID>MagicNumber:CommandGive.kt:CommandGive$3</ID>
+    <ID>MagicNumber:CommandQueue.kt:CommandQueue$20</ID>
+    <ID>MapGetWithNotNullAssertionOperator:BoosterQueue.kt:BoosterQueue$queue[category]!!</ID>
+    <ID>MaxLineLength:Booster.kt:Booster$.</ID>
+    <ID>MaxLineLength:Booster.kt:Booster$active.player?.name ?: plugin.langYml.getString("console-displayname").formatEco(formatPlaceholders = false)</ID>
+    <ID>MaxLineLength:Booster.kt:Booster$active.player?.savedDisplayName ?: plugin.langYml.getString("console-displayname").formatEco(formatPlaceholders = false)</ID>
+    <ID>MultilineLambdaItParameter:BoosterQueue.kt:BoosterQueue${ val split = it.split("__") if (split.size &lt; 3) { plugin.logger.warning("Skipping malformed queue entry: $it") return@mapNotNull null } val booster = Boosters.getByID(split[0]) ?: return@mapNotNull null val duration = split[1].toIntOrNull() ?: run { plugin.logger.warning("Skipping queue entry with invalid duration: $it") return@mapNotNull null } val uuid = try { UUID.fromString(split[2]) } catch (e: IllegalArgumentException) { plugin.logger.warning("Skipping queue entry with invalid UUID: $it") return@mapNotNull null } QueuedBooster(booster, duration, uuid) }</ID>
+    <ID>NewLineAtEndOfFile:ActivationResult.kt:com.willfp.boosters.boosters.ActivationResult.kt</ID>
+    <ID>NewLineAtEndOfFile:BoosterExpiryWarnings.kt:com.willfp.boosters.boosters.BoosterExpiryWarnings.kt</ID>
+    <ID>NewLineAtEndOfFile:BoosterGUI.kt:com.willfp.boosters.gui.BoosterGUI.kt</ID>
+    <ID>NewLineAtEndOfFile:BoosterQueue.kt:com.willfp.boosters.boosters.BoosterQueue.kt</ID>
+    <ID>NewLineAtEndOfFile:CommandReload.kt:com.willfp.boosters.commands.CommandReload.kt</ID>
+    <ID>NonBooleanPropertyPrefixedWithIs:BoosterUtils.kt:val isQueueMerge = BoosterQueue.shouldMergeInQueue(booster)</ID>
+    <ID>NullableBooleanCheck:Booster.kt:Booster$config.getBoolOrNull("expiry-warning") ?: true</ID>
+    <ID>NullableBooleanCheck:BoostersPlugin.kt:BoostersPlugin$dispatcher.location?.world?.let { booster.isDisabledIn(it) } ?: false</ID>
+    <ID>NullableToStringCall:ActivatedBooster.kt:uuid.toString()</ID>
+    <ID>PF011:BoosterBossBarManager.kt:BoosterBossBarManager$contains(player)</ID>
+    <ID>PF012:ActivatedBooster.kt:values()</ID>
+    <ID>PF012:BoosterGUI.kt:BoosterGUI$values()</ID>
+    <ID>PF012:BoosterUtils.kt:values()</ID>
+    <ID>PF012:BoostersPlugin.kt:BoostersPlugin$values()</ID>
+    <ID>PropertyUsedBeforeDeclaration:Booster.kt:Booster$id</ID>
+    <ID>ReplaceSafeCallChainWithRun:Boosters.kt:Boosters$currentActive?.booster?.getFormattedTimeLeft()</ID>
+    <ID>ReturnCount:Booster.kt:Booster$fun canBeMerged: Boolean</ID>
+    <ID>ReturnCount:CommandCancel.kt:CommandCancel$override fun tabComplete: List&lt;String&gt;</ID>
+    <ID>ReturnCount:CommandGive.kt:CommandGive$override fun onExecute</ID>
+    <ID>ReturnCount:CommandGive.kt:CommandGive$override fun tabComplete: List&lt;String&gt;</ID>
+    <ID>SpreadOperator:BoosterGUI.kt:BoosterGUI$( MaskItems.fromItemNames(plugin.configYml.getStrings("gui.mask.items")), *plugin.configYml.getStrings("gui.mask.pattern").toTypedArray() )</ID>
+    <ID>SwallowedException:BoosterQueue.kt:BoosterQueue$e: IllegalArgumentException</ID>
+    <ID>TooManyFunctions:BoosterUtils.kt:com.willfp.boosters.BoosterUtils.kt</ID>
+    <ID>UnnamedParameterUse:ActivatedBooster.kt:maxOf</ID>
+    <ID>UnnamedParameterUse:Booster.kt:Booster$coerceIn</ID>
+    <ID>UnnamedParameterUse:Booster.kt:Booster$replace</ID>
+    <ID>UnnamedParameterUse:BoosterGUI.kt:BoosterGUI$replace</ID>
+    <ID>UnnamedParameterUse:BoosterUtils.kt:NamedValue</ID>
+    <ID>UnnamedParameterUse:BoosterUtils.kt:replace</ID>
+    <ID>UnnamedParameterUse:Boosters.kt:Boosters$LegacyLocation</ID>
+    <ID>UnnamedParameterUse:CommandActivate.kt:CommandActivate$replace</ID>
+    <ID>UnnamedParameterUse:CommandGive.kt:CommandGive$replace</ID>
+    <ID>UnnamedParameterUse:CommandQueue.kt:CommandQueue$replace</ID>
+    <ID>UnnamedParameterUse:CommandReload.kt:CommandReload$replace</ID>
+    <ID>UnnamedParameterUse:ConditionIsBoosterActive.kt:ConditionIsBoosterActive$require</ID>
+    <ID>UnreachableCode:BoosterQueue.kt:BoosterQueue$config.getStrings(key) ?: continue</ID>
+    <ID>UnsafeCallOnNullableType:BoosterQueue.kt:BoosterQueue$queue[category]!!</ID>
+    <ID>UnsafeCallOnNullableType:BoosterUtils.kt:toMergeWith!!</ID>
+    <ID>UnusedImport:Boosters.kt:import com.willfp.boosters.boosters.activeBoosters</ID>
+    <ID>UseOrEmpty:CommandQueue.kt:CommandQueue$synchronized(BoosterQueue.queue) { BoosterQueue.queue[category]?.toList() } ?: emptyList()</ID>
+  </CurrentIssues>
+</SmellBaseline>
