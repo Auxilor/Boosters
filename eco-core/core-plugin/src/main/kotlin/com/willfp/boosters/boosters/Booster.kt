@@ -57,6 +57,12 @@ class Booster(
         0.0
     )
 
+    val incrementerKey = PersistentDataKey(
+        plugin.namespacedKeyFactory.create("${id}_incrementer"),
+        PersistentDataKeyType.STRING,
+        ""
+    )
+
     val expiryWarningEnabled: Boolean = config.getBoolOrNull("expiry-warning") ?: true
 
     val category: String? = config.getStringOrNull("category")
@@ -312,6 +318,23 @@ class Booster(
                     ""
                 } else {
                     active.player?.savedDisplayName ?: plugin.langYml.getString("console-displayname").formatEco(formatPlaceholders = false)
+                }
+            }
+        )
+
+        PlaceholderManager.registerPlaceholder(
+            PlayerlessPlaceholder(
+                plugin,
+                "${id}_incrementer",
+            ) {
+                val active = this.active
+
+                if (active == null) {
+                    ""
+                } else {
+                    Bukkit.getServer().profile.read(incrementerKey).ifEmpty {
+                        active.player?.savedDisplayName ?: plugin.langYml.getString("console-displayname").formatEco(formatPlaceholders = false)
+                    }
                 }
             }
         )

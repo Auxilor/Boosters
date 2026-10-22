@@ -197,7 +197,7 @@ fun Server.activateBoosterConsole(booster: Booster): BoosterActivationResult = s
         }
 
         ActivationResult.MERGED -> {
-            Bukkit.getServer().increaseBooster(toMergeWith!!.booster, booster.duration)
+            Bukkit.getServer().increaseBooster(toMergeWith!!.booster, booster.duration, consoleName)
 
             for (player in booster.audience) {
                 player.runOwned { incrementSound?.playTo(player) }
@@ -226,7 +226,7 @@ fun Server.incrementBoosterConsole(booster: Booster): Unit = synchronized(booste
         }
     }
 
-    Bukkit.getServer().increaseBooster(booster)
+    Bukkit.getServer().increaseBooster(booster, incrementer = consoleName)
 
     booster.globalIncrementEffects.triggerGlobally(
         NamedValue("activator", consoleName)
@@ -290,7 +290,7 @@ fun Player.activateBooster(booster: Booster): BoosterActivationResult = synchron
             player.runOwned { activateSound?.playTo(player) }
         }
     } else if (status == ActivationResult.MERGED) {
-        Bukkit.getServer().increaseBooster(toMergeWith!!.booster, booster.duration)
+        Bukkit.getServer().increaseBooster(toMergeWith!!.booster, booster.duration, this.name)
 
         for (player in booster.audience) {
             player.runOwned { incrementSound?.playTo(player) }

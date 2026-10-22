@@ -17,8 +17,12 @@ internal val boosterLock = Any()
 @Volatile
 private var boosters: Set<ActivatedBooster> = emptySet()
 
-fun Server.increaseBooster(booster: Booster, extraTicks: Int = booster.duration) {
+fun Server.increaseBooster(booster: Booster, extraTicks: Int = booster.duration, incrementer: String? = null) {
     val profile = ServerProfile.load()
+
+    if (incrementer != null) {
+        profile.write(booster.incrementerKey, incrementer)
+    }
     val extraTime = extraTicks.toDouble() * 50
 
     val currentExpiry = profile.read(booster.expiryTimeKey)
@@ -54,6 +58,8 @@ fun Server.activateBooster(activatedBooster: ActivatedBooster, durationTicks: In
         booster.activeDataKey,
         uuid.toString()
     )
+
+    profile.write(booster.incrementerKey, "")
 
     synchronized(boosterLock) {
         boosters = boosters + activatedBooster
