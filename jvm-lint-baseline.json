@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "findings": [
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/boosters/BoosterUtils.kt",
+      "message": "Unused function `incrementBoosterConsole`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/boosters/boosters/ActivationResult.kt",
+      "message": "Unused object `EmptyBoosterActivationResult`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/boosters/boosters/Booster.kt",
+      "message": "Unused property `canBeActivated`"
+    }
+  ]
+}
