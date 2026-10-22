@@ -54,7 +54,7 @@ object BoosterQueue {
                     // If the last booster in the queue is the same as the new one, increase its duration
                     currentQueue[currentQueue.size - 1] = QueuedBooster(
                         booster,
-                        lastBooster.duration + booster.duration, activator.uniqueId
+                        lastBooster.duration + booster.duration, lastBooster.activator
                     )
                 } else {
                     // Otherwise, add the new booster to the end of the queue
