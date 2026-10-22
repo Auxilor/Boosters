@@ -108,6 +108,11 @@ object BoosterGUI {
     }
 
     fun open(player: Player) {
+        if (!::gui.isInitialized) {
+            plugin.logger.warning("Tried to open the boosters GUI for ${player.name} before it finished loading")
+            return
+        }
+
         gui.open(player)
     }
 }
