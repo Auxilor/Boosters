@@ -87,6 +87,11 @@ class Booster(
             val uuid = try {
                 UUID.fromString(activeKey)
             } catch (_: IllegalArgumentException) {
+                if (activeKey != "null") {
+                    plugin.logger.warning("Booster ${id.key} has invalid active data '$activeKey', clearing it")
+                    Bukkit.getServer().profile.write(activeDataKey, "")
+                    return null
+                }
                 null
             }
 
