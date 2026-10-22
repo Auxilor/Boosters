@@ -1,11 +1,13 @@
 package com.willfp.boosters.commands
 
+import com.willfp.boosters.boosters.BoosterExpiryWarnings
 import com.willfp.boosters.boosters.BoosterQueue
 import com.willfp.boosters.activateQueuedBooster
 import com.willfp.boosters.activateQueuedBoosterConsole
 import com.willfp.boosters.boosters.activeBoosters
 import com.willfp.boosters.boosters.boosterLock
 import com.willfp.boosters.boosters.expireBooster
+import com.willfp.boosters.bossBarManager
 import com.willfp.boosters.plugin
 import com.willfp.boosters.runExpiryEffects
 import com.willfp.boosters.serverUUID
@@ -36,6 +38,8 @@ object CommandCancel : Subcommand(
                         booster.booster.runExpiryEffects()
                     }
 
+                    bossBarManager.clearFor(booster.booster)
+                    BoosterExpiryWarnings.remove(booster.booster)
                     Bukkit.getServer().expireBooster(booster.booster)
                 }
 
@@ -67,6 +71,8 @@ object CommandCancel : Subcommand(
                     target.booster.runExpiryEffects()
                 }
 
+                bossBarManager.clearFor(target.booster)
+                BoosterExpiryWarnings.remove(target.booster)
                 Bukkit.getServer().expireBooster(target.booster)
 
                 val queued = BoosterQueue.popBooster(target.booster)
@@ -112,6 +118,8 @@ object CommandCancel : Subcommand(
                         target.booster.runExpiryEffects()
                     }
 
+                    bossBarManager.clearFor(target.booster)
+                    BoosterExpiryWarnings.remove(target.booster)
                     Bukkit.getServer().expireBooster(target.booster)
                 }
 
