@@ -19,6 +19,9 @@ object BoosterQueue {
      */
     val queue: MutableMap<String, MutableList<QueuedBooster>> = Collections.synchronizedMap(mutableMapOf())
 
+    @Volatile
+    private var loaded = false
+
     val queuePDK = PersistentDataKey(
         plugin.namespacedKeyFactory.create("booster-queue"),
         PersistentDataKeyType.CONFIG,
@@ -54,7 +57,7 @@ object BoosterQueue {
                     // If the last booster in the queue is the same as the new one, increase its duration
                     currentQueue[currentQueue.size - 1] = QueuedBooster(
                         booster,
-                        lastBooster.duration + booster.duration, activator.uniqueId
+                        lastBooster.duration + booster.duration, lastBooster.activator
                     )
                 } else {
                     // Otherwise, add the new booster to the end of the queue
@@ -93,21 +96,22 @@ object BoosterQueue {
     fun deserializeQueue(config: Config) {
         for (key in config.getKeys(false)) {
             val boosterStrings = config.getStrings(key) ?: continue
-            val boosters = boosterStrings.mapNotNull {
-                val split = it.split("__")
-                if (split.size < 3) {
-                    plugin.logger.warning("Skipping malformed queue entry: $it")
+            val boosters = boosterStrings.mapNotNull { entry ->
+                val withoutUUID = entry.substringBeforeLast("__", missingDelimiterValue = "")
+                val boosterId = withoutUUID.substringBeforeLast("__", missingDelimiterValue = "")
+                if (boosterId.isEmpty()) {
+                    plugin.logger.warning("Skipping malformed queue entry: $entry")
                     return@mapNotNull null
                 }
-                val booster = Boosters.getByID(split[0]) ?: return@mapNotNull null
-                val duration = split[1].toIntOrNull() ?: run {
-                    plugin.logger.warning("Skipping queue entry with invalid duration: $it")
+                val booster = Boosters.getByID(boosterId) ?: return@mapNotNull null
+                val duration = withoutUUID.substringAfterLast("__").toIntOrNull() ?: run {
+                    plugin.logger.warning("Skipping queue entry with invalid duration: $entry")
                     return@mapNotNull null
                 }
                 val uuid = try {
-                    UUID.fromString(split[2])
+                    UUID.fromString(entry.substringAfterLast("__"))
                 } catch (e: IllegalArgumentException) {
-                    plugin.logger.warning("Skipping queue entry with invalid UUID: $it")
+                    plugin.logger.warning("Skipping queue entry with invalid UUID: $entry")
                     return@mapNotNull null
                 }
                 QueuedBooster(booster, duration, uuid)
@@ -117,6 +121,10 @@ object BoosterQueue {
     }
 
     fun saveQueue() {
+        if (!loaded) {
+            return
+        }
+
         val config = serializeQueue()
         ServerProfile.load().write(queuePDK, config)
     }
@@ -129,6 +137,8 @@ object BoosterQueue {
             deserializeQueue(config)
             queue.values.sumOf { it.size }
         }
+
+        loaded = true
 
         plugin.logger.info { "Loaded $count queued boosters" }
     }
