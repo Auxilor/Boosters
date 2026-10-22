@@ -96,22 +96,22 @@ object BoosterQueue {
     fun deserializeQueue(config: Config) {
         for (key in config.getKeys(false)) {
             val boosterStrings = config.getStrings(key) ?: continue
-            val boosters = boosterStrings.mapNotNull {
-                val withoutUUID = it.substringBeforeLast("__", missingDelimiterValue = "")
+            val boosters = boosterStrings.mapNotNull { entry ->
+                val withoutUUID = entry.substringBeforeLast("__", missingDelimiterValue = "")
                 val boosterId = withoutUUID.substringBeforeLast("__", missingDelimiterValue = "")
                 if (boosterId.isEmpty()) {
-                    plugin.logger.warning("Skipping malformed queue entry: $it")
+                    plugin.logger.warning("Skipping malformed queue entry: $entry")
                     return@mapNotNull null
                 }
                 val booster = Boosters.getByID(boosterId) ?: return@mapNotNull null
                 val duration = withoutUUID.substringAfterLast("__").toIntOrNull() ?: run {
-                    plugin.logger.warning("Skipping queue entry with invalid duration: $it")
+                    plugin.logger.warning("Skipping queue entry with invalid duration: $entry")
                     return@mapNotNull null
                 }
                 val uuid = try {
-                    UUID.fromString(it.substringAfterLast("__"))
+                    UUID.fromString(entry.substringAfterLast("__"))
                 } catch (e: IllegalArgumentException) {
-                    plugin.logger.warning("Skipping queue entry with invalid UUID: $it")
+                    plugin.logger.warning("Skipping queue entry with invalid UUID: $entry")
                     return@mapNotNull null
                 }
                 QueuedBooster(booster, duration, uuid)
