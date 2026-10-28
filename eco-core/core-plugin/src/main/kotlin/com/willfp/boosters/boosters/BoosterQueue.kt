@@ -45,6 +45,8 @@ object BoosterQueue {
             return
         }
 
+        pullSharedQueue()
+
         if (!queue.containsKey(category)) {
             queue[category] = mutableListOf(QueuedBooster(booster, booster.duration, activator.uniqueId))
         } else {
@@ -73,6 +75,7 @@ object BoosterQueue {
 
     fun popBooster(previous: Booster): QueuedBooster? = synchronized(queue) {
         val category = previous.category ?: return null
+        pullSharedQueue()
         if (!queue.containsKey(category)) return null
         val currentQueue = queue[category]!!
         if (currentQueue.isEmpty()) return null
@@ -151,14 +154,21 @@ object BoosterQueue {
         readQueue()
     }
 
-    private fun readQueue(): Int {
+    private fun pullSharedQueue() {
+        if (!loaded || plugin.isUsingLocalStorage) {
+            return
+        }
+
+        refreshQueueData()
+        readQueue()
+    }
+
+    private fun readQueue(): Int = synchronized(queue) {
         val config = ServerProfile.load().read(queuePDK)
 
-        return synchronized(queue) {
-            queue.clear()
-            deserializeQueue(config)
-            queue.values.sumOf { it.size }
-        }
+        queue.clear()
+        deserializeQueue(config)
+        queue.values.sumOf { it.size }
     }
 }
 
