@@ -9,12 +9,21 @@ The plugin-wide settings live in `config.yml` in the Boosters data folder (`/plu
 Changing `use-local-storage` switches where booster data is read from, so re-log after reloading to make sure the player data you see is current.
 :::
 
+:::info Networks
+On a network where servers share eco storage, set `booster-authority: true` on exactly one server and `false` on the others. The authority server expires boosters, runs expiry effects and activates queued boosters. The other servers show active boosters and pick up changes from other servers within about 5 seconds. Expiry effects that target online players only reach players on the authority server.
+:::
+
 ## Default config.yml
 
 ```yaml
 # Force Boosters to save to local storage even when eco uses a database.
 # Disables cross-server sync; leave false for networks.
 use-local-storage: false
+
+# On a network that shares eco storage, set this to true on exactly one server.
+# That server expires boosters, runs expiry effects and activates queued boosters.
+# The other servers show boosters and refresh them from storage every few seconds.
+booster-authority: true
 
 # Warn players before active boosters expire. Each value is the ticks remaining
 # at which to warn (20 ticks = 1 second); a warning fires once as the remaining
