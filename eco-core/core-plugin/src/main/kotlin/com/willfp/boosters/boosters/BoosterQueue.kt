@@ -130,17 +130,35 @@ object BoosterQueue {
     }
 
     fun loadQueue() {
-        val config = ServerProfile.load().read(queuePDK)
-
-        val count = synchronized(queue) {
-            queue.clear()
-            deserializeQueue(config)
-            queue.values.sumOf { it.size }
-        }
+        val count = readQueue()
 
         loaded = true
 
         plugin.logger.info { "Loaded $count queued boosters" }
+    }
+
+    fun refreshQueueData() {
+        val profile = ServerProfile.load()
+        profile.invalidate(queuePDK)
+        profile.read(queuePDK)
+    }
+
+    fun syncQueue() {
+        if (!loaded) {
+            return
+        }
+
+        readQueue()
+    }
+
+    private fun readQueue(): Int {
+        val config = ServerProfile.load().read(queuePDK)
+
+        return synchronized(queue) {
+            queue.clear()
+            deserializeQueue(config)
+            queue.values.sumOf { it.size }
+        }
     }
 }
 
