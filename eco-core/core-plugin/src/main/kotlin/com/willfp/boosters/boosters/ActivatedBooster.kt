@@ -92,6 +92,24 @@ fun Server.expireBooster(booster: Booster) {
     )
 }
 
+fun Server.refreshBoosterData() {
+    val profile = ServerProfile.load()
+
+    for (booster in Boosters.values()) {
+        val keys = listOf(
+            booster.activeDataKey,
+            booster.expiryTimeKey,
+            booster.totalDurationKey,
+            booster.incrementerKey
+        )
+
+        for (key in keys) {
+            profile.invalidate(key)
+            profile.read(key)
+        }
+    }
+}
+
 fun Server.scanForBoosters(): Unit = synchronized(boosterLock) {
     val profile = ServerProfile.load()
 

@@ -8,6 +8,11 @@
 # cross-server sync.
 use-local-storage: false
 
+# On a network that shares eco storage, set this to true on exactly one server.
+# That server expires boosters, runs expiry effects and activates queued boosters.
+# The other servers show boosters and refresh them from storage every few seconds.
+booster-authority: true
+
 # Warn players before active boosters expire.
 # Each value is the number of ticks remaining at which to send a warning
 # (20 ticks = 1 second). A warning fires once as the remaining time crosses

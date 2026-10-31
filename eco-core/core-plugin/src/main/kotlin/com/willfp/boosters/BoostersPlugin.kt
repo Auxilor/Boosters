@@ -2,10 +2,12 @@ package com.willfp.boosters
 
 import com.willfp.boosters.boosters.BoosterExpiryWarnings
 import com.willfp.boosters.boosters.BoosterQueue
+import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activeBoosters
 import com.willfp.boosters.boosters.boosterLock
 import com.willfp.boosters.boosters.expireBooster
+import com.willfp.boosters.boosters.refreshBoosterData
 import com.willfp.boosters.boosters.scanForBoosters
 import com.willfp.boosters.commands.CommandBoosters
 import com.willfp.boosters.libreforge.ConditionIsBoosterActive
@@ -27,6 +29,10 @@ internal lateinit var bossBarManager: BoosterBossBarManager
 
 class BoostersPlugin : LibreforgePlugin() {
     private var tickTask: EcoTask? = null
+    private var syncTask: EcoTask? = null
+
+    @Volatile
+    private var isAuthority = true
 
     init {
         plugin = this
@@ -55,6 +61,9 @@ class BoostersPlugin : LibreforgePlugin() {
         BoosterExpiryWarnings.clear()
         BoosterQueue.loadQueue()
 
+        val usesLocalStorage = configYml.getBool("use-local-storage")
+        isAuthority = usesLocalStorage || configYml.getBoolOrNull("booster-authority") != false
+
         tickTask?.cancel()
         tickTask = this.scheduler.global().runTimer(20L, 20L) {
             synchronized(boosterLock) {
@@ -62,6 +71,21 @@ class BoostersPlugin : LibreforgePlugin() {
             }
 
             bossBarManager.render()
+        }
+
+        syncTask?.cancel()
+        syncTask = if (usesLocalStorage) {
+            null
+        } else {
+            this.scheduler.async().runTimer(SYNC_INTERVAL, SYNC_INTERVAL) {
+                Bukkit.getServer().refreshBoosterData()
+                BoosterQueue.refreshQueueData()
+
+                this.scheduler.global().run {
+                    Bukkit.getServer().scanForBoosters()
+                    BoosterQueue.syncQueue()
+                }
+            }
         }
 
         // Just run it later enough
@@ -77,42 +101,45 @@ class BoostersPlugin : LibreforgePlugin() {
                 continue
             }
 
-            if (booster.secondsLeft <= 0) {
-                booster.runExpiryEffects()
-
-                bossBarManager.clearFor(booster)
-                BoosterExpiryWarnings.remove(booster)
-                Bukkit.getServer().expireBooster(booster)
-
-                // Check the queue
-
-                val queued = BoosterQueue.popBooster(booster)
-
-                if (queued != null) {
-                    val activator = queued.activator
-
-                    if (activator == serverUUID) {
-                        Bukkit.getServer().activateQueuedBoosterConsole(
-                            queued.booster,
-                            queued.duration.toLong()
-                        )
-                    } else {
-                        val player = Bukkit.getOfflinePlayer(activator)
-                        player.activateQueuedBooster(
-                            queued.booster,
-                            queued.duration.toLong()
-                        )
-                    }
-                }
-            } else {
+            if (booster.secondsLeft > 0) {
                 BoosterExpiryWarnings.tick(booster)
+            } else if (isAuthority) {
+                expire(booster)
             }
+        }
+    }
+
+    private fun expire(booster: Booster) {
+        booster.runExpiryEffects()
+
+        bossBarManager.clearFor(booster)
+        BoosterExpiryWarnings.remove(booster)
+        Bukkit.getServer().expireBooster(booster)
+
+        // Check the queue
+
+        val queued = BoosterQueue.popBooster(booster) ?: return
+        val activator = queued.activator
+
+        if (activator == serverUUID) {
+            Bukkit.getServer().activateQueuedBoosterConsole(
+                queued.booster,
+                queued.duration.toLong()
+            )
+        } else {
+            val player = Bukkit.getOfflinePlayer(activator)
+            player.activateQueuedBooster(
+                queued.booster,
+                queued.duration.toLong()
+            )
         }
     }
 
     override fun handleDisable() {
         tickTask?.cancel()
         tickTask = null
+        syncTask?.cancel()
+        syncTask = null
         bossBarManager.clearAll()
         BoosterQueue.saveQueue()
     }
@@ -142,4 +169,8 @@ class BoostersPlugin : LibreforgePlugin() {
             if (configYml.getBool("sounds.expiry-warning.enabled")) "enabled" else "disabled"
         }
     )
+
+    private companion object {
+        const val SYNC_INTERVAL = 100L
+    }
 }
