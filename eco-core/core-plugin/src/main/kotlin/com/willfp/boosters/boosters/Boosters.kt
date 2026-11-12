@@ -14,7 +14,7 @@ import wiki.ecohub.ui.placeholder.PlaceholderManager
 import wiki.ecohub.ui.placeholder.type.PlayerlessPlaceholder
 import wiki.ecohub.ui.text.formatEco
 
-object Boosters : ConfigCategory("booster", "boosters") {
+object Boosters : NativeConfigCategory("boosters", "booster") {
     /** Registered boosters. */
     private val registry = Registry<Booster>()
     @Volatile
@@ -56,17 +56,17 @@ object Boosters : ConfigCategory("booster", "boosters") {
         return registry[name]
     }
 
-    override fun clear(plugin: LibreforgePlugin) {
+    override fun clear(plugin: EcoPlugin) {
         registry.clear()
         cachedValues = emptyList()
     }
 
-    override fun acceptConfig(plugin: LibreforgePlugin, id: String, config: Config) {
+    override fun acceptConfig(plugin: EcoPlugin, id: String, config: Config) {
         registry.register(Booster(id, config))
         cachedValues = ImmutableList.copyOf(registry.values())
     }
 
-    override fun afterReload(plugin: LibreforgePlugin) {
+    override fun afterReload(plugin: EcoPlugin) {
         registerGlobalPlaceholders()
         BoosterGUI.update()
     }
