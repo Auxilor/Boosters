@@ -12,23 +12,23 @@ import com.willfp.boosters.boosters.activateBooster
 import com.willfp.boosters.boosters.activeBoosters
 import com.willfp.boosters.boosters.boosterLock
 import com.willfp.boosters.boosters.increaseBooster
-import com.willfp.eco.core.data.keys.PersistentDataKey
-import com.willfp.eco.core.data.keys.PersistentDataKeyType
-import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.sound.PlayableSound
-import com.willfp.eco.util.formatEco
-import com.willfp.eco.util.savedDisplayName
-import com.willfp.eco.util.toComponent
-import com.willfp.libreforge.EmptyProvidedHolder
-import com.willfp.libreforge.GlobalDispatcher
-import com.willfp.libreforge.NamedValue
-import com.willfp.libreforge.effects.Chain
-import com.willfp.libreforge.toDispatcher
-import com.willfp.libreforge.triggers.TriggerData
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Server
 import org.bukkit.entity.Player
+import wiki.ecohub.core.stdlib.NamedValue
+import wiki.ecohub.data.PersistentDataKey
+import wiki.ecohub.data.PersistentDataKeyType
+import wiki.ecohub.game.entity.player.PlayerUtils
+import wiki.ecohub.game.entity.player.profile
+import wiki.ecohub.game.entity.toDispatcher
+import wiki.ecohub.game.sound.PlayableSound
+import wiki.ecohub.rules.chain.Chain
+import wiki.ecohub.rules.holder.EmptyProvidedHolder
+import wiki.ecohub.rules.holder.GlobalDispatcher
+import wiki.ecohub.rules.trigger.TriggerData
+import wiki.ecohub.ui.text.formatEco
+import wiki.ecohub.ui.text.toComponent
 import java.util.UUID
 
 private val bossBarVisibilityDataKey = PersistentDataKey(
@@ -330,7 +330,7 @@ fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long): Unit = sy
                     .dispatch(target.toDispatcher())
 
                 dispatched.addPlaceholder(
-                    NamedValue("activator", player?.name ?: this.savedDisplayName)
+                    NamedValue("activator", player?.name ?: PlayerUtils.getSavedDisplayName(this))
                 )
 
                 dispatched.addPlaceholder(
@@ -343,7 +343,7 @@ fun OfflinePlayer.activateQueuedBooster(booster: Booster, time: Long): Unit = sy
     }
 
     booster.globalActivationEffects.triggerGlobally(
-        NamedValue("activator", player?.name ?: this.savedDisplayName),
+        NamedValue("activator", player?.name ?: PlayerUtils.getSavedDisplayName(this)),
         NamedValue("time", booster.getFormattedTimeLeft(time.toInt() / 20))
     )
 

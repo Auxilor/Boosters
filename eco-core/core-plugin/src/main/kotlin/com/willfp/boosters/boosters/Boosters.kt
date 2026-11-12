@@ -1,18 +1,18 @@
 package com.willfp.boosters.boosters
 
 import com.google.common.collect.ImmutableList
-import com.willfp.boosters.gui.BoosterGUI
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.registry.Registry
-import com.willfp.libreforge.loader.LibreforgePlugin
-import com.willfp.libreforge.loader.configs.ConfigCategory
-import com.willfp.libreforge.loader.configs.LegacyLocation
 import com.willfp.boosters.boosters.activeBoosters
+import com.willfp.boosters.gui.BoosterGUI
 import com.willfp.boosters.plugin
-import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
-import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
-import com.willfp.eco.util.formatEco
 import org.bukkit.Bukkit
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.LegacyLocation
+import wiki.ecohub.config.category.NativeConfigCategory
+import wiki.ecohub.core.plugin.EcoPlugin
+import wiki.ecohub.core.registry.Registry
+import wiki.ecohub.ui.placeholder.PlaceholderManager
+import wiki.ecohub.ui.placeholder.type.PlayerlessPlaceholder
+import wiki.ecohub.ui.text.formatEco
 
 object Boosters : ConfigCategory("booster", "boosters") {
     /** Registered boosters. */

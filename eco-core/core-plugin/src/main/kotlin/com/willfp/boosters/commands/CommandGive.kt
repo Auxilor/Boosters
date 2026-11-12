@@ -4,10 +4,10 @@ import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.incrementBoosters
 import com.willfp.boosters.plugin
 import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.util.StringUtils
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
+import wiki.ecohub.ui.text.StringUtils
 
 object CommandGive : Subcommand(
     plugin,

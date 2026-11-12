@@ -2,9 +2,9 @@ package com.willfp.boosters
 
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.activeBoosters
-import com.willfp.eco.core.Prerequisite
 import org.bukkit.Bukkit
 import org.bukkit.boss.BossBar
+import wiki.ecohub.core.plugin.startup.Prerequisite
 import java.util.concurrent.ConcurrentHashMap
 
 class BoosterBossBarManager {

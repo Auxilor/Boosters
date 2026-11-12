@@ -5,20 +5,20 @@ import com.willfp.boosters.boosters.ActivationResult
 import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.plugin
-import com.willfp.eco.core.gui.addCustomSlots
-import com.willfp.eco.core.gui.addPage
-import com.willfp.eco.core.gui.addPageChanger
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.menu.Menu
-import com.willfp.eco.core.gui.page.PageChanger
-import com.willfp.eco.core.gui.setMask
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.gui.slot.functional.SlotHandler
-import com.willfp.eco.core.sound.PlayableSound
-import com.willfp.eco.util.StringUtils
-import com.willfp.eco.util.tryAsPlayer
 import org.bukkit.Sound
 import org.bukkit.entity.Player
+import wiki.ecohub.game.entity.player.PlayerUtils
+import wiki.ecohub.game.sound.PlayableSound
+import wiki.ecohub.modules.menus.addCustomSlots
+import wiki.ecohub.modules.menus.addPage
+import wiki.ecohub.modules.menus.addPageChanger
+import wiki.ecohub.modules.menus.menu
+import wiki.ecohub.modules.menus.menu.Menu
+import wiki.ecohub.modules.menus.page.PageChanger
+import wiki.ecohub.modules.menus.setMask
+import wiki.ecohub.modules.menus.slot
+import wiki.ecohub.modules.menus.slot.SlotHandler
+import wiki.ecohub.ui.text.StringUtils
 
 object BoosterGUI {
     @Volatile
@@ -26,7 +26,7 @@ object BoosterGUI {
 
     private fun makeHandler(booster: Booster): SlotHandler {
         return SlotHandler { event, _, _ ->
-            val player = event.whoClicked.tryAsPlayer() ?: return@SlotHandler
+            val player = PlayerUtils.tryAsPlayer(event.whoClicked) ?: return@SlotHandler
 
             val activationResult = player.activateBooster(booster)
 

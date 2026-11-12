@@ -1,9 +1,9 @@
 package com.willfp.boosters.commands
 
-import com.willfp.boosters.boosters.BoosterExpiryWarnings
-import com.willfp.boosters.boosters.BoosterQueue
 import com.willfp.boosters.activateQueuedBooster
 import com.willfp.boosters.activateQueuedBoosterConsole
+import com.willfp.boosters.boosters.BoosterExpiryWarnings
+import com.willfp.boosters.boosters.BoosterQueue
 import com.willfp.boosters.boosters.activeBoosters
 import com.willfp.boosters.boosters.boosterLock
 import com.willfp.boosters.boosters.expireBooster
