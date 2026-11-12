@@ -56,7 +56,7 @@ object BoosterGUI {
         gui = menu(plugin.configYml.getInt("gui.rows")) {
             val maxPage = Boosters.values().maxOfOrNull { it.guiPage } ?: 1
 
-            title = StringUtils.format(plugin.configYml.getString("gui.title"))
+            setTitle(StringUtils.format(plugin.configYml.getString("gui.title")))
 
             maxPages(maxPage)
 
@@ -77,9 +77,9 @@ object BoosterGUI {
                         }
 
                         setSlot(
-                            booster.guiRow,
-                            booster.guiColumn,
-                            slot(
+                            row = booster.guiRow,
+                            column = booster.guiColumn,
+                            slot = slot(
                                 { player, _ -> booster.getGuiItem(player) }
                             ) {
                                 onLeftClick(makeHandler(booster))
