@@ -20,6 +20,7 @@ import wiki.ecohub.core.stdlib.NamedValue
 import wiki.ecohub.data.PersistentDataKey
 import wiki.ecohub.data.PersistentDataKeyType
 import wiki.ecohub.game.entity.player.PlayerUtils
+import wiki.ecohub.game.entity.player.asAudience
 import wiki.ecohub.game.entity.player.profile
 import wiki.ecohub.game.entity.toDispatcher
 import wiki.ecohub.game.sound.PlayableSound
@@ -132,7 +133,7 @@ fun Booster.runExpiryWarning() {
     for (player in audience) {
         player.runOwned {
             if (actionBar) {
-                player.sendActionBar(text.toComponent())
+                player.asAudience().sendActionBar(text.toComponent())
             } else {
                 player.sendMessage(text)
             }

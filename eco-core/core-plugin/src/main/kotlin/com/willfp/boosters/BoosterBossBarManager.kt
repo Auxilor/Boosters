@@ -4,6 +4,7 @@ import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.activeBoosters
 import org.bukkit.Bukkit
 import org.bukkit.boss.BossBar
+import wiki.ecohub.core.platform.ownsGlobal
 import wiki.ecohub.core.plugin.startup.Prerequisite
 import java.util.concurrent.ConcurrentHashMap
 
@@ -11,7 +12,7 @@ class BoosterBossBarManager {
     private val bars = ConcurrentHashMap<Booster, BossBar>()
 
     fun render() {
-        if (Prerequisite.HAS_FOLIA.isMet && !Bukkit.isGlobalTickThread()) {
+        if (Prerequisite.HAS_FOLIA.isMet && !Bukkit.getServer().ownsGlobal()) {
             plugin.scheduler.global().run { render() }
             return
         }
