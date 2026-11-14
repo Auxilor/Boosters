@@ -2,10 +2,10 @@
 
 package com.willfp.boosters.boosters
 
-import com.willfp.eco.core.data.ServerProfile
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Server
+import wiki.ecohub.data.profile.ServerProfile
 import java.util.Objects
 import java.util.UUID
 

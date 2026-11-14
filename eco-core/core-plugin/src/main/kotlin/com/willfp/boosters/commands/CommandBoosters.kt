@@ -1,33 +1,21 @@
 package com.willfp.boosters.commands
 
+import com.willfp.boosters.BoostersPlugin
 import com.willfp.boosters.gui.BoosterGUI
-import com.willfp.boosters.plugin
-import com.willfp.eco.core.command.impl.PluginCommand
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import wiki.ecohub.core.command.command
 
-object CommandBoosters : PluginCommand(
-    plugin,
-    "boosters",
-    "boosters.command.boosters",
-    false
-) {
+internal fun BoostersPlugin.boostersCommand() = command(name = "boosters", permission = "boosters.command.boosters") {
+    aliases("boost")
 
-    init {
-        this.addSubcommand(CommandGive)
-            .addSubcommand(CommandReload)
-            .addSubcommand(CommandCancel)
-            .addSubcommand(CommandActivate)
-            .addSubcommand(CommandBossbar)
-            .addSubcommand(CommandQueue)
-    }
+    giveCommand()
+    reloadCommand()
+    cancelCommand()
+    activateCommand()
+    bossbarCommand()
+    queueCommand()
 
-    override fun onExecute(sender: CommandSender, args: List<String>) {
-        if (sender !is Player) {
-            sender.sendMessage(this.plugin.langYml.getMessage("not-player"))
-            return
-        }
-
-        BoosterGUI.open(sender)
+    executes {
+        BoosterGUI.open(sender as? Player ?: fail("not-player"))
     }
 }

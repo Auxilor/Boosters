@@ -2,98 +2,46 @@ package com.willfp.boosters.commands
 
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.incrementBoosters
-import com.willfp.boosters.plugin
-import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.util.StringUtils
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
-import org.bukkit.util.StringUtil
+import wiki.ecohub.core.command.CommandBuilder
+import wiki.ecohub.ui.text.StringUtils
 
-object CommandGive : Subcommand(
-    plugin,
-    "give",
-    "boosters.command.give",
-    false
+private val amountCompletions = listOf("1", "2", "3", "4", "5", "10")
+
+private const val AMOUNT_ARGS = 3
+
+internal fun CommandBuilder<CommandSender>.giveCommand() = subcommand(
+    name = "give",
+    permission = "boosters.command.give"
 ) {
-
-    override fun onExecute(sender: CommandSender, args: List<String>) {
-        if (args.isEmpty()) {
-            sender.sendMessage(plugin.langYml.getMessage("requires-player"))
-            return
+    executes {
+        val playerName = argument(0, "requires-player")
+        val booster = argument(index = 1, missingKey = "requires-booster", invalidKey = "invalid-booster") {
+            Boosters.getByID(it.lowercase())
         }
+        val amount = args.getOrNull(2)?.toIntOrNull() ?: 1
 
-        if (args.size == 1) {
-            sender.sendMessage(plugin.langYml.getMessage("requires-booster"))
-            return
-        }
-
-        val booster = Boosters.getByID(args[1].lowercase())
-
-        if (booster == null) {
-            sender.sendMessage(plugin.langYml.getMessage("invalid-booster"))
-            return
-        }
-
-        var amount = 1
-
-        if (args.size >= 3) {
-            amount = args[2].toIntOrNull() ?: amount
-        }
-
-        val player = Bukkit.getPlayerExact(args[0])
-            ?: Bukkit.getOfflinePlayers().firstOrNull { it.name.equals(args[0], ignoreCase = true) }
-        if (player == null) {
-            sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
-            return
-        }
+        val player = Bukkit.getPlayerExact(playerName)
+            ?: Bukkit.getOfflinePlayers().firstOrNull { it.name.equals(playerName, ignoreCase = true) }
+            ?: fail("invalid-player")
 
         player.incrementBoosters(booster, amount)
 
         sender.sendMessage(
             plugin.langYml.getMessage("gave-booster", StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)
-                .replace("%player%", player.name ?: args[0])
-                .replace("%booster%", booster.name)
-                .replace("%amount%", amount.toString())
+                .replace(oldValue = "%player%", newValue = player.name ?: playerName)
+                .replace(oldValue = "%booster%", newValue = booster.name)
+                .replace(oldValue = "%amount%", newValue = amount.toString())
         )
     }
 
-    override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
-        val completions = mutableListOf<String>()
-
-        if (args.size == 1) {
-            StringUtil.copyPartialMatches(
-                args[0],
-                Bukkit.getOnlinePlayers().map { player -> player.name }.toCollection(ArrayList()),
-                completions
-            )
-            return completions
+    completes {
+        when (args.size) {
+            1 -> playerNames()
+            2 -> Boosters.values().map { it.id.key }
+            AMOUNT_ARGS -> amountCompletions
+            else -> emptyList()
         }
-
-        if (args.size == 2) {
-            StringUtil.copyPartialMatches(
-                args[1],
-                Boosters.values().map { it.id.key },
-                completions
-            )
-            return completions
-        }
-
-        if (args.size == 3) {
-            StringUtil.copyPartialMatches(
-                args[2],
-                listOf(
-                    "1",
-                    "2",
-                    "3",
-                    "4",
-                    "5",
-                    "10"
-                ),
-                completions
-            )
-            return completions
-        }
-
-        return emptyList()
     }
 }

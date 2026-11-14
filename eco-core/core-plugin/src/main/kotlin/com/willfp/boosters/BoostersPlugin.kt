@@ -1,25 +1,25 @@
 package com.willfp.boosters
 
+import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.BoosterExpiryWarnings
 import com.willfp.boosters.boosters.BoosterQueue
-import com.willfp.boosters.boosters.Booster
 import com.willfp.boosters.boosters.Boosters
 import com.willfp.boosters.boosters.activeBoosters
 import com.willfp.boosters.boosters.boosterLock
 import com.willfp.boosters.boosters.expireBooster
 import com.willfp.boosters.boosters.refreshBoosterData
 import com.willfp.boosters.boosters.scanForBoosters
-import com.willfp.boosters.commands.CommandBoosters
+import com.willfp.boosters.commands.boostersCommand
 import com.willfp.boosters.libreforge.ConditionIsBoosterActive
-import com.willfp.eco.core.bstats.EcoMetricsChart
-import com.willfp.eco.core.command.impl.PluginCommand
-import com.willfp.eco.core.scheduling.EcoTask
-import com.willfp.libreforge.SimpleProvidedHolder
-import com.willfp.libreforge.conditions.Conditions
-import com.willfp.libreforge.loader.LibreforgePlugin
-import com.willfp.libreforge.loader.configs.ConfigCategory
-import com.willfp.libreforge.registerGenericHolderProvider
 import org.bukkit.Bukkit
+import wiki.ecohub.config.category.NativeConfigCategory
+import wiki.ecohub.core.command.EcoCommand
+import wiki.ecohub.core.plugin.EcoPlugin
+import wiki.ecohub.core.scheduler.EcoTask
+import wiki.ecohub.provider.metrics.EcoMetricsChart
+import wiki.ecohub.rules.condition.Conditions
+import wiki.ecohub.rules.holder.SimpleProvidedHolder
+import wiki.ecohub.rules.holder.registerGenericHolderProvider
 
 internal lateinit var plugin: BoostersPlugin
     private set
@@ -27,7 +27,7 @@ internal lateinit var plugin: BoostersPlugin
 internal lateinit var bossBarManager: BoosterBossBarManager
     private set
 
-class BoostersPlugin : LibreforgePlugin() {
+class BoostersPlugin : EcoPlugin() {
     private var tickTask: EcoTask? = null
     private var syncTask: EcoTask? = null
 
@@ -39,7 +39,7 @@ class BoostersPlugin : LibreforgePlugin() {
         bossBarManager = BoosterBossBarManager()
     }
 
-    override fun loadConfigCategories(): List<ConfigCategory> {
+    override fun loadConfigCategories(): List<NativeConfigCategory> {
         return listOf(
             Boosters
         )
@@ -144,9 +144,9 @@ class BoostersPlugin : LibreforgePlugin() {
         BoosterQueue.saveQueue()
     }
 
-    override fun loadPluginCommands(): List<PluginCommand> {
+    override fun loadPluginCommands(): List<EcoCommand> {
         return listOf(
-            CommandBoosters
+            boostersCommand()
         )
     }
 
