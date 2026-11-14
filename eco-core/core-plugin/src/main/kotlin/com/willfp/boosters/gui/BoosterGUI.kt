@@ -53,7 +53,9 @@ object BoosterGUI {
     }
 
     internal fun update() {
-        gui = menu(plugin.configYml.getInt("gui.rows")) {
+        val rows = plugin.configYml.getInt("gui.rows")
+
+        gui = menu(rows) {
             val maxPage = Boosters.values().maxOfOrNull { it.guiPage } ?: 1
 
             setTitle(StringUtils.format(plugin.configYml.getString("gui.title")))
@@ -73,6 +75,14 @@ object BoosterGUI {
 
                     for (booster in Boosters.values()) {
                         if (booster.guiPage != pageNumber) {
+                            continue
+                        }
+
+                        // One booster with no position would otherwise stop the whole menu from building.
+                        if (booster.guiRow !in 1..rows || booster.guiColumn !in 1..9) {
+                            plugin.logger.warning(
+                                "Booster ${booster.id.key} has no valid gui.position (row ${booster.guiRow}, column ${booster.guiColumn}), so it is left out of the GUI"
+                            )
                             continue
                         }
 
