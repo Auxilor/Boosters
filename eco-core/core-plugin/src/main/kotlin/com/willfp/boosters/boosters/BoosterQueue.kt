@@ -2,14 +2,14 @@ package com.willfp.boosters.boosters
 
 import com.willfp.boosters.plugin
 import com.willfp.boosters.serverUUID
-import com.willfp.eco.core.config.emptyConfig
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.data.ServerProfile
-import com.willfp.eco.core.data.keys.PersistentDataKey
-import com.willfp.eco.core.data.keys.PersistentDataKeyType
-import com.willfp.eco.util.savedDisplayName
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.emptyConfig
+import wiki.ecohub.data.PersistentDataKey
+import wiki.ecohub.data.PersistentDataKeyType
+import wiki.ecohub.data.profile.ServerProfile
+import wiki.ecohub.game.entity.player.PlayerUtils
 import java.util.Collections
 import java.util.UUID
 
@@ -90,7 +90,7 @@ object BoosterQueue {
         val base = emptyConfig()
 
         for ((category, boosters) in queue) {
-            base.set(category, boosters.map { "${it.booster.id.key}__${it.duration}__${it.activator}" })
+            base[category] = boosters.map { "${it.booster.id.key}__${it.duration}__${it.activator}" }
         }
 
         return base
@@ -182,7 +182,7 @@ data class QueuedBooster(
             return plugin.langYml.getFormattedString("console-displayname")
         }
         val player = Bukkit.getOfflinePlayer(activator)
-        return player.player?.name ?: player.savedDisplayName
+        return player.player?.name ?: PlayerUtils.getSavedDisplayName(player)
     }
 }
 

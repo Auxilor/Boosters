@@ -2,29 +2,29 @@ package com.willfp.boosters.boosters
 
 import com.willfp.boosters.getAmountOfBooster
 import com.willfp.boosters.plugin
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.data.keys.PersistentDataKey
-import com.willfp.eco.core.data.keys.PersistentDataKeyType
-import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
-import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.builder.ItemStackBuilder
-import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
-import com.willfp.eco.core.registry.Registrable
-import com.willfp.eco.util.containsIgnoreCase
-import com.willfp.eco.util.formatEco
-import com.willfp.eco.util.savedDisplayName
-import com.willfp.libreforge.Holder
-import com.willfp.libreforge.ViolationContext
-import com.willfp.libreforge.conditions.Conditions
-import com.willfp.libreforge.effects.Effects
-import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarStyle
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.ViolationContext
+import wiki.ecohub.core.platform.profile
+import wiki.ecohub.core.registry.Registrable
+import wiki.ecohub.data.PersistentDataKey
+import wiki.ecohub.data.PersistentDataKeyType
+import wiki.ecohub.game.entity.player.PlayerUtils
+import wiki.ecohub.game.item.Items
+import wiki.ecohub.game.item.builder.ItemStackBuilder
+import wiki.ecohub.rules.chain.NormalExecutorFactory
+import wiki.ecohub.rules.condition.Conditions
+import wiki.ecohub.rules.effect.Effects
+import wiki.ecohub.rules.holder.Holder
+import wiki.ecohub.ui.placeholder.PlaceholderManager
+import wiki.ecohub.ui.placeholder.type.PlayerlessPlaceholder
+import wiki.ecohub.ui.text.containsIgnoreCase
+import wiki.ecohub.ui.text.formatEco
 import java.util.Locale
 import java.util.UUID
 import kotlin.math.floor
@@ -302,7 +302,7 @@ class Booster(
 
                 if (active != null) {
                     plugin.langYml.getString("active-placeholder")
-                        .replace("%player%", active.player?.savedDisplayName ?: plugin.langYml.getString("console-displayname"))
+                        .replace("%player%", active.player?.let { PlayerUtils.getSavedDisplayName(it) } ?: plugin.langYml.getString("console-displayname"))
                         .replace("%booster%", active.booster.name)
                         .formatEco(formatPlaceholders = false)
                 } else {
@@ -322,7 +322,8 @@ class Booster(
                 if (active == null) {
                     ""
                 } else {
-                    active.player?.savedDisplayName ?: plugin.langYml.getString("console-displayname").formatEco(formatPlaceholders = false)
+                    active.player?.let { PlayerUtils.getSavedDisplayName(it) }
+                        ?: plugin.langYml.getString("console-displayname").formatEco(formatPlaceholders = false)
                 }
             }
         )
@@ -338,7 +339,8 @@ class Booster(
                     ""
                 } else {
                     Bukkit.getServer().profile.read(incrementerKey).ifEmpty {
-                        active.player?.savedDisplayName ?: plugin.langYml.getString("console-displayname").formatEco(formatPlaceholders = false)
+                        active.player?.let { PlayerUtils.getSavedDisplayName(it) }
+                            ?: plugin.langYml.getString("console-displayname").formatEco(formatPlaceholders = false)
                     }
                 }
             }
