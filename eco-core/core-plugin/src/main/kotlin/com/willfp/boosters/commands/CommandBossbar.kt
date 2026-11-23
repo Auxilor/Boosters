@@ -1,34 +1,22 @@
 package com.willfp.boosters.commands
 
 import com.willfp.boosters.bossBarManager
-import com.willfp.boosters.plugin
 import com.willfp.boosters.toggleBossBarVisibility
-import com.willfp.eco.core.command.impl.Subcommand
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
+import wiki.ecohub.core.command.CommandBuilder
 
-object CommandBossbar : Subcommand(
-    plugin,
-    "bossbar",
-    "boosters.command.bossbar",
-    false
+internal fun CommandBuilder<CommandSender>.bossbarCommand() = playerSubcommand(
+    name = "bossbar",
+    permission = "boosters.command.bossbar"
 ) {
-    override fun onExecute(sender: CommandSender, args: List<String>) {
-        val player = sender as? Player
-
-        if (player == null) {
-            sender.sendMessage(plugin.langYml.getMessage("not-player"))
-            return
-        }
-
-        val isVisible = player.toggleBossBarVisibility()
+    executes {
+        val isVisible = sender.toggleBossBarVisibility()
         bossBarManager.render()
 
         if (isVisible) {
-            player.sendMessage(plugin.langYml.getMessage("bossbar-enabled"))
+            reply("bossbar-enabled")
         } else {
-            player.sendMessage(plugin.langYml.getMessage("bossbar-disabled"))
+            reply("bossbar-disabled")
         }
     }
 }
-
